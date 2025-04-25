@@ -1,1 +1,1 @@
-# lms-frontend
+# study-lms-frontend
