@@ -99,7 +99,7 @@ const Navbar = () => {
             <div className={`${token === null && 'justify-between' } flex w-11/12 max-w-maxContent items-center ${!isCatalog ? 'justify-end' : 'justify-between'} md:justify-between `}>
                 {/* logo */}
                 <Link to="/" className="">
-                    <img src={studyNotionLogo} width={75} height={42} loading='lazy' />
+                    <img src={studyNotionLogo} width={125} height={42} loading='lazy' />
                 </Link>
         
                 {/* Nav Links - visible for only large devices*/}
