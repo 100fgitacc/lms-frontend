@@ -23,11 +23,11 @@ function Template({ title, description1, description2, image, formType }) {
 
           {formType === "signup" ? <SignupForm /> : <LoginForm />}
         </div>
-        <div className="relative max-w-[200px] md:mx-0 my-0">
+        <div className="relative  md:mx-0 my-0">
           <Img
             src={image}
             alt={formType}
-            className={'w-[200px] h-[25px] text-white mb-[25px]'}
+            className={'w-[400px] text-white mb-[25px]'}
           />
         </div>
       </div>
