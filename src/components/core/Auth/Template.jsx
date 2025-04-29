@@ -8,8 +8,8 @@ function Template({ title, description1, description2, image, formType }) {
   // const { loading } = useSelector((state) => state.auth);
 
   return (
-    <div className="grid min-h-[calc(100vh-3.5rem)] place-items-center bg-blue-800">
-      <div className="mx-auto flex w-11/12 max-w-maxContent flex-col-reverse justify-center items-center gap-y-12  md:gap-y-0 md:gap-x-12">
+    <div className="grid min-h-[calc(100vh-3.5rem)] place-items-center bg-blue-800 mt-[75px]">
+      <div className="mx-auto mt-10 flex w-11/12 max-w-maxContent flex-col-reverse justify-center items-center gap-y-12  md:gap-y-0 md:gap-x-12">
         <div className="mx-auto w-11/12 max-w-[450px] md:mx-0">
           <h1 className="text-[1.875rem] font-semibold leading-[2.375rem] text-white">
             {title}
@@ -27,7 +27,7 @@ function Template({ title, description1, description2, image, formType }) {
           <Img
             src={image}
             alt={formType}
-            className={'w-[165px] h-[155px] text-white mt-[75px]'}
+            className={'w-[200px] h-[25px] text-white mb-[25px]'}
           />
         </div>
       </div>
