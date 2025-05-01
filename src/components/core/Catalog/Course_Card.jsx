@@ -59,7 +59,7 @@ function Course_Card({ course, Height }) {
 
   return (
     <div className=" transition-all duration-200 ">
-       <div className="border border-gray rounded-xl h-full flex flex-col">
+       <Link className="border border-gray rounded-xl h-full flex flex-col" to={`/courses/${course._id}`}>
           <Img
             src={course?.thumbnail}
             alt="course thumbnail"
@@ -94,7 +94,7 @@ function Course_Card({ course, Height }) {
             </div>
             
           </div>
-        </div>
+        </Link>
      
     </div>
 
