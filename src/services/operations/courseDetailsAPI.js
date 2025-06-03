@@ -353,7 +353,7 @@ export const fetchInstructorCourses = async (token) => {
         Authorization: `Bearer ${token}`,
       }
     )
-    console.log("INSTRUCTOR COURSES API RESPONSE", response)
+    // console.log("INSTRUCTOR COURSES API RESPONSE", response)
     if (!response?.data?.success) {
       throw new Error("Could Not Fetch Instructor Courses")
     }
@@ -402,14 +402,14 @@ export const getFullDetailsOfCourse = async (courseId, token) => {
         Authorization: `Bearer ${token}`,
       }
     )
-    console.log("COURSE_FULL_DETAILS_API API RESPONSE............", response)
+    // console.log("COURSE_FULL_DETAILS_API API RESPONSE............", response)
 
     if (!response.data.success) {
       throw new Error(response.data.message)
     }
     result = response?.data?.data
   } catch (error) {
-    console.log("COURSE_FULL_DETAILS_API API ERROR............", error)
+    // console.log("COURSE_FULL_DETAILS_API API ERROR............", error)
     result = error.response.data
     // toast.error(error.response.data.message);
   }

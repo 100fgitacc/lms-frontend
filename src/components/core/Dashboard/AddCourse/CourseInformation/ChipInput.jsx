@@ -3,6 +3,8 @@ import { useEffect, useState } from "react"
 import { MdClose } from "react-icons/md"
 import { useSelector } from "react-redux"
 
+import styles from '../../profile.module.css'
+
 // Defining a functional component ChipInput
 export default function ChipInput({ label, name, placeholder, register, errors, setValue, }) {
   const { editCourse, course } = useSelector((state) => state.course)
@@ -52,46 +54,38 @@ export default function ChipInput({ label, name, placeholder, register, errors, 
 
   // Render the component
   return (
-    <div className="flex flex-col space-y-2">
-
-      <label className="text-sm text-white" htmlFor={name}>
-        {label} <sup className="text-pink-200">*</sup>
+    <>
+      <label className="" htmlFor={name}>
+        {label} <sup>*</sup>
       </label>
-
-      <div className="flex w-full flex-wrap gap-y-2">
+      {errors[name] && (
+        <span className="required">
+          {label} is required!
+        </span>
+      )}
+      <div className={styles['tag-container']}>
         {chips?.map((chip, index) => (
-          <div
-            key={index}
-            className="m-1 flex items-center rounded-full bg-yellow-400 px-2 py-1 text-sm text-white"
-          >
+          <div key={index} className={styles['tag']}>
             {chip}
-
-            {/* delete chip */}
             <button
               type="button"
-              className="ml-2 focus:outline-none"
+              className={styles['del-tag']}
               onClick={() => handleDeleteChip(index)}
             >
-              <MdClose className="text-sm" />
+              <MdClose className="" />
             </button>
           </div>
         ))}
-
-
-        <input
+      </div>
+       <input
           id={name}
           name={name}
           type="text"
           placeholder={placeholder}
           onKeyDown={handleKeyDown}
-          className="form-style w-full"
+          className={styles.input}
         />
-      </div>
-      {errors[name] && (
-        <span className="ml-2 text-xs tracking-wide text-pink-300">
-          {label} is required
-        </span>
-      )}
-    </div>
+      
+    </>
   )
 }

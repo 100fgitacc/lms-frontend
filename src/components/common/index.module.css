@@ -1,0 +1,37 @@
+.container {
+  display: flex;
+  padding: 4px;
+  gap: 4px;
+  margin: 24px 0;
+  max-width: max-content;
+  border-radius: 6px;
+  border: 1px solid #dedede;
+  box-shadow: inset 0px -1px 0px rgba(255, 255, 255, 0.18);
+}
+
+.button {
+  padding: 8px 20px;
+  border-radius: 9999px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  background-color: transparent;
+  color: #ccc;
+}
+
+.active {
+  background-color: #1858F3;
+  color: #fff;
+}
+
+.modal-wrapper{
+  max-width: 400px; 
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  border: 1px solid #dedede;
+  border-radius: 15px;
+  margin-bottom: 25px;
+  padding: 25px;
+}

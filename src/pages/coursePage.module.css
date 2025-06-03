@@ -1,0 +1,218 @@
+.lesson-content{
+    margin-left: 35px;
+}
+.lesson-content-inner{
+    margin-top: 0;
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+}
+
+.single-lesson-wrapper{
+    margin: 0;
+}
+.lesson-content-inner > div:first-child{
+    width: 29%;
+}
+.lesson-content-inner > div:last-child{
+    width: 69%;
+}
+.lesson-content-inner-full{
+    margin-left: 185px;
+}
+.course-overview .lesson-content-inner > div:last-child{
+    width: 100%;
+}
+
+
+.title{
+    margin-top: 35px;
+    margin-bottom: 25px;
+}
+.single-course .title{
+    margin-bottom: 15px;
+    color: #333333;
+    font-size: 22px;
+}
+.overview-wrapper{
+    padding: 25px;
+    border: 1px solid #DEDEDE;
+    border-radius: 15px;
+}
+
+.overview-inner{
+    margin-bottom: 35px;
+}
+.overview-inner:last-child{
+    margin-bottom: 0;
+}
+
+.overview-heading{
+    margin-bottom: 25px;
+    font-size: 18px;
+    font-weight: 500;
+}
+.overview-item{
+    position: relative;
+    margin-bottom: 5px;
+    padding: 15px 25px 15px 25px;
+    background-color: #F1F5F9;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.overview-item:last-child{
+    margin-bottom: 0;
+}
+.overview-item-title{
+    font-size: 14px;
+}
+.overview-item.inactive{
+    padding-top: 40px;
+}
+.overview-wrapper.single-course{
+    padding-top: 45px;
+    border-radius: 0 20px 20px 0;
+    border: unset;
+    box-shadow: 0px 16px 48px -4px rgb(0 0 0 / 10%);
+    height: 100%;
+    position: static;
+    z-index: 98;
+    background-color: #fff;
+}
+.back-to-button{
+    position: relative;
+    margin-bottom: 35px;
+    color:#787878;
+}
+.back-to-button::before{
+    content: '';
+    position: absolute;
+    top: 50%;
+    right: -15px;
+    transform: translateY(-50%); 
+    background-image: url('/public/assets/img/icons/chevron-left.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 12px;
+    height: 12px; 
+}
+.back-to-button:hover{
+    text-decoration: underline;
+}
+.activity{
+    margin-top: 10px;
+    margin-bottom: 35px;
+    display: flex;
+}
+.activity img{
+    width: 16px;
+    height: 16px;
+    margin-right: 7px;
+}
+.overview-item-link{
+    position: relative;
+}
+.overview-item-link::before{
+    content: '';
+    position: absolute;
+    top: 50%;
+    right: 20px;
+    transform: translateY(-50%); 
+    background-image: url('/public/assets/img/icons/arrow-up-right.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 16px;
+    height: 16px; 
+}
+.player{
+    border-radius: 15px;
+    overflow: hidden;
+    height: 500px;
+}
+
+.single-course .overview-inner:last-child{
+    margin-bottom: 150px;
+}
+.lecture-status{
+    position: absolute !important;
+    top: 15px;
+    right: 0;
+}
+.lecture-status p{
+    margin-right: 5px;
+    font-size: 10px;
+    color: #1d8b13;
+    font-weight: bold;
+}
+.course-player{
+    position: relative;
+}
+.video-ended-controls {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 90;
+  background: rgba(0, 0, 0, 0.8);
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  text-align: center;
+}
+.button-step{
+    background: unset !important;
+    border: 1px solid #1858f3 !important;
+    margin: 0 10px;
+}
+.inactive{
+    opacity: 0.6;
+}
+.wrapper{
+    position: relative;
+    margin-top: 25px;
+    margin-bottom: 25px;
+    padding: 25px;
+    box-shadow: 0px 16px 48px -4px rgb(0 0 0 / 10%);
+}
+.materials{
+    margin-bottom: 15px;
+}
+.thumbnail-container{
+    width: 100%;
+    padding: 50px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    border: 2px dashed #073FC2;
+    border-radius: 5px;
+}
+.thumbnail-img{
+    max-width: 300px;
+}
+.thumbnail-container span{
+    cursor: pointer;
+    color: #073FC2;
+    text-decoration: underline;
+}
+.cancel-button{
+  margin-top: 10px;
+  background-color: #f3184f !important;
+  color: #fff;
+}
+.back-button{
+    display: flex;
+    align-items: center;
+    margin-top: 35px;
+    margin-bottom: 25px;
+    cursor: pointer;
+}
+.share-btn{
+    display: flex;
+}

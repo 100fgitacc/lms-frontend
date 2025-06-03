@@ -2,39 +2,32 @@ import { FaStar } from "react-icons/fa"
 import { RiDeleteBin6Line } from "react-icons/ri"
 import ReactStars from "react-rating-stars-component"
 import { useDispatch, useSelector } from "react-redux"
-
+import { Link } from "react-router-dom"
 import { removeFromCart } from "../../../../slices/cartSlice"
-import Img from './../../../common/Img';
+import styles from '../profile.module.css'
 
 export default function RenderCartCourses() {
   const { cart } = useSelector((state) => state.cart)
   const dispatch = useDispatch()
 
-
+  console.log(cart);
+  
   return (
-    <div className="flex flex-1 flex-col bg-blue-500 rounded-md p-6 w-full ">
-      {cart.map((course, indx) => (
-        <div
-          key={course._id}
-          className={`flex w-full flex-wrap items-start justify-between gap-6 ${indx !== cart.length - 1 && "border-b border-b-richblack-400 pb-6"
-            } ${indx !== 0 && "mt-6"} `}
-        >
-          <div className="flex flex-1 flex-col gap-4 xl:flex-row">
-            {/* course thumbnail */}
-            <Img
-              src={course?.thumbnail}
-              alt={course?.courseName}
-              className="h-[100px] w-[175px] rounded-lg object-cover"
-            />
-
-            <div className="flex flex-col space-y-1">
-              <p className="text-sm font-wadik text-white">
+    <div>
+      {cart.map((course, i) => (
+        <div key={i}  className={styles['cart-course']}>
+          <div className={styles['content']}>
+            <Link to={`/courses/${course._id}`} className={styles['courses-image']}>
+              <img
+                src={course?.thumbnail}
+                alt={course.name}
+              />
+            </Link>
+            <div className={styles['description']}>
+              <h4>
                 {course?.courseName}
-              </p>
-              <p className="text-sm ">
-                {course?.category?.name}
-              </p>
-              <div className="flex items-center">
+              </h4>
+              <div className={styles['rating']}>
                 <ReactStars
                   count={5}
                   value={course?.ratingAndReviews?.length}
@@ -45,18 +38,18 @@ export default function RenderCartCourses() {
                   fullIcon={<FaStar />}
                 />
               </div>
-              <p className="mb-6 text-sm text-yellow-100">
+              <p className="">
               {course?.price === 0 ? "Free" : `$${course?.price}`}
               </p>
             </div>
-            
           </div>
-
-          <div className="flex flex-col items-end space-y-2">
+         
+          <div className={styles['button-container']}>
             <button
               onClick={() => dispatch(removeFromCart(course._id))}
-              className="flex items-center gap-x-1 text-pink-200"
+              className={`button ${styles['cancel-button']}`}
             >
+              Remove
               <RiDeleteBin6Line />
             </button>
             

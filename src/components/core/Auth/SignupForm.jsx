@@ -8,6 +8,7 @@ import { sendOtp } from "../../../services/operations/authAPI"
 import { setSignupData } from "../../../slices/authSlice"
 import { ACCOUNT_TYPE } from "../../../utils/constants"
 import Tab from "../../common/Tab"
+import styles from './index.module.css';
 
  const matchRoute = (route) => {
         return matchPath({ path: route }, location.pathname);
@@ -88,78 +89,67 @@ function SignupForm() {
   ];
 
   return (
-    <div>
-      {/* Tab */}
-      <Tab tabData={tabData} field={accountType} setField={setAccountType} />
-
-      {/* Form */}
-      <form onSubmit={handleOnSubmit} className="flex w-full flex-col gap-y-4">
-        <div className="flex gap-x-4">
-          {/* First Name */}
-          <label>
-            <p className="mb-1 text-[0.875rem] leading-[1.375rem] text-white">
-              First Name <sup className="text-pink-200">*</sup>
-            </p>
-            <input
-              required
-              type="text"
-              name="firstName"
-              value={firstName}
-              onChange={handleOnChange}
-              placeholder="Enter first name"
-              style={{
-                boxShadow: "inset 0px -1px 0px rgba(255, 255, 255, 0.18)",
-              }}
-              className="w-full rounded-[0.5rem]  p-[12px] text-black outline-none"
-            />
-          </label>
-
-          {/* Last Name */}
-          <label>
-            <p className="mb-1 text-[0.875rem] leading-[1.375rem] text-white">
-              Last Name <sup className="text-pink-200">*</sup>
-            </p>
-            <input
-              required
-              type="text"
-              name="lastName"
-              value={lastName}
-              onChange={handleOnChange}
-              placeholder="Enter last name"
-              style={{
-                boxShadow: "inset 0px -1px 0px rgba(255, 255, 255, 0.18)",
-              }}
-              className="w-full rounded-[0.5rem]  p-[12px] text-black outline-none"
-            />
-          </label>
-        </div>
-
-        {/* Email Address */}
-        <label className="w-full">
-          <p className="mb-1 text-[0.875rem] leading-[1.375rem] text-white">
-            Email Address <sup className="text-pink-200">*</sup>
+  <div  className={styles.container}>
+    {/* <Tab tabData={tabData} field={accountType} setField={setAccountType} /> */}
+    {/* Form */}
+    <form onSubmit={handleOnSubmit} className={styles.form}>
+      <div className={styles.inner}>
+        {/* First Name */}
+        <label className={styles.label}>
+          <p className={styles['label-text']}>
+            First Name <sup className={styles.required}>*</sup>
           </p>
           <input
             required
             type="text"
-            name="email"
-            value={email}
+            name="firstName"
+            value={firstName}
             onChange={handleOnChange}
-            placeholder="Enter email address"
-            style={{
-              boxShadow: "inset 0px -1px 0px rgba(255, 255, 255, 0.18)",
-            }}
-            className="w-full rounded-[0.5rem]  p-[12px] text-black outline-none"
+            placeholder="Enter first name"
+            className={styles.input}
           />
         </label>
 
+        {/* Last Name */}
+        <label className={styles.label}>
+          <p className={styles['label-text']}>
+            Last Name <sup className={styles.required}>*</sup>
+          </p>
+          <input
+            required
+            type="text"
+            name="lastName"
+            value={lastName}
+            onChange={handleOnChange}
+            placeholder="Enter last name"
+            className={styles.input}
+          />
+        </label>
+      </div>
 
-        <div className="flex gap-x-4">
-          {/* Create Password */}
-          <label className="relative">
-            <p className="mb-1 text-[0.875rem] leading-[1.375rem] text-white">
-              Create Password <sup className="text-pink-200">*</sup>
-            </p>
+      {/* Email Address */}
+      <label className={styles.label}>
+        <p className={styles['label-text']}>
+          Email Address <sup className={styles.required}>*</sup>
+        </p>
+        <input
+          required
+          type="text"
+          name="email"
+          value={email}
+          onChange={handleOnChange}
+          placeholder="Enter email address"
+          className={styles.input}
+        />
+      </label>
+
+      <div style={{ display: 'flex', gap: '1rem' }}>
+        {/* Create Password */}
+        <label className={styles.label}>
+          <p className={styles['label-text']}>
+            Create Password <sup className={styles.required}>*</sup>
+          </p>
+          <div className={styles.passwordWrapper}>
             <input
               required
               type={showPassword ? "text" : "password"}
@@ -167,14 +157,11 @@ function SignupForm() {
               value={password}
               onChange={handleOnChange}
               placeholder="Enter Password"
-              style={{
-                boxShadow: "inset 0px -1px 0px rgba(255, 255, 255, 0.18)",
-              }}
-              className="w-full rounded-[0.5rem]  p-[12px] pr-10 outline-none"
+              className={styles.input}
             />
             <span
               onClick={() => setShowPassword((prev) => !prev)}
-              className="absolute right-3 top-[38px] z-[10] cursor-pointer"
+              className={styles.eyeIcon}
             >
               {showPassword ? (
                 <AiOutlineEyeInvisible fontSize={24} fill="#AFB2BF" />
@@ -182,13 +169,15 @@ function SignupForm() {
                 <AiOutlineEye fontSize={24} fill="#AFB2BF" />
               )}
             </span>
-          </label>
+          </div>
+        </label>
 
-          {/* Confirm Password  */}
-          <label className="relative">
-            <p className="mb-1 text-[0.875rem] leading-[1.375rem] text-white">
-              Confirm Password <sup className="text-pink-200">*</sup>
-            </p>
+        {/* Confirm Password */}
+        <label className={styles.label}>
+          <p className={styles['label-text']}>
+            Confirm Password <sup className={styles.required}>*</sup>
+          </p>
+          <div className={styles.passwordWrapper}>
             <input
               required
               type={showConfirmPassword ? "text" : "password"}
@@ -196,14 +185,11 @@ function SignupForm() {
               value={confirmPassword}
               onChange={handleOnChange}
               placeholder="Confirm Password"
-              style={{
-                boxShadow: "inset 0px -1px 0px rgba(255, 255, 255, 0.18)",
-              }}
-              className="w-full rounded-[0.5rem]  p-[12px] pr-10 outline-none"
+              className={styles.input}
             />
             <span
               onClick={() => setShowConfirmPassword((prev) => !prev)}
-              className="absolute right-3 top-[38px] z-[10] cursor-pointer"
+              className={styles.eyeIcon}
             >
               {showConfirmPassword ? (
                 <AiOutlineEyeInvisible fontSize={24} fill="#AFB2BF" />
@@ -211,26 +197,27 @@ function SignupForm() {
                 <AiOutlineEye fontSize={24} fill="#AFB2BF" />
               )}
             </span>
-          </label>
-        </div>
+          </div>
+        </label>
+      </div>
 
+      {/* Submit Button */}
+      <button type="submit" className={styles.button}>
+        Create Account
+      </button>
 
+      <Link to="/login">
         <button
-          type="submit"
-          className="mt-6 rounded-[8px] bg-yellow-50 text-black py-[8px] px-[12px] font-medium "
+          className={`${styles['button-secondary']} ${
+            matchRoute("/login") ? "border-[2.5px]" : ""
+          }`}
         >
-          Create Account
+          Log in
         </button>
-         <Link to="/login">
-              <button className={` px-[12px] py-[8px]  rounded-md  w-full mb-20
-                ${matchRoute('/login') ? 'border-[2.5px] border-yellow-50' : 'border border-richblack-700 '} `}
-              >
-                Log in
-              </button>
-          </Link>
-      </form>
-    </div>
-  )
+      </Link>
+    </form>
+  </div>
+)
 }
 
 export default SignupForm

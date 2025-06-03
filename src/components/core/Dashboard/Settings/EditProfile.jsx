@@ -5,6 +5,10 @@ import { useNavigate } from "react-router-dom"
 import { updateProfile } from "../../../../services/operations/SettingsAPI"
 import IconBtn from "../../../common/IconBtn"
 
+import styles from '../profile.module.css'
+
+
+
 const genders = ["Male", "Female", "Non-Binary", "Prefer not to say", "Other"]
 
 export default function EditProfile() {
@@ -24,17 +28,18 @@ export default function EditProfile() {
     }
   }
   return (
-    <>
+    <div className={styles.settings}>
       <form onSubmit={handleSubmit(submitProfileForm)}>
         {/* Profile Information */}
-        <div className="my-10 flex flex-col gap-y-6 rounded-md   p-8 px-6 sm:px-12 bg-blue-600">
-          <h2 className="text-lg font-semibold text-white">
-            Profile Information
-          </h2>
-
-          <div className="flex flex-col gap-5 lg:flex-row">
-            <div className="flex flex-col gap-2 lg:w-[48%]">
-              <label htmlFor="firstName" className="lable-style">
+        <div className={styles.wrapper}>
+          <div className={styles['settings-heading']}>
+            <h3>
+              Profile Information
+            </h3>
+          </div>
+          <div className={styles['row']}>
+            <div className="">
+              <label htmlFor="firstName" className="">
                 First Name
               </label>
               <input
@@ -42,18 +47,18 @@ export default function EditProfile() {
                 name="firstName"
                 id="firstName"
                 placeholder="Enter first name"
-                className="form-style"
+                className=""
                 {...register("firstName", { required: true })}
                 defaultValue={user?.firstName}
               />
               {errors.firstName && (
-                <span className="-mt-1 text-[12px] text-yellow-100">
+                <span className="">
                   Please enter your first name.
                 </span>
               )}
             </div>
 
-            <div className="flex flex-col gap-2 lg:w-[48%]">
+            <div className="">
               <label htmlFor="lastName" className="lable-style">
                 Last Name
               </label>
@@ -74,8 +79,8 @@ export default function EditProfile() {
             </div>
           </div>
 
-          <div className="flex flex-col gap-5 lg:flex-row">
-            <div className="flex flex-col gap-2 lg:w-[48%]">
+          <div className={styles['row']}>
+            <div className="">
               <label htmlFor="dateOfBirth" className="lable-style">
                 Date of Birth
               </label>
@@ -103,7 +108,7 @@ export default function EditProfile() {
               )}
             </div>
 
-            <div className="flex flex-col gap-2 lg:w-[48%]">
+            <div className="">
               <label htmlFor="gender" className="lable-style">
                 Gender
               </label>
@@ -131,8 +136,8 @@ export default function EditProfile() {
             </div>
           </div>
 
-          <div className="flex flex-col gap-5 lg:flex-row">
-            <div className="flex flex-col gap-2 lg:w-[48%]">
+          <div className={styles['row']}>
+            <div className="">
               <label htmlFor="contactNumber" className="lable-style">
                 Contact Number
               </label>
@@ -159,7 +164,7 @@ export default function EditProfile() {
               )}
             </div>
 
-            <div className="flex flex-col gap-2 lg:w-[48%]">
+            <div className="">
               <label htmlFor="about" className="lable-style">
                 About
               </label>
@@ -179,19 +184,26 @@ export default function EditProfile() {
               )}
             </div>
           </div>
+          <div className={styles['btns-container']}>
+            <button
+              onClick={() => { navigate("/dashboard/my-profile") }}
+              className={`${styles['button']} ${styles['delete-btn']}`}
+            >
+              Cancel
+            </button>
+            <button
+              onClick={() => { navigate("/dashboard/my-profile") }}
+              className={`${styles['button']} ${styles['select-btn']}`}
+              type="submit"
+            >
+              Save
+            </button>
+          </div>
         </div>
 
-        <div className="flex justify-end gap-2">
-          <button
-            onClick={() => { navigate("/dashboard/my-profile") }}
-            className="cursor-pointer rounded-md  py-2 px-5 font-semibold text-white bg-pink-900 hover:opacity-70 duration-300"
-          >
-            Cancel
-          </button>
-          <IconBtn type="submit" text="Save" />
-        </div>
+        
 
       </form>
-    </>
+    </div>
   )
 }

@@ -6,7 +6,7 @@ import { useSelector } from "react-redux"
 import "video-react/dist/video-react.css"
 import { Player } from "video-react"
 
-
+import styles from '../profile.module.css'
 
 export default function Upload({ name, label, register, setValue, errors, video = false, viewData = null, editData = null, }) {
   // const { course } = useSelector((state) => state.course)
@@ -48,22 +48,19 @@ export default function Upload({ name, label, register, setValue, errors, video 
   }, [selectedFile, setValue])
 
   return (
-    <div className="flex flex-col space-y-2">
-      <label className="text-sm text-white" htmlFor={name}>
-        {label} {!viewData && <sup className="text-pink-200">*</sup>}
+    <div className={styles['thumbnail-container']}>
+      <label className="" htmlFor={name}>
+        {label} {!viewData && <sup>*</sup>}
       </label>
 
-      <div
-        className={`${isDragActive ? "" : ""}
-         flex min-h-[250px] cursor-pointer items-center justify-center rounded-md border-2 border-dotted `}
-      >
+      <div className={`${isDragActive ? "" : ""}`}>
         {previewSource ? (
-          <div className="flex w-full flex-col p-6">
+          <div className="">
             {!video ? (
               <img
                 src={previewSource}
                 alt="Preview"
-                className="h-full w-full rounded-md object-cover"
+                className={styles['thumbnail-img']}
               />
             ) : (
               <Player aspectRatio="16:9" playsInline src={previewSource} />
@@ -77,7 +74,7 @@ export default function Upload({ name, label, register, setValue, errors, video 
                   setSelectedFile(null)
                   setValue(name, null)
                 }}
-                className="mt-3  underline"
+                className={`${styles['button']} ${styles['cancel-button']}`}
               >
                 Cancel
               </button>
@@ -85,28 +82,27 @@ export default function Upload({ name, label, register, setValue, errors, video 
           </div>
         ) : (
           <div
-            className="flex w-full flex-col items-center p-6"
+            className=""
             {...getRootProps()}
           >
             <input {...getInputProps()} ref={inputRef} />
-            <div className="grid aspect-square w-14 place-items-center rounded-full bg-pure-greys-800">
-              <FiUploadCloud className="text-2xl text-yellow-50" />
+            <div className="">
+              <FiUploadCloud className="" />
             </div>
-            <p className="mt-2 max-w-[200px] text-center text-sm ">
+            <p className="">
               Drag and drop an {!video ? "image" : "video"}, or click to{" "}
-              <span className="font-semibold text-yellow-50">Browse</span> a
+              <span className="">Browse</span> a
               file
             </p>
-            <ul className="mt-10 flex list-disc justify-between space-x-12 text-center  text-xs ">
+            <ul className="">
               <li>Aspect ratio 16:9</li>
               <li>Recommended size 1024x576</li>
             </ul>
           </div>
         )}
       </div>
-
       {errors[name] && (
-        <span className="ml-2 text-xs tracking-wide text-pink-300">
+        <span className="required">
           {label} is required
         </span>
       )}

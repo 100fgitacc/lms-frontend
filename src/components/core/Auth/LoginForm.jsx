@@ -2,14 +2,14 @@ import { useState } from "react"
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai"
 import { useDispatch } from "react-redux"
 import { Link, useNavigate, matchPath } from "react-router-dom"
-
 import { login } from "../../../services/operations/authAPI"
+import styles from './index.module.css';
 
-  const matchRoute = (route) => {
-        return matchPath({ path: route }, location.pathname);
-    }
+const matchRoute = (route) => {
+    return matchPath({ path: route }, location.pathname);
+}
 
-function LoginForm() {
+const LoginForm = () =>{
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [formData, setFormData] = useState({
@@ -33,80 +33,69 @@ function LoginForm() {
     dispatch(login(email, password, navigate))
   }
 
-  return (
-    <form
-      onSubmit={handleOnSubmit}
-      className="mt-6 flex w-full flex-col gap-y-4"
-    >
-      <label className="w-full">
-        <p className="mb-1 text-[0.875rem] leading-[1.375rem] text-white">
-          Email Address <sup className="text-pink-200">*</sup>
-        </p>
-        <input
-          required
-          type="text"
-          name="email"
-          value={email}
-          onChange={handleOnChange}
-          placeholder="Enter email address"
-          style={{
-            boxShadow: "inset 0px -1px 0px rgba(255, 255, 255, 0.18)",
-          }}
-          className="w-full rounded-[0.5rem]  p-[12px] text-black outline-none"
-        />
-      </label>
+ return (
+   <div className={styles.container}>
+    <form onSubmit={handleOnSubmit} className={styles.form}>
+        <div className={styles.inner}>
+            <label className={styles.label}>
+            <p className={styles['label-text']}>
+                Email Address <sup className={styles.required}>*</sup>
+            </p>
+            <input
+                required
+                type="email"
+                name="email"
+                value={email}
+                onChange={handleOnChange}
+                placeholder="Enter email address"
+                className={styles.input}
+            />
+            </label>
 
-      <label className="relative">
-        <p className="mb-1 text-[0.875rem] leading-[1.375rem] text-white">
-          Password <sup className="text-pink-200">*</sup>
-        </p>
-        <input
-          required
-          type={showPassword ? "text" : "password"}
-          name="password"
-          value={password}
-          onChange={handleOnChange}
-          placeholder="Enter Password"
-          style={{
-            boxShadow: "inset 0px -1px 0px rgba(255, 255, 255, 0.18)",
-          }}
-          className="w-full rounded-[0.5rem]  p-[12px] pr-12 text-black outline-none"
-        />
-        <span
-          onClick={() => setShowPassword((prev) => !prev)}
-          className="absolute right-3 top-[38px] z-[10] cursor-pointer"
-        >
-          {showPassword ? (
-            <AiOutlineEyeInvisible fontSize={24} fill="#AFB2BF" />
-          ) : (
-            <AiOutlineEye fontSize={24} fill="#AFB2BF" />
-          )}
-        </span>
-        <Link to="/forgot-password">
-          <p className="mt-1 ml-auto max-w-max text-xs text-blue-100">
-            Forgot Password
-          </p>
-        </Link>
-      </label>
+            <label className={styles.label}>
+            <p className={styles['label-text']}>
+                Password <sup className={styles.required}>*</sup>
+            </p>
+            <div className={styles.passwordWrapper}>
+                    <input
+                        required
+                        type={showPassword ? "text" : "password"}
+                        name="password"
+                        value={password}
+                        onChange={handleOnChange}
+                        placeholder="Enter Password"
+                        className={styles.input}
+                    />
+                    <span
+                        onClick={() => setShowPassword((prev) => !prev)}
+                        className={styles.eyeIcon}
+                    >
+                        {showPassword ? (
+                        <AiOutlineEyeInvisible fontSize={24} fill="#4d4d4d" />
+                        ) : (
+                        <AiOutlineEye fontSize={24} fill="#4d4d4d" />
+                        )}
+                    </span>
+                </div>
+            <Link to="/forgot-password" className={styles['forgot-link']}>
+                <p>Forgot Password</p>
+            </Link>
+            </label>
 
+            <button type="submit" className={styles.button}>
+            Sign In
+            </button>
 
-      <button
-        type="submit"
-        className="mt-6 rounded-[8px] bg-yellow-50 text-black py-[8px] px-[12px] font-medium "
-      >
-        Sign In
-      </button>
-      <Link to="/signup">
-          {/* <button className='border border-richblack-700  px-[12px] py-[8px]  rounded-md'> */}
-          <button className={` px-[12px] py-[8px]  rounded-md w-full mb-20
-            ${matchRoute('/signup') ? 'border-[2.5px] border-yellow-50' : 'border border-richblack-700 '} `}
-          >
-            Create Account
-          </button>
-      </Link>
-     
+            <Link to="/signup">
+            <button type="button" className={styles['button-secondary']}>
+                Create Account
+            </button>
+            </Link>
+        </div>
     </form>
-  )
+  </div>
+);
+
 }
 
 export default LoginForm

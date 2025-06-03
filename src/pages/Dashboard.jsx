@@ -1,18 +1,20 @@
 import React, { useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { Outlet } from "react-router-dom"
-import Sidebar from '../components/core/Dashboard/Sidebar'
 import Loading from '../components/common/Loading'
+import styles from './dashboard.module.css'
+import Header from '../components/common/header/header'
+import Sidebar from '../components/core/Dashboard/sidebar/sidebar'
 
 const Dashboard = () => {
 
     const { loading: authLoading } = useSelector((state) => state.auth);
     const { loading: profileLoading } = useSelector((state) => state.profile);
-
+    const isHidden = useSelector((state) => state.sidebar.isSidebarHidden);
 
     if (profileLoading || authLoading) {
         return (
-            <div className='mt-10'>
+            <div>
                 <Loading />
             </div>
         )
@@ -22,15 +24,18 @@ const Dashboard = () => {
         window.scrollTo(0, 0);
     }, [])
 
-    return (
-        <div className='relative flex min-h-[calc(100vh)] bg-blue-800'>
-            <Sidebar />
 
-            <div className='h-[calc(100vh)] overflow-auto w-full bg-blue-800'>
-                <div className='sm:p-10 p-5 mt-[100px]'>
+    return (
+        <div className='page-template'>
+            <Sidebar/>
+            <div className={`content ${isHidden ? styles['full-width'] : ''}`}>
+                <Header/>
+                <div className={`content-inner`}>
                     <Outlet />
                 </div>
             </div>
+            
+            {/* {confirmationModal && <ConfirmationModal modalData={confirmationModal} />} */}
         </div>
     )
 }

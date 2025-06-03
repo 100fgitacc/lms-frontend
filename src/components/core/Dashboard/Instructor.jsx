@@ -7,7 +7,10 @@ import { fetchInstructorCourses } from "../../../services/operations/courseDetai
 import { getInstructorData } from "../../../services/operations/profileAPI"
 import InstructorChart from "./InstructorDashboard/InstructorChart"
 import Img from './../../common/Img';
+import { getAllStudentsByInstructorData } from "../../../services/operations/adminApi"
 
+
+import styles from './profile.module.css'
 
 
 export default function Instructor() {
@@ -64,7 +67,7 @@ export default function Instructor() {
         {/* bottom row */}
         <div className="flex flex-col gap-y-6  mt-5">
           <div className="flex justify-between">
-            <p className="text-lg font-bold text-white pl-5">Your Courses</p>
+            <p className="text-lg font-bold text-white pl-5">Last 3 Courses</p>
             <Link to="/dashboard/my-courses">
               <p className="text-xs font-semibold text-yellow-50 hover:underline pr-5">View All</p>
             </Link>
@@ -76,23 +79,27 @@ export default function Instructor() {
             <p className=" h-[201px] w-full rounded-xl  skeleton"></p>
           </div>
         </div>
+      
       </div>
     )
   }
 
+  const [allStudentsDetails, setAllStudentsDetails] = useState([]);
+
+  useEffect(() => {
+    const fetchAllStudents = async () => {
+      const { allStudentsDetails} = await getAllStudentsByInstructorData(token);
+      setAllStudentsDetails(allStudentsDetails);
+      
+    };
+    fetchAllStudents();
+    
+  }, []);
+
+ 
   
   return (
-    <div>
-      <div className="space-y-2">
-        <h1 className="text-2xl font-bold text-white text-center sm:text-left">
-          Hii {user?.firstName} 👋
-        </h1>
-        <p className="font-medium  text-center sm:text-left">
-          Let's start something new
-        </p>
-      </div>
-
-
+    <div className={styles['content-container']} >
       {loading ? (
         <div>
           {skItem()}
@@ -100,95 +107,135 @@ export default function Instructor() {
       )
         :
         courses.length > 0 ? (
-          <>
-  <div className="my-4 flex sm:flex-row flex-col-reverse flex-wrap">
-    {/* Render chart / graph */}
-    {totalAmount > 0 || totalStudents > 0 ? (
-      <InstructorChart courses={instructorData} />
-    ) : (
-      <div className="flex-1 rounded-md p-6 bg-blue-500">
-        <p className="text-lg font-bold text-white">Visualize</p>
-        <p className="mt-4 text-xl font-medium text-white">
-          Not Enough Data To Visualize
-        </p>
-      </div>
-    )}
-    {/* Total Statistics */}
-    <div className="flex min-w-[250px] flex-col rounded-md p-6 border-2 border-gray  sm:ml-5">
-      <p className="font-wadik text-lg font-bold text-white">Statistics</p>
-      <div className="mt-4 space-y-4">
-        <div>
-          <p className="text-sm">Total Courses:</p>
-          <p className="text-md font-semibold text-white">
-            {courses.length}
-          </p>
-        </div>
-        <div>
-          <p className="text-sm">Total Students:</p>
-          <p className="text-md font-semibold text-white">
-            {totalStudents}
-          </p>
-        </div>
-        <div>
-          <p className="text-sm">Total Income:</p>
-          <p className="text-md font-semibold text-white">
-            {totalAmount} $
-          </p>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  {/* Render 3 courses */}
-  <div className="rounded-md p-6 bg-blue-500">
-    <div className="flex items-center justify-between">
-      <p className="font-wadik font-bold text-white">Your Courses</p>
-      <Link to="/dashboard/my-courses">
-        <p className="text-xs font-semibold text-yellow-50 hover:underline">
-          View All
-        </p>
-      </Link>
-    </div>
-
-    <div className="my-4 flex flex-col sm:flex-row sm:space-x-6 space-y-6 sm:space-y-0">
-      {courses.slice(0, 3).map((course) => (
-        <div key={course._id} className="sm:w-1/3 flex flex-col items-start"
-          onClick={() => {
-            navigate(`/dashboard/edit-course/${course._id}`)
-          }}
-        >
-          <img
-            src={course.thumbnail}
-            alt={course.courseName}
-            className="h-[125px] w-full rounded-2xl object-cover"
-          />
-
-          <div className="mt-3 w-full">
-            <p className="text-sm font-medium text-white">
-              {course.courseName}
-            </p>
-            <div className="mt-1 flex items-center space-x-2">
-              <p className="text-xs font-medium">
-                {course.studentsEnrolled.length} students
-              </p>
-              <p className="text-xs font-medium">|</p>
-              <p className="text-xs font-medium">{course.price} $</p>
+        <>
+          <div className={`${styles['wrapper']} ${styles['stats-wrapper']}`}>
+            {/* Render chart / graph */}
+            {totalAmount > 0 || totalStudents > 0 ? (
+              <InstructorChart courses={instructorData} />
+            ) : (
+              <div className={styles['wrapper']}>
+                <p>Not Enough Data To Visualize</p>
+              </div>
+            )}
+            {/* Total Statistics */}
+            <div className={styles['wrapper']}>
+              <h3 className={styles.heading}>Statistics:</h3>
+              <p>Total Courses:  <strong>{courses.length}</strong></p>
+              <p>Total Students: <strong>{totalStudents}</strong></p>
+              <p>Total Income: <strong>{totalAmount} $</strong></p>
             </div>
           </div>
-        </div>
-      ))}
-    </div>
-  </div>
-</>
+        
+          {/* Render 3 courses */}
+          <div className={styles['wrapper']}>
+            <div className={styles.heading}>
+              <h3>Last 5 Courses data</h3>
+              <Link to="/dashboard/my-courses">
+                <p className={styles.link}>
+                  View All
+                </p>
+              </Link>
+            </div>
+            <div className={styles['courses-wrapper']}>
+              {courses.slice(0, 5).map((course) => (
+                <div className={styles['courses-item']} key={course._id} onClick={() => {navigate(`/dashboard/edit-course/${course._id}`)}}
+>
+                 <div className={styles['courses-image']}>
+                   <img
+                    src={course.thumbnail}
+                    alt={course.courseName}
+                  />
+                 </div>
+                  <div className={styles['courses-content']}>
+                    <h3 className={styles['courses-title']}>
+                      {course.courseName}
+                    </h3>
+                    <div>
+                      <p className={styles['courses-desc']}>
+                        {course.studentsEnrolled.length} students enrolled
+                      </p>
+                      <p>{course.price} $</p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className={styles['wrapper']}>
+            <div className={styles.heading}>
+              <h3>Last 3 Students data</h3>
+              <Link to="/dashboard/all-students-by-instructor">
+                <p className={styles.link}>
+                  View All
+                </p>
+              </Link>
+            </div>
+
+           <div>
+              {allStudentsDetails.slice(0, 3).map((student) => (
+                <div key={student._id} className={styles.wrapper}>
+                  <div className={styles['students-table-item']}>
+                    <div>
+                      <p className={styles.bold}>Student name:</p>
+                      <p className={student.firstName}>{student.firstName}</p>
+                    </div>
+                    <div>
+                      <p className={styles.bold}>Student email:</p>
+                      <p>{student.email}</p>
+                    </div>
+                    <strong>
+                      Total enrolled courses ({student.courses.length})
+                    </strong>
+                  </div>
+
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>#</th>
+                        <th>Course Name</th>
+                        <th>Start Date</th>
+                        <th>Complete Date</th>
+                        <th>Progress</th>
+                        <th>Current Lesson</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {student.courses.map((course, index) => (
+                        <tr key={index}>
+                          <td>{index + 1}</td>
+                          <td>{course.courseName}</td>
+                          <td>
+                            {new Date(course.startedAt).toLocaleDateString()}
+                          </td>
+                          <td>
+                            {course.completedAt
+                              ? new Date(course.completedAt).toLocaleDateString()
+                              : 'in process...'}
+                          </td>
+                          <td>{course.progressPercentage}%</td>
+                          <td>
+                            {course.currentSubSection?.title || "—"}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              ))}
+            </div>
+
+
+          </div>
+        </>
 
         ) : (
-          <div className="mt-20 rounded-md  p-6 py-20">
-            <p className="text-center text-2xl font-bold text-white">
+          <div>
+            <p>
               You have not created any courses yet
             </p>
 
             <Link to="/dashboard/add-course">
-              <p className="mt-1 text-center text-lg font-semibold text-yellow-50">
+              <p>
                 Create a course
               </p>
             </Link>

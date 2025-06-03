@@ -1,5 +1,8 @@
 import { useEffect } from "react";
+import { useSelector } from "react-redux";
 import RenderSteps from "./RenderSteps"
+
+import styles from '../profile.module.css'
 
 
 
@@ -9,32 +12,41 @@ export default function AddCourse() {
     window.scrollTo(0, 0);
   }, [])
 
+
+  const { step } = useSelector((state) => state.course)
+
   return (
-    <div className="flex w-full items-start gap-x-6">
+    <div className={styles['add-course']}>
 
-      <div className="flex flex-1 flex-col">
-        <h1 className="mb-14 text-3xl font-medium text-white font-wadik text-center lg:text-left">
-          Add Course
-        </h1>
+      <div className={styles.wrapper}>
+        <div className={styles['settings-heading']}>
+          <h3>
+            {
+              step === 1 ? 'Add New Course Info' 
+              : step === 2 ? 'Lets Build Your Own Course'
+              : 'Publish Settings'
+            }
+            
+          </h3>
+        </div>
 
-        <div className="flex-1">
+        <div className="">
           <RenderSteps />
         </div>
       </div>
-
-      {/* Course Upload Tips */}
-      <div className="sticky top-10 hidden lg:block max-w-[400px] flex-1 rounded-md bg-white  p-6 ">
-        <p className="mb-8 text-lg text-black">⚡ Course Upload Tips</p>
-
-        <ul className="ml-5 list-item list-disc space-y-4 text-xs text-black">
-          <li>Set the Course Price option or make it free.</li>
-          <li>Standard size for the course thumbnail is 1024x576.</li>
-          <li>Video section controls the course overview video.</li>
-          <li>Course Builder is where you create & organize a course.</li>
-          <li>Add Topics in the Course Builder section to create lessons,quizzes, and assignments.</li>
-          <li>Information from the Additional Data section shows up on thecourse single page.</li>
-          <li>Make Announcements to notify any important</li>
-          <li>Notes to all enrolled students at once.</li>
+      <div className={styles.wrapper}>
+        <div className={styles['settings-heading']}>
+          <h3>⚡ Course Upload Tips</h3>
+        </div>
+        <ul className={styles['upload-tips']}>
+          <li className={styles['upload-tips-item']}>Set the Course Price option or make it free.</li>
+          <li className={styles['upload-tips-item']}>Standard size for the course thumbnail is 1024x576.</li>
+          <li className={styles['upload-tips-item']}>Video section controls the course overview video.</li>
+          <li className={styles['upload-tips-item']}>Course Builder is where you create & organize a course.</li>
+          <li className={styles['upload-tips-item']}>Add Topics in the Course Builder section to create lessons,quizzes, and assignments.</li>
+          <li className={styles['upload-tips-item']}>Information from the Additional Data section shows up on thecourse single page.</li>
+          <li className={styles['upload-tips-item']}>Make Announcements to notify any important</li>
+          <li className={styles['upload-tips-item']}>Notes to all enrolled students at once.</li>
         </ul>
       </div>
     </div>

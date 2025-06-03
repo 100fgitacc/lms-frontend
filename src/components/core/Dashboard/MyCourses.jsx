@@ -6,8 +6,9 @@ import { useNavigate } from "react-router-dom"
 import { fetchInstructorCourses } from "../../../services/operations/courseDetailsAPI"
 import IconBtn from "../../common/IconBtn"
 import CoursesTable from "./InstructorCourses/CoursesTable"
+import { MdOutlineAddBox   } from "react-icons/md";
 
-
+import styles from './profile.module.css'
 
 export default function MyCourses() {
   const { token } = useSelector((state) => state.auth)
@@ -36,19 +37,16 @@ export default function MyCourses() {
 
   return (
     <div>
-      <div className="sm:mb-14 mb-5 flex justify-between sm:flex-row flex-col">
-        {/* <div className="mb-14 flex items-center justify-between"> */}
-        <h1 className="sm:text-4xl text-xl font-medium text-white font-wadik text-center lg:text-left sm:mb-0 mb-10">My Courses</h1>
-        <IconBtn
-          text="Add Course"
-          onclick={() => navigate("/dashboard/add-course")}
-        >
-          <VscAdd />
-        </IconBtn>
+      <div className={styles.wrapper}>
+        <div className={`${styles.heading}`}>
+          <h2 className={`${styles.title} secondary-title`}>My Courses</h2>
+          <button className={`${styles['edit-btn']}`} onClick={() => navigate("/dashboard/add-course")}>Add New Course
+             <MdOutlineAddBox     className='btn-icon'/>
+          </button>
+        </div>
+        {courses && <CoursesTable courses={courses} setCourses={setCourses} loading={loading} setLoading={setLoading} />}
       </div>
-
-      {/* course Table */}
-      {courses && <CoursesTable courses={courses} setCourses={setCourses} loading={loading} setLoading={setLoading} />}
+      
     </div>
   )
 }

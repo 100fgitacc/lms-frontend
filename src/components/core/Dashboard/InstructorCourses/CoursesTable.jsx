@@ -16,7 +16,7 @@ import ConfirmationModal from "../../../common/ConfirmationModal"
 import Img from './../../../common/Img';
 import toast from 'react-hot-toast'
 
-
+import styles from '../profile.module.css'
 
 
 
@@ -63,9 +63,6 @@ export default function CoursesTable({ courses, setCourses, loading, setLoading 
 
   return (
     <>
-      <div className=" border border-richblack-800">
-
-        {/* loading Skeleton */}
         {loading && (
           <div>
             {skItem()}
@@ -73,108 +70,87 @@ export default function CoursesTable({ courses, setCourses, loading, setLoading 
             {skItem()}
           </div>
         )}
-
         <div>
           {!loading && courses?.length === 0 ? (
-            <div className="py-10 text-center text-2xl font-medium">
+            <p>
               No courses found
-            </div>
+            </p>
           ) : (
-            courses?.map((course) => (
-              <div
-                key={course._id}
-                className="flex gap-x-10 border-b border-richblack-800 px-6 py-8 sm:flex-row flex-col"
-              >
-                <div className="flex flex-1 gap-x-4 relative sm:flex-row flex-col">
-                  {/* course Thumbnail */}
-                  <Img
-                    src={course?.thumbnail}
-                    alt={course?.courseName}
-                    className="h-[100px] min-w-[170px] max-w-[170px]  object-cover"
-                  />
-
-                  <div className="flex flex-col">
-                    <p className="text-lg font-semibold text-white capitalize">
-                      {course.courseName}
-                    </p>
-                    <p className="text-xs sm:mt-0 mt-2 ">
-                      {course.courseDescription.split(" ").length > TRUNCATE_LENGTH
-                        ? course.courseDescription
-                          .split(" ")
-                          .slice(0, TRUNCATE_LENGTH)
-                          .join(" ") + "..."
-                        : course.courseDescription}
-                    </p>
-
-                    {/* created At */}
-                    <p className="text-[12px] mt-4">
-                      Created: {formatDate(course?.createdAt)}
-                    </p>
-
-                    {/* updated At */}
-                    <p className="text-[12px]">
-                      updated: {formatDate(course?.updatedAt)}
-                    </p>
-
-                    {/* course status */}
-                    {course.status === COURSE_STATUS.DRAFT ? (
-                      <p className="mt-2 flex w-fit flex-row items-center gap-2 rounded-full px-2 py-[2px] text-[12px] font-medium text-pink-100">
-                        <HiClock size={14} />
-                        Drafted
-                      </p>
-                    ) : (
-                      <div className="mt-2 flex w-fit flex-row items-center gap-2 rounded-full sm:px-2 py-[2px] px-0 text-[12px] font-medium text-yellow-100">
-                        <p className="flex h-3 w-3 items-center justify-center rounded-full bg-yellow-100">
-                          <FaCheck size={8} />
+            <div className={styles['courses-wrapper']}>
+              {
+                courses?.map((course) => (
+                  <div key={course._id} className={styles['courses-item']}>
+                    <div className={styles['courses-image']}>
+                      <img src={course?.thumbnail} alt={course?.courseName}/>
+                    </div>
+                    <div className={styles['courses-content']}>
+                      <h3 className={styles['courses-title']}>
+                        {course.courseName}
+                      </h3>
+                      <div className={styles['courses-desc']}>
+                        <p>
+                          {course.courseDescription.split(" ").length > TRUNCATE_LENGTH
+                          ? course.courseDescription
+                            .split(" ")
+                            .slice(0, TRUNCATE_LENGTH)
+                            .join(" ") + "..."
+                          : course.courseDescription}
                         </p>
-                        Published
                       </div>
-                    )}
+                      <div className={styles['adittional-info']}>
+                        <p>
+                          Created: {formatDate(course?.createdAt)}
+                        </p>
+                        <p className="">
+                          Updated: {formatDate(course?.updatedAt)}
+                        </p>
+                        {course.status === COURSE_STATUS.DRAFT ? (
+                          <p className={styles.drafted}>
+                            Drafted
+                          </p>
+                        ) : (
+                          <div className={styles.published}>
+                            Published
+                          </div>
+                        )}
+                        <div className="">
+                          <h3 className={styles.price}>{course.price} $</h3>
+                          <div className={styles['course-manage']}>
+                            <button
+                              disabled={loading}
+                              onClick={() => {
+                                navigate(`/dashboard/edit-course/${course._id}`)
+                              }}
+                              title="Edit"
+                              className={styles['edit-btn']}
+                            >Edit course
+                            </button>
+                            <button
+                              disabled={loading}
+                              onClick={() => {
+                                setConfirmationModal({
+                                  text1: "Do you want to delete this course?",
+                                  text2: "All the data related to this course will be deleted",
+                                  btn1Text: !loading ? "Delete" : "Loading...  ",
+                                  btn2Text: "Cancel",
+                                  btn1Handler: !loading ? () => handleCourseDelete(course._id) : () => {},
+                                  btn2Handler: !loading ? () => setConfirmationModal(null) : () => {},
+                                })
+                              }}
+                              title="Delete"
+                             className={styles['delete-btn']}
+                            >Delete course
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                </div>
-                <div className="flex  mr-0 ml-auto w-[100%] sm:w-auto justify-between mt-5 sm:mt-0">
-                  <div className="text-sm font-medium mr-10">{course.price} $</div>
-                  <div className="text-sm font-medium">
-                    {/* Edit button */}
-                    <button
-                      disabled={loading}
-                      onClick={() => {
-                        navigate(`/dashboard/edit-course/${course._id}`)
-                      }}
-                      title="Edit"
-                      className="px-2 transition-all duration-200 hover:scale-110 hover:text-caribbeangreen-300"
-                    >
-                      <FiEdit2 size={20} />
-                    </button>
-
-                    {/* Delete button */}
-                    <button
-                      disabled={loading}
-                      onClick={() => {
-                        setConfirmationModal({
-                          text1: "Do you want to delete this course?",
-                          text2: "All the data related to this course will be deleted",
-                          btn1Text: !loading ? "Delete" : "Loading...  ",
-                          btn2Text: "Cancel",
-                          btn1Handler: !loading ? () => handleCourseDelete(course._id) : () => {},
-                          btn2Handler: !loading ? () => setConfirmationModal(null) : () => {},
-                        })
-                      }}
-                      title="Delete"
-                      className="px-1 transition-all duration-200 hover:scale-110 hover:text-[#ff0000]"
-                    >
-                      <RiDeleteBin6Line size={20} />
-                    </button>
-                  </div>
-                </div>
-                
-              </div>
-            ))
+                ))
+              }
+            </div>
           )}
         </div>
-      </div>
-
-      {/* Confirmation Modal */}
       {confirmationModal && <ConfirmationModal modalData={confirmationModal} />}
     </>
   )

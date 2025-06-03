@@ -11,6 +11,7 @@ import Img from './../../common/Img';
 import { addToCart } from "../../../slices/cartSlice"
 import { ACCOUNT_TYPE } from "../../../utils/constants"
 
+import styles from './card.module.css'
 
 function Course_Card({ course, Height }) {
   const [avgReviewCount, setAvgReviewCount] = useState(0)
@@ -58,46 +59,45 @@ function Course_Card({ course, Height }) {
  
 
   return (
-    <div className=" transition-all duration-200 ">
-       <Link className="border border-gray rounded-xl h-full flex flex-col" to={`/courses/${course._id}`}>
-          <Img
+    <div className={styles['courses-item']}>
+       <Link to={`/courses/${course._id}`} className={styles['courses-image']}>
+          <img
             src={course?.thumbnail}
-            alt="course thumbnail"
-            className="rounded-t-xl object-cover h-[150px] w-full"
+            alt={course.name}
           />
-          <div className="px-5 py-3 flex flex-col h-full">
+        </Link>
+          <div className={styles['courses-content']}>
             <div>
-              <p className="font-wadik text-xs text-yellow-100 my-2">{course?.courseName}</p>
-              <p className="text-xs font-thin text-blue-400 opacity-30 my-2">{course?.instructor?.firstName}</p>
-              <p className="text-[13px] line-clamp-3 mb-3 font-thin">{course?.courseDescription}</p>
-            </div>
-            <div className="mt-auto mb-0">
-              <div className="flex items-center">
-                <RatingStars Star_Size={15} Review_Count={avgReviewCount} />
-                <span className="text-gray ml-1 text-sm">({ avgReviewCount || 0 })</span>
+              <Link to={`/courses/${course._id}`}>
+                <h3 className={styles['courses-title']}>{course?.courseName}</h3>
+              </Link>
+              <p className={styles.author}>{course?.instructor?.firstName}</p>
+              <div className={styles['courses-desc']}>
+                {course?.courseDescription}
               </div>
-              <p className="text-[19px] font-wadik my-2 text-right">{course?.price === 0 ? "Free" : `$${course?.price}`}</p>
-              <div className="flex items-center justify-between ">
-                <Link className="text-sm underline font-thin flex items-center" to={`/courses/${course._id}`}>
-                  <TbListDetails />
-                  <span className="ml-1">Course details </span>
+            </div>
+              <div className={styles['rating-wrapper']}>
+                <RatingStars Star_Size={15} Review_Count={avgReviewCount} />
+                <strong>({ avgReviewCount || 0 })</strong>
+              </div>
+              <h4 className={styles.price}>{course?.price === 0 ? "Free" : `$${course?.price}`}</h4>
+              <div className={styles['card-btns']}>
+                <Link className={styles['details-link']} to={`/courses/${course._id}`} >
+                  <TbListDetails className='react-icon' />
+                  <p>Course details </p>
                 </Link>
                 {(!user || !course?.studentsEnrolled.includes(user?._id) && !some?._id && user?.accountType === ACCOUNT_TYPE.STUDENT) ? (
-                  <button onClick={handleAddToCart} className="cursor-pointer rounded-md py-[5px] px-[15px] duration-300 bg-yellow-100 hover:opacity-80 text-black text-sm" >
+                  <button onClick={handleAddToCart} className={`button`} >
                     Add to Cart
                   </button>
-                ) : some?._id === course._id && user?.accountType === ACCOUNT_TYPE.STUDENT? (<p className="text-sm text-gray">Already in Cart</p>): user?.accountType === ACCOUNT_TYPE.STUDENT ?(<p className="text-sm text-gray">Purchased</p>) : null
+                ) : some?._id === course._id && user?.accountType === ACCOUNT_TYPE.STUDENT? (<p className="">Already in Cart</p>): user?.accountType === ACCOUNT_TYPE.STUDENT ?(<p className="">Purchased</p>) : null
                 }
               </div>
-
-              
-            </div>
             
           </div>
-        </Link>
+      
      
     </div>
-
   )
 }
 

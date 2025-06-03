@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom"
 import { getUserEnrolledCourses } from "../../../services/operations/profileAPI"
 import Img from './../../common/Img';
 
+import styles from './profile.module.css'
 
 
 export default function EnrolledCourses() {
@@ -18,6 +19,8 @@ export default function EnrolledCourses() {
   const getEnrolledCourses = async () => {
     try {
       const res = await getUserEnrolledCourses(token);
+      console.log(res);
+      
       setEnrolledCourses(res);
     } catch (error) {
       console.log("Could not fetch enrolled courses.")
@@ -52,7 +55,7 @@ export default function EnrolledCourses() {
   // return if data is null
   if (enrolledCourses?.length == 0) {
     return (
-      <p className="grid h-[50vh] w-full place-content-center text-center text-white text-3xl">
+      <p className="">
         You have not enrolled in any course yet.
       </p>)
   }
@@ -61,15 +64,14 @@ export default function EnrolledCourses() {
 
   return (
     <>
-      <div className="text-xl text-white font-wadik text-center sm:text-left sm:text-4xl">Enrolled Courses</div>
+       <div className={styles.heading}>
+            <h2 className={`${styles.title} secondary-title`}>Enrolled Courses</h2>
+            <strong>
+              {/* Total instructors: {instructorsCount} */}
+            </strong>
+          </div>
       {
-        <div className="my-8 text-white">
-          {/* Headings */}
-          {/* <div className="flex rounded-t-2xl  ">
-            <p className="w-[45%] px-5 py-3">Course Name</p>
-            <p className="w-1/4 px-2 py-3">Duration</p>
-            <p className="flex-1 px-2 py-3">Progress</p>
-          </div> */}
+        <>
 
 
           {/* loading Skeleton */}
@@ -82,70 +84,42 @@ export default function EnrolledCourses() {
           </div>}
 
           {/* Course Names */}
-          {
-            enrolledCourses?.map((course, i, arr) => (
-              <div
-                className={`flex flex-col sm:flex-row sm:items-center border border-gray ${i === arr.length - 1 ? "rounded-b-2xl" : "rounded-none"}`}
-                key={i}
-              >
-                <div
-                  className="flex sm:w-[45%] cursor-pointer items-center gap-4 px-5 py-3"
-                  onClick={() => {
-                    navigate(
-                      `/view-course/${course?._id}/section/${course.courseContent?.[0]?._id}/sub-section/${course.courseContent?.[0]?.subSection?.[0]?._id}`
-                    )
-                  }}
-                >
-                  <Img
-                    src={course.thumbnail}
-                    alt="course_img"
-                    className="h-14 w-14 rounded-lg object-cover"
-                  />
-
-                  <div className="flex max-w-xs flex-col gap-2">
-                    <p className="font-semibold">{course.courseName}</p>
-                    <p className="text-xs ">
-                      {course.courseDescription.length > 50
-                        ? `${course.courseDescription.slice(0, 50)}...`
-                        : course.courseDescription}
-                    </p>
+          <div className={styles['courses-wrapper']}>
+            {enrolledCourses?.map((course, i, arr) => (
+                <>
+                  <div className={styles['courses-item']} onClick={() => { navigate(`/view-course/${course?._id}/section/${course.courseContent?.[0]?._id}/sub-section/${course.courseContent?.[0]?.subSection?.[0]?._id}`)}} key={i}>
+                    <div className={styles['courses-image']}>
+                      <img
+                        src={course.thumbnail}
+                        alt={course.courseName}
+                      />
+                    </div>
+                    <div className={styles['courses-content']}>
+                      <h3 className={styles['courses-title']}>{course.courseName}</h3>
+                      <div>
+                        <p className={styles['courses-desc']}>
+                          {course.courseDescription.length > 50
+                          ? `${course.courseDescription.slice(0, 50)}...`
+                          : course.courseDescription}
+                        </p>
+                        <ProgressBar
+                          completed={course.progressPercentage || 0}
+                          height="4px"
+                          isLabelVisible={false}
+                          bgColor="#073FC2"
+                        />
+                        <div className={styles['course-info']}>
+                          <p>Completed: {course.progressPercentage || 0}%</p>
+                          <p>Duration: {course?.totalDuration}</p>
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                </div>
-
-                {/* only for smaller devices */}
-                {/* duration -  progress */}
-                <div className='sm:hidden sm:text-lg text-sm'>
-                  <div className=" px-5 py-3">Duration: {course?.totalDuration}</div>
-
-                  <div className="flex sm:w-2/5 flex-col gap-2 px-5 py-3">
-                    {/* {console.log('Course ============== ', course.progressPercentage)} */}
-
-                    <p className="">Progress: {course.progressPercentage || 0}%</p>
-                    <ProgressBar
-                      completed={course.progressPercentage || 0}
-                      height="3px"
-                      isLabelVisible={false}
-                      bgColor="#08f8ff"
-                    />
-                  </div>
-                </div>
-
-                {/* only for larger devices */}
-                {/* duration -  progress */}
-                <div className="hidden w-1/5 sm:flex ">Duration: {course?.totalDuration}</div>
-                <div className="hidden sm:flex w-1/5 flex-col gap-2 px-2 py-3 ">
-                  <p className="">Progress: {course.progressPercentage || 0}%</p>
-                  <ProgressBar
-                    completed={course.progressPercentage || 0}
-                    height="5px"
-                    isLabelVisible={false}
-                    bgColor="#08f8ff"
-                  />
-                </div>
-              </div>
-            ))
-          }
-        </div>
+                </>
+              ))
+            }
+          </div>
+        </>
       }
     </>
   )

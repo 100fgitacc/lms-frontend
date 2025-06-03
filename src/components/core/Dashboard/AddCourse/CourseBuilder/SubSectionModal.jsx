@@ -120,81 +120,78 @@ export default function SubSectionModal({ modalData, setModalData, add = false, 
   }
 
   return (
-    <div className="fixed inset-0 z-[1000] !mt-0 grid h-screen w-screen place-items-center overflow-auto bg-white bg-opacity-10 backdrop-blur-sm">
-      <div className="my-10 w-11/12 max-w-[700px] rounded-lg bg-blue-700 ">
-        {/* Modal Header */}
-        <div className="flex items-center justify-between rounded-t-lg  p-5">
-          <p className="text-xl font-semibold text-white">
-            {view && "Viewing"} {add && "Adding"} {edit && "Editing"} Lecture
-          </p>
-          <button onClick={() => (!loading ? setModalData(null) : {})}>
-            <RxCross2 className="text-2xl text-white" />
-          </button>
-        </div>
-        {/* Modal Form */}
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          className="space-y-8 px-8 py-10"
+  <div className="modal-overlay">
+    <div className="modal-content">
+      {/* Modal Header */}
+      <div className="modal-header">
+        <p className="modal-title">
+          {view && "Viewing"} {add && "Adding"} {edit && "Editing"} Lecture
+        </p>
+        <button
+          onClick={() => (!loading ? setModalData(null) : {})}
+          className="modal-close-btn"
         >
-          {/* Lecture Video Upload */}
-          <Upload
-            name="lectureVideo"
-            label="Lecture Video"
-            register={register}
-            setValue={setValue}
-            errors={errors}
-            video={true}
-            viewData={view ? modalData.videoUrl : null}
-            editData={edit ? modalData.videoUrl : null}
-          />
-          {/* Lecture Title */}
-          <div className="flex flex-col space-y-2">
-            <label className="text-sm text-white" htmlFor="lectureTitle">
-              Lecture Title {!view && <sup className="text-pink-200">*</sup>}
-            </label>
-            <input
-              disabled={view || loading}
-              id="lectureTitle"
-              placeholder="Enter Lecture Title"
-              {...register("lectureTitle", { required: true })}
-              className="form-style w-full"
-            />
-            {errors.lectureTitle && (
-              <span className="ml-2 text-xs tracking-wide text-pink-300">
-                Lecture title is required
-              </span>
-            )}
-          </div>
-          
-          {/* Lecture Description */}
-          <div className="flex flex-col space-y-2">
-            <label className="text-sm text-white" htmlFor="lectureDesc">
-              Lecture Description{" "}
-              {!view && <sup className="text-pink-200">*</sup>}
-            </label>
-            <textarea
-              disabled={view || loading}
-              id="lectureDesc"
-              placeholder="Enter Lecture Description"
-              {...register("lectureDesc", { required: true })}
-              className="form-style resize-x-none min-h-[130px] w-full"
-            />
-            {errors.lectureDesc && (
-              <span className="ml-2 text-xs tracking-wide text-pink-300">
-                Lecture Description is required
-              </span>
-            )}
-          </div>
-          {!view && (
-            <div className="flex justify-end">
-              <IconBtn
-                disabled={loading}
-                text={loading ? "Loading.." : edit ? "Save Changes" : "Save"}
-              />
-            </div>
-          )}
-        </form>
+          <RxCross2 />
+        </button>
       </div>
+
+      {/* Modal Form */}
+      <form onSubmit={handleSubmit(onSubmit)} className="modal-form">
+        <Upload
+          name="lectureVideo"
+          label="Lecture Video"
+          register={register}
+          setValue={setValue}
+          errors={errors}
+          video={true}
+          viewData={view ? modalData.videoUrl : null}
+          editData={edit ? modalData.videoUrl : null}
+        />
+
+        {/* Title */}
+        <div className="form-group">
+          <label htmlFor="lectureTitle">
+            Lecture Title {!view && <sup>*</sup>}
+          </label>
+          <input
+            disabled={view || loading}
+            id="lectureTitle"
+            placeholder="Enter Lecture Title"
+            {...register("lectureTitle", { required: true })}
+            className="input"
+          />
+          {errors.lectureTitle && (
+            <span className="required">Lecture title is required!</span>
+          )}
+        </div>
+
+        {/* Description */}
+        <div className="form-group">
+          <label htmlFor="lectureDesc">
+            Lecture Description {!view && <sup>*</sup>}
+          </label>
+          <textarea
+            disabled={view || loading}
+            id="lectureDesc"
+            placeholder="Enter Lecture Description"
+            {...register("lectureDesc", { required: true })}
+            className="textarea"
+          />
+          {errors.lectureDesc && (
+            <span className="required">Lecture Description is required</span>
+          )}
+        </div>
+
+        {!view && (
+          <div className="form-actions">
+            <IconBtn
+              disabled={loading}
+              text={loading ? "Loading.." : edit ? "Save Changes" : "Save"}
+            />
+          </div>
+        )}
+      </form>
     </div>
-  )
+  </div>
+);
 }

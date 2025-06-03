@@ -1,0 +1,32 @@
+.catalog-heading{
+    max-width: 700px;
+    margin: 0 auto;
+    text-align: center;
+    margin-top: 100px;
+    margin-bottom: 50px;
+}
+.wrapper{
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 50px;
+}
+.inner{
+    margin-bottom: 25px;
+    padding: 25px;
+    border: 1px solid #DEDEDE;
+    border-radius: 15px;
+}
+.heading{
+    margin-bottom: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.projects-wrapper{
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 25px;
+}
+.projects-wrapper{
+    margin-bottom: 130px;
+}

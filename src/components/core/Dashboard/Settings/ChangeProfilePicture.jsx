@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux"
 import { updateUserProfileImage } from "../../../../services/operations/SettingsAPI"
 import IconBtn from "../../../common/IconBtn"
 import Img from './../../../common/Img';
-
+import styles from '../profile.module.css'
 
 
 export default function ChangeProfilePicture() {
@@ -64,43 +64,45 @@ export default function ChangeProfilePicture() {
 
   return (
     <>
-      <div className="flex items-center justify-between rounded-md   p-8 px-3 sm:px-12 text-white bg-blue-600">
-        <div className="flex items-center gap-x-4">
-          <Img
-            src={previewSource || user?.image}
-            alt={`profile-${user?.firstName}`}
-            className="aspect-square w-[68px] rounded-full object-cover z-10 relative"
-          />
-
-          <div className="space-y-2">
-            <p className="font-thin">Change Profile Picture</p>
-            <div className="flex flex-col sm:flex-row gap-3">
-              <input
-                type="file"
-                ref={fileInputRef}
-                onChange={handleFileChange}
-                className="hidden"
-                accept="image/png, image/gif, image/jpeg, image/jpg"
+      <div className={`${styles.wrapper} ${styles['profile-picture']}`}>
+       <div className={styles['settings-heading']}>
+         <h3>Change Profile Picture</h3>
+       </div>
+        
+        <div className={styles['settings-config']}>
+          <div className={styles.avatar}>
+              <img
+                src={previewSource || user?.image}
+                alt={`profile-${user?.firstName}`}
               />
-
-              <button
-                onClick={handleClick}
-                disabled={loading}
-                className="cursor-pointer rounded-md py-2 px-5 font-semibold  bg-white text-black hover:opacity-70  duration-300"
-              >
-                Select
-              </button>
-
-              <IconBtn
-                text={loading ? "Uploading..." : "Upload"}
-                onclick={handleFileUpload}
-              >
-                {!loading && (
-                  <FiUpload className="text-lg" />
-                )}
-              </IconBtn>
-              
+          </div>
+          <div>
+           <input
+              type="file"
+              ref={fileInputRef}
+              onChange={handleFileChange}
+              className={styles.hidden}
+              accept="image/png, image/gif, image/jpeg, image/jpg"
+            />
+            <p>
+              Select custom photo from your device, then click on Update:
+            </p>
+            <div  className={styles['btns-container']}>
+            <button
+              onClick={handleClick}
+              disabled={loading}
+              className={`${styles['button']} ${styles['select-btn']}`}
+            >
+              Select photo
+            </button>
+            <button
+              onClick={handleFileUpload}
+              className={styles['button']}
+            >
+              {loading ? "Updating..." : "Update photo"}
+            </button>
             </div>
+           
           </div>
         </div>
       </div>

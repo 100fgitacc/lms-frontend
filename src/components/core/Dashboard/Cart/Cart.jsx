@@ -3,25 +3,27 @@ import { useSelector } from "react-redux"
 import RenderCartCourses from "./RenderCartCourses"
 import RenderTotalAmount from "./RenderTotalAmount"
 
+import styles from '../profile.module.css'
+
 export default function Cart() {
   const { total, totalItems } = useSelector((state) => state.cart)
   
   return (
-    <>
-      <h1 className="mb-14 text-xl sm:text-3xl  font-medium text-white font-wadik text-center sm:text-left">Cart</h1>
-      <p className="border-b border-b-richblack-400 pb-2 font-semibold ">
-        {totalItems} Courses in Cart
-      </p>
+    <div className={styles.cart}>
+      <div className={styles.heading}>
+        <h2 className={`${styles.title} secondary-title`}>Cart</h2>
+        <strong>{totalItems} Courses in Cart</strong>
+      </div>
       {totalItems > 0 ? (
-        <div className="mt-8 flex flex-col-reverse items-start gap-x-10 gap-y-6 lg:flex-row">
+        <div className={`${styles['cart-wrapper']}`}>
           <RenderCartCourses />
           <RenderTotalAmount />
         </div>
       ) : (
-        <p className="mt-14 text-center text-xl sm:text-3xl  ">
+        <div className={styles.wrapper}>
           Your cart is empty
-        </p>
+        </div>
       )}
-    </>
+    </div>
   )
 }

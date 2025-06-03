@@ -1,0 +1,114 @@
+.wrapper{
+    padding-left: 25px;
+    padding-right: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #ADADAD;
+    background-color: #fff;
+    position: fixed;
+    left: 228px;
+    right: 0;
+    z-index: 97;
+}
+.wrapper.full-width{
+    left: 65px;
+}
+.menu{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-right: auto;
+    margin-left: 0;
+}
+.menu-item{
+    position: relative;
+    margin-right: 30px;
+    font-weight: 300;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+.menu-item:nth-child(1){
+    padding-right: 20px;
+}
+.menu-item:nth-child(1):hover{
+    opacity: 1;
+}
+.menu-item:hover{
+    opacity: 0.7;
+}
+.profile-settings{
+    cursor: pointer;
+  padding: 15px 20px;
+  position: relative;
+  border-left: 1px solid #ADADAD;
+}
+.menu-item:nth-child(1):before,
+.profile-settings::before{
+    cursor: pointer;
+    content: '';
+    position: absolute;
+    top: 50%;
+    right: 0;
+    transform: translateY(-50%); 
+    background-image: url('/public/assets/img/icons/arrow-down.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 12px;
+    height: 12px;
+}
+.profile-settings img{
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
+.dropdown{
+    position: absolute;
+    top: 60px;
+    left: -20px;
+    background-color: #fff;
+    padding: 10px 0;
+    border-radius: 6px;
+    box-shadow: 0px 16px 48px -4px #00000054;
+}
+.dropdown a {
+    padding: 10px 15px;
+    color: #0F172A;
+}
+.dropdown a:not(:last-child){
+    border-bottom: 1px solid #ADADAD;;
+}
+.dropdown-menu{
+    top: 25px;
+    left: 0;
+    min-width: 250px;
+}
+.dropdown-links{
+    padding: 5px 10px;
+    
+}
+.dropdown-links:hover{
+    background: #eeeeee;
+    opacity: 0.8;
+}
+.cart{
+    padding: 25px;
+}
+.cart-count{
+    position: absolute;
+    top: -5px;
+    right: -15px;
+    background-color: #1eab1e;
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 15px;
+    height: 15px;
+    font-size: 9px;
+}
+.cart-button{
+    position: relative;
+}

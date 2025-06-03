@@ -19,6 +19,7 @@ export const profileEndpoints = {
 // ADMIN ENDPOINTS
 export const adminEndPoints = {
   GET_ALL_STUDENTS_DATA_API: BASE_URL + "/auth/all-students",
+  GET_ALL_STUDENTS_BY_INSTRUCTOR_DATA_API: BASE_URL + "/auth/all-students-by-instructor",
   GET_ALL_INSTRUCTORS_DATA_API: BASE_URL + "/auth/all-instructors",
 }
 

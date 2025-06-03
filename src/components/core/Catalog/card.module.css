@@ -1,0 +1,73 @@
+.projects-wrapper{
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 25px;
+    margin-bottom: 130px;
+}
+.courses-item{
+    width: 300px;
+    flex-shrink: 0;
+    overflow: hidden;
+    position: relative;
+    border-radius: 20px;
+}
+.courses-item h3{
+    min-height: 45px;
+}
+.courses-image{
+    width: 100%;
+    height: 150px;
+}
+.courses-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+
+.courses-content{
+    border-radius: 0 0 20px 20px;
+    border: 1px solid #DEDEDE;
+    padding: 15px;
+    padding-bottom: 25px;
+    border-top: none;
+}
+
+.courses-desc{
+    height: 55px;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    margin-top: 5px;
+    margin-bottom: 25px;
+    color: #999999;
+}
+.adittional-info{
+    color: #000;
+    font-size: 13px;
+}
+.author{
+    font-size: 12px;
+}
+.rating-wrapper{
+    display: flex;
+}
+.price{
+    margin-top: 5px;
+}
+.details-link{
+    display: flex;
+    align-items: center;
+    color: #101f7e;
+    border: 1px solid #101f7e;
+    padding: 10px 15px;
+    border-radius: 6px;
+}
+.card-btns{
+    margin-top: 15px;
+    display: flex;
+    justify-content: space-between;
+}

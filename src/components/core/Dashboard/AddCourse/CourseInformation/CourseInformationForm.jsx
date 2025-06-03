@@ -13,6 +13,9 @@ import Upload from "../Upload"
 import ChipInput from "./ChipInput"
 import RequirementsField from "./RequirementField"
 
+
+import styles from '../../profile.module.css'
+
 export default function CourseInformationForm() {
 
   const { register, handleSubmit, setValue, getValues, formState: { errors } } = useForm()
@@ -143,165 +146,150 @@ export default function CourseInformationForm() {
   }
 
   return (
-    <form
-      onSubmit={handleSubmit(onSubmit)}
-      className="space-y-8 rounded-md   p-6 "
-    >
-      {/* Course Title */}
-      <div className="flex flex-col space-y-2">
-        <label className="text-sm text-white" htmlFor="courseTitle">
-          Course Title <sup className="text-pink-200">*</sup>
-        </label>
-        <input
-          id="courseTitle"
-          placeholder="Enter Course Title"
-          {...register("courseTitle", { required: true })}
-          className="form-style w-full"
+    <form onSubmit={handleSubmit(onSubmit)} className={styles['course-info']}>
+      <div className={styles.row}>
+        <Upload
+          name="courseImage"
+          label="Course Thumbnail"
+          register={register}
+          setValue={setValue}
+          errors={errors}
+          editData={editCourse ? course?.thumbnail : null}
         />
-        {errors.courseTitle && (
-          <span className="ml-2 text-xs tracking-wide text-pink-300">
-            Course title is required
-          </span>
-        )}
       </div>
 
-      {/* Course Short Description */}
-      <div className="flex flex-col space-y-2">
-        <label className="text-sm text-white" htmlFor="courseShortDesc">
-          Course Short Description <sup className="text-pink-200">*</sup>
-        </label>
-        <textarea
-          id="courseShortDesc"
-          placeholder="Enter Description"
-          {...register("courseShortDesc", { required: true })}
-          className="form-style resize-x-none min-h-[130px] w-full ] "
-        />
-        {errors.courseShortDesc && (
-          <span className="ml-2 text-xs tracking-wide text-pink-300">
-            Course Description is required
-          </span>
-        )}
-      </div>
-
-      {/* Course Price */}
-      <div className="flex flex-col space-y-2">
-        <label className="text-sm text-white" htmlFor="coursePrice">
-          Course Price <sup className="text-pink-200">*</sup>
-        </label>
-        <div className="relative">
+      <div className={styles.row}>
+        <div className={`${styles.col} ${errors.courseTitle ? 'col-error' : ''}`}>
+          <label htmlFor="courseTitle">
+            Course Title <sup>*</sup>
+          </label>
+          {errors.courseTitle && (
+            <span className="required">Course title is required!</span>
+          )}
           <input
-            id="coursePrice"
-            placeholder="Enter Course Price"
-            {...register("coursePrice", {
-              required: true,
-              valueAsNumber: true,
-              pattern: {
-                value: /^(0|[1-9]\d*)(\.\d+)?$/,
-              },
-            })}
-            className="form-style w-full "
-
+            id="courseTitle"
+            placeholder="Enter Course Title"
+            {...register("courseTitle", { required: true })}
+            className={styles.input}
           />
           
         </div>
-        {errors.coursePrice && (
-          <span className="ml-2 text-xs tracking-wide text-pink-300">
-            Course Price is required
-          </span>
-        )}
+
+        <div className={`${styles.col} ${errors.coursePrice ? 'col-error' : ''}`}>
+          <label htmlFor="coursePrice">
+            Course Price <sup>*</sup>
+          </label>
+           {errors.coursePrice && (
+            <span className="required">Course Price is required!</span>
+          )}
+          <input
+              id="coursePrice"
+              placeholder="Enter Course Price"
+              {...register("coursePrice", {
+                required: true,
+                valueAsNumber: true,
+                pattern: {
+                  value: /^(0|[1-9]\d*)(\.\d+)?$/,
+                },
+              })}
+              className={styles.input}
+            />
+         
+        </div>
       </div>
 
-      {/* Course Category */}
-      <div className="flex flex-col space-y-2 ">
-        <label className="text-sm text-white" htmlFor="courseCategory">
-          Course Category <sup className="text-pink-200">*</sup>
-        </label>
-        <select
-          {...register("courseCategory", { required: true })}
-          defaultValue=""
-          id="courseCategory"
-          className="form-style w-full cursor-pointer"
-        >
-          <option value="" disabled>
-            Choose a Category
-          </option>
-          {!loading &&
-            courseCategories?.map((category, indx) => (
-              <option key={indx} value={category?._id}>
-                {category?.name}
-              </option>
-            ))}
-        </select>
-        {errors.courseCategory && (
-          <span className="ml-2 text-xs tracking-wide text-pink-300">
-            Course Category is required
-          </span>
-        )}
+      <div className={styles.row}>
+        <div className={`${styles.col} ${errors.courseShortDesc ? 'col-error' : ''}`}>
+          <label htmlFor="courseShortDesc">
+            Course Short Description <sup>*</sup>
+          </label>
+          {errors.courseShortDesc && (
+            <span className="required">Course Description is required!</span>
+          )}
+          <textarea
+            id="courseShortDesc"
+            placeholder="Enter Description"
+            {...register("courseShortDesc", { required: true })}
+            className={styles.textarea}
+          />
+         
+        </div>
+
+        <div className={`${styles.col} ${errors.courseBenefits ? 'col-error' : ''}`}>
+          <label htmlFor="courseBenefits">
+            Benefits of the course <sup>*</sup>
+          </label>
+          {errors.courseBenefits && (
+            <span className="required">Benefits of the course is required!</span>
+          )}
+          <textarea
+            id="courseBenefits"
+            placeholder="Enter benefits of the course"
+            {...register("courseBenefits", { required: true })}
+            className={styles.textarea}
+          />
+        </div>
       </div>
 
-      {/* Course Tags */}
-      <ChipInput
-        label="Tags"
-        name="courseTags"
-        placeholder="Enter Tags and press Enter or Comma"
-        register={register}
-        errors={errors}
-        setValue={setValue}
-      />
-
-      {/* Course Thumbnail Image */}
-      <Upload
-        name="courseImage"
-        label="Course Thumbnail"
-        register={register}
-        setValue={setValue}
-        errors={errors}
-        editData={editCourse ? course?.thumbnail : null}
-      />
-
-      {/* Benefits of the course */}
-      <div className="flex flex-col space-y-2">
-        <label className="text-sm text-white" htmlFor="courseBenefits">
-          Benefits of the course <sup className="text-pink-200">*</sup>
-        </label>
-        <textarea
-          id="courseBenefits"
-          placeholder="Enter benefits of the course"
-          {...register("courseBenefits", { required: true })}
-          className="form-style resize-x-none min-h-[130px] w-full"
-        />
-        {errors.courseBenefits && (
-          <span className="ml-2 text-xs tracking-wide text-pink-300">
-            Benefits of the course is required
-          </span>
-        )}
+      <div className={styles.row}>
+        <div className={`${styles.col} ${errors.courseTags ? 'col-error' : ''}`}>
+          <ChipInput
+            label="Tags"
+            name="courseTags"
+            placeholder="Enter Tags and press Enter"
+            register={register}
+            errors={errors}
+            setValue={setValue}
+          />
+        </div>
+            <div className={`${styles.col} ${errors.courseRequirements ? 'col-error' : ''}`}>
+          <RequirementsField
+            name="courseRequirements"
+            label="Requirements/Instructions"
+            register={register}
+            setValue={setValue}
+            errors={errors}
+          />
+        </div>
       </div>
-
-      {/* Requirements/Instructions */}
-      <RequirementsField
-        name="courseRequirements"
-        label="Requirements/Instructions"
-        register={register}
-        setValue={setValue}
-        errors={errors}
-      />
-
-      {/* Next Button */}
-      <div className="flex justify-end gap-x-2">
+      <div className={styles.row}>
+        <div className={`${styles.col} ${errors.courseCategory ? 'col-error' : ''}`}>
+          <label htmlFor="courseCategory">
+            Select Course Category <sup>*</sup>
+          </label>
+          {errors.courseCategory && (
+            <span className="required">Course Category is required!</span>
+          )}
+          <select
+            {...register("courseCategory", { required: true })}
+            defaultValue=""
+            id="courseCategory"
+            className={styles.input}
+          >
+            <option value="" disabled>
+              Choose a Category
+            </option>
+            {!loading &&
+              courseCategories?.map((category, indx) => (
+                <option key={indx} value={category?._id}>
+                  {category?.name}
+                </option>
+              ))}
+          </select>
+        </div>
+    
+      </div>
+      <div className={styles['btns-container']}>
         {editCourse && (
           <button
             onClick={() => dispatch(setStep(2))}
             disabled={loading}
-            className={`flex cursor-pointer items-center gap-x-2 rounded-md py-[8px] px-[20px] font-thin text-[13px]
-                hover: hover: duration-300`}
+            className={"button adittional-btn"}
           >
-            Continue Wihout Saving
+            Continue Without Saving
           </button>
         )}
-        <IconBtn
-          disabled={loading}
-          text={!editCourse ? "Next" : "Save Changes"}
-        >
+        <IconBtn disabled={loading} text={!editCourse ? "Next" : "Save Changes"}>
           <MdNavigateNext />
         </IconBtn>
       </div>

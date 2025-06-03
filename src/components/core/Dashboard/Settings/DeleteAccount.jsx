@@ -6,6 +6,9 @@ import { useNavigate } from "react-router-dom"
 import ConfirmationModal from './../../../common/ConfirmationModal';
 import { deleteProfile } from "../../../../services/operations/SettingsAPI"
 
+
+import styles from '../profile.module.css'
+
 export default function DeleteAccount() {
 
   const [confirmationModal, setConfirmationModal] = useState(null);
@@ -18,35 +21,33 @@ export default function DeleteAccount() {
 
 
   return (
-    <>
-      <div className="my-10 flex flex-row gap-x-5 rounded-md border-[1px] border-white bg-pink-100 p-8 px-6 sm:px-12">
-        <div className="flex aspect-square h-14 w-14 items-center justify-center rounded-full bg-pink-900">
-          <FiTrash2 className="text-3xl text-pink-200" />
-        </div>
-
-        <div className="flex flex-col ">
-          <h2 className="text-lg font-semibold text-white "> Delete Account</h2>
-
-          <div className="sm:w-4/5 text-pink-25 flex flex-col gap-3 mt-1 sm:text-lg text-sm">
+    <div className={styles['delete-account']}>
+      <div className={styles.wrapper}>
+          <div className={styles['settings-heading']}>
+            <h3>
+              Delete Account
+            </h3>
+          </div>
+          <div className="">
             <p>Would you like to delete account ?</p>
-            <p className="text-pink-25 flex flex-col gap-3 mt-1 text-[14px] font-thin">
+            <p className="">
               This account may contain Paid Courses. Deleting your account is
               permanent and will remove all the contain associated with it.
             </p>
           </div>
-
-
-          <div className="flex items-center gap-3 mt-4">
-            <input
-              type="checkbox"
-              className="form-checkbox h-4 w-4 text-indigo-600 rounded-full form-style cursor-pointer"
+          <div className={styles['delete-confirmation']}>
+            <div className="checkbox-container">
+              <input 
+              type="checkbox" 
+              id="customCheckbox" 
+              className={styles['custom-checkbox']} 
               checked={check}
-              onChange={() => setCheck(prev => !prev)}
-            />
-
+              onChange={() => setCheck(prev => !prev)}/>
+             <label for="customCheckbox"></label>
+            </div>
             <button
               type="button"
-              className="w-fit text-pink-300 underline font-thin"
+              className={`${styles['delete-acc-btn']}`}
               onClick={() => check &&
                 setConfirmationModal({
                   text1: "Are you sure ?",
@@ -61,11 +62,9 @@ export default function DeleteAccount() {
               I want to delete my account( select and confirm )
             </button>
           </div>
-
-        </div>
       </div>
 
       {confirmationModal && <ConfirmationModal modalData={confirmationModal} />}
-    </>
+    </div>
   )
 }

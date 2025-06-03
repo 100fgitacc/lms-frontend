@@ -12,6 +12,8 @@ import IconBtn from "../../../../common/IconBtn"
 import NestedView from "./NestedView"
 
 
+import styles from '../../profile.module.css'
+
 
 
 export default function CourseBuilderForm() {
@@ -83,51 +85,49 @@ export default function CourseBuilderForm() {
     dispatch(setStep(1))
     dispatch(setEditCourse(true))
   }
-
   return (
-    <div className="space-y-8 rounded-2xl   p-6">
-      <p className="text-2xl font-semibold text-white">Course Builder</p>
-
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+    <div className={styles['course-builder']}>
+      <form onSubmit={handleSubmit(onSubmit)} className="">
         {/* Section Name */}
-        <div className="flex flex-col space-y-2">
-          <label className="text-sm text-white" htmlFor="sectionName">
-            Section Name <sup className="text-pink-200">*</sup>
-          </label>
-          <input
-            id="sectionName"
-            disabled={loading}
-            placeholder="Add a section to build your course"
-            {...register("sectionName", { required: true })}
-            className="form-style w-full"
-          />
-          {errors.sectionName && (
-            <span className="ml-2 text-xs tracking-wide text-pink-300">
-              Section name is required
-            </span>
-          )}
-        </div>
-
-        {/* Edit Section Name OR Create Section */}
-        <div className="flex items-end gap-x-4">
-          <IconBtn
-            type="submit"
-            disabled={loading}
-            text={editSectionName ? "Edit Section Name" : "Create Section"}
-            outline={true}
-          >
-            <IoAddCircleOutline size={20} className="text-yellow-50" />
-          </IconBtn>
-          {/* if editSectionName mode is on */}
-          {editSectionName && (
-            <button
-              type="button"
-              onClick={cancelEdit}
-              className="text-sm  underline"
-            >
-              Cancel Edit
-            </button>
-          )}
+        <div className={styles.row}>
+          <div className={`${styles.col} ${errors.sectionName ? 'col-error' : ''}`}>
+            <label className="" htmlFor="sectionName">
+              Section Name <sup>*</sup>
+            </label>
+            {errors.sectionName && (
+              <span className="required">
+                Section name is required!
+              </span>
+            )}
+            <input
+              id="sectionName"
+              disabled={loading}
+              placeholder="Write section name and create section"
+              {...register("sectionName", { required: true })}
+              className={styles.input}
+            />
+             <div className={styles['btns-container']}>
+               <IconBtn
+                type="submit"
+                disabled={loading}
+                text={editSectionName ? "Edit Section Name" : "Create Section"}
+                outline={true}
+              >
+                <IoAddCircleOutline size={20} className="" />
+              </IconBtn>
+             </div>
+              {/* if editSectionName mode is on */}
+              {editSectionName && (
+                <button
+                  type="button"
+                  onClick={cancelEdit}
+                  className={`${styles['edit-btn']} button`}
+                >
+                  Cancel Edit
+                </button>
+              )}
+          </div>
+          
         </div>
       </form>
 
@@ -137,10 +137,10 @@ export default function CourseBuilderForm() {
       )}
 
       {/* Next Prev Button */}
-      <div className="flex justify-end gap-x-3">
+      <div className={styles['btns-container']}>
         <button
           onClick={goBack}
-          className={`rounded-md  py-[8px] px-[20px] font-semibold `}
+          className={`button adittional-btn`}
         >
           Back
         </button>

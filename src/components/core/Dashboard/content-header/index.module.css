@@ -1,0 +1,261 @@
+
+.wrapper{
+    position: relative;
+    border: 1px solid #DEDEDE;
+    border-top: 0;
+    border-radius: 20px;
+    padding-bottom: 25px;
+    overflow: hidden;
+}
+.course{
+    overflow: unset;
+}
+.header-image{
+    max-height: 262px;
+    position: absolute;
+    z-index: 2;
+    top: 0;
+    right: 0;
+    left: 0;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    width: 100%;
+    height: 100%;
+    border-radius: 15px;
+    overflow: hidden;
+}
+.header-image::before{
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    background: #000;
+    width: 100%;
+    height: 100%;
+    opacity: 0.4;
+}
+.profile .header-image{
+    background-image: url('/public/assets/img/header-bg.png');
+}
+.course .header-image{
+    background-image: url('/public/assets/img/course-img.png');
+}
+.feed .header-image{
+    background-image: url('/public/assets/img/feed-img.png');
+}
+.course-purchased .header-image{
+    position: relative;
+    padding: 100px 60px;
+    margin-top: 110px;
+}
+.header-info{
+    position: relative;
+    z-index: 3;
+    margin-top: 231px;
+    margin-right: 25px;
+    margin-left: 25px;
+    display: flex;
+    align-items: flex-end;
+}
+.course .header-info{
+    max-width: 581px;
+    margin-top: 0;
+    padding-top: 275px;
+    flex-direction: column;
+    align-items: flex-start;
+}
+.avatar img{
+    width: 108px;
+    height: 108px;
+    border-radius: 50%;
+    max-height: unset;
+    max-width: unset;
+}
+
+.desc{
+    width: 100%;
+    margin-left: 20px;
+}
+.course .desc{
+    margin-left: 10px;
+}
+.desc >  div{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.course .desc > div{
+    width: 100%;
+    display: inline-flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+.sub-info{
+    max-width: 335px;
+    width: 60%;
+    display: flex;
+    align-items: center;
+    color: #A4A4A4;
+    font-weight: 400;
+    margin-bottom: 5px;
+}
+.feed .sub-info{
+    max-width: unset;
+}
+.sub-info p{
+    position: relative;
+}
+.feed .sub-info p::before{
+    display: none;
+}
+.sub-info p::before{
+    content: '|';
+    position: absolute;
+    width: 2px;
+    right: -12px;
+    color: #ada4a4;
+    height: 100%;
+}
+.sub-info div p:last-child:before{
+    content: '';
+}
+.sub-info p:last-child:before{
+    left: -15px;
+}
+.title{
+    margin-top: 5px;
+    margin-right: 25px;
+}
+.course .title{
+    margin-top: 100px;
+    margin-left: 60px;
+    font-size: 34px;
+    color: #fff;
+}
+.course .subtitle{
+    margin-top: 5px;
+    margin-left: 60px;
+    font-size: 14px;
+    font-weight: 400;
+    color: #fff;
+}
+.sub-info{
+    margin-right: 25px;
+}
+.role{
+    margin-right: 25px;
+}
+.date{
+    margin-right: 25px;
+}
+.country{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-right: 25px;
+}
+.status{
+    color: #1EAB1E;
+    font-weight: 400;
+}
+.rate,
+.name,
+.activity,
+.socials{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.activity{
+    margin-left: 10px;
+    margin-top: 10px;
+}
+.activity p {
+    margin-left: 7px;
+}
+.count{
+    margin-left: 15px;
+    color: #000;
+    font-weight: bold;
+}
+.country > img,
+.name > img{
+    margin-right: 5px;
+}
+
+.course-info{
+    min-width: 258px;
+    position: absolute;
+    bottom: -30px;
+    right: 35px;
+    z-index: 3;
+    background: #fff;
+    border-radius: 15px;
+    padding: 20px 25px;
+    box-shadow: 0px 16px 48px -4px rgb(0 0 0 / 10%);
+}
+.course-info > div{
+    display: flex;
+    justify-content: space-between;
+}
+.course-info > div:first-child{
+    color: #5C5C5C;
+}
+.start-course,
+.start-course-success{
+    width: 100%;
+    margin-top: 10px;
+    margin-bottom: 15px;
+}
+.start-course::before{
+    left: 55px;
+}
+.start-course-success::before{
+    left: 25px;
+}
+.third-title{
+    margin-bottom: 10px;
+    font-size: 18px;
+}
+
+.course-info > div:last-child img{
+    width: 16px;
+    height: 16px;
+    margin-right: 7px;
+}
+.wrapper.course-purchased{
+    border: 0;
+    padding-bottom: 0;
+}
+
+.course-purchased .subtitle{
+    margin: 0;
+}
+.course-purchased .title{
+    margin-top: 10px;
+    margin: 0;
+}
+.feed .title{
+    margin-top: 15px;
+}
+.feed .header-info{
+    align-items: flex-start;
+}
+.feed .desc > div:last-child,
+.feed  .sub-info{
+    flex-direction: column;
+    align-items: flex-start;
+}
+.feed .desc{
+    margin-top: 35px;
+}
+.feed .activity{
+    margin-left: 0;
+    margin-bottom: 5px;
+}
+.socials img{
+    margin-left: 10px;
+}

@@ -5,6 +5,7 @@ import { Link } from "react-router-dom"
 
 import { getPasswordResetToken } from "../services/operations/authAPI"
 
+import styles from './forgot.module.css'
 
 
 function ForgotPassword() {
@@ -19,25 +20,25 @@ function ForgotPassword() {
   }
 
   return (
-    <div className="grid min-h-[calc(100vh-3.5rem)] place-items-center bg-blue-800">
+    <div className={styles.container}>
       {loading ? (
         <div className="spinner"></div>
       ) : (
-        <div className="max-w-[500px] p-4 lg:p-8">
-          <h1 className="text-[1.875rem] font-semibold leading-[2.375rem] text-white">
+        <div>
+          <h1 className={styles.content}>
             {!emailSent ? "Reset your password" : "Check email"}
           </h1>
-          <div className="my-4 text-[1.125rem] leading-[1.625rem] ">
+          <div className={styles.subtitle}>
             {!emailSent
               ? "Have no fear. We'll email you instructions to reset your password. If you dont have access to your email we can try account recovery"
-              : <p>We have sent the reset email to <span className="text-yellow-200">{email}</span></p>}
+              : <p>We have sent the reset email to <span>{email}</span></p>}
           </div>
 
-          <form onSubmit={handleOnSubmit}>
+          <form onSubmit={handleOnSubmit} className={styles.form}>
             {!emailSent && (
-              <label className="w-full">
-                <p className="mb-1 text-[0.875rem] leading-[1.375rem] text-white">
-                  Email Address <sup className="text-pink-200">*</sup>
+              <label className={styles.label}>
+                <p className={styles['label-text']}>
+                  Email Address <sup className={styles.required}>*</sup>
                 </p>
                 <input
                   required
@@ -46,29 +47,24 @@ function ForgotPassword() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="Enter email address"
-                  style={{
-                    boxShadow: "inset 0px -1px 0px rgba(255, 255, 255, 0.18)",
-                  }}
-                  className="w-full rounded-[0.5rem]  p-[12px] text-black "
+                 className={styles.input}
                 />
               </label>
             )}
 
             <button
               type="submit"
-              className="mt-6 w-full rounded-[8px] bg-yellow-50 text-black py-[12px] px-[12px] font-medium "
+              className={styles.button}
             >
-              {!emailSent ? "Sumbit" : "Resend Email"}
+              {!emailSent ? "Submit" : "Resend Email"}
             </button>
-          </form>
-
-          <div className="mt-6 flex items-center justify-between">
-            <Link to="/login">
-              <p className="flex items-center gap-x-2 text-white">
-                <BiArrowBack /> Back To Login
+            <Link to="/login" className={styles['button-secondary']}>
+              <BiArrowBack className={styles.icon} />
+              <p>
+                 Back To Login
               </p>
             </Link>
-          </div>
+          </form>
         </div>
       )}
     </div>

@@ -1,10 +1,10 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 import { getAllInstructorDetails } from "../../../services/operations/adminApi";
 
-
+import styles from './profile.module.css'
 
 
 
@@ -53,92 +53,90 @@ function AllInstructors() {
   }, []);
 
   return (
-    <div>
-      <div className="mb-14 flex items-center justify-between text-white">
-        <h1 className="sm:text-4xl text-xl font-medium text-white font-wadik text-center sm:text-left">All Instructors Details</h1>
-      </div>
-      <div className="rounded-xl">
-        <div className="flex gap-x-10 rounded-t-md px-6 py-2 border-b border-gray">
-            <div className="flex-1 text-left text-sm font-medium uppercase">
-              Instructors : {instructorsCount}
-            </div>
-        </div>
-        <div>
-          {
-            loading ? <>
-              <LoadingSkeleton />
-              <LoadingSkeleton />
-              <LoadingSkeleton />
-            </>
-              // if No Data Available
-              :
-              !allInstructorDetails ? <div className='text-5xl py-5 bg-yellow-800 text-white text-center'>No Data Available</div>
-                :
-                allInstructorDetails?.map((instructor) => (
-                  <div
-                    key={instructor._id}
-                    className="border-x border border-gray">
-                    <div className="flex sm:flex-row flex-col sm:items-start items-end flex-col gap-x-10 px-6 pt-8 pb-2 border-b border-gray">
-                      <div className="flex flex-1 gap-x-2 ml-0 mr-auto">
-                        <img
-                          src={instructor.image}
-                          alt="student"
-                          className="sm:h-[75px] sm:w-[75px] rounded-full sm:mr-10 mr-5 h-[50px] :w-[50px]"
-                        />
-                        <div className='text-sm font-normal'>
-                          <p className='text-base font-bold'>{instructor.firstName + " " + instructor.lastName}</p>
-                          <p className="mb-5">{instructor.email}</p>
-                          <p>
-                            Gender:{" "}
-                            {instructor.additionalDetails.gender
-                              ? instructor.additionalDetails.gender
-                              : "Not define"}
-                          </p>
-                          <p>
-                            Mobile No:{" "}
-                            {instructor.additionalDetails.contactNumber
-                              ? instructor.additionalDetails.contactNumber
-                              : "No Data"}
-                          </p>
-                          <p>
-                            DOB:{" "}
-                            {instructor.additionalDetails.dateOfBirth
-                              ? instructor.additionalDetails.dateOfBirth
-                              : "No Data"}
-                          </p>
-                        </div>
-                      </div>
-                      <div className="sm:mr-[11.5%] mr-0 text-sm font-medium">
-                        {instructor.active ? "Active" : "Inactive"}
-                      </div>
-                      <div className="mr-0 sm:mr-[8%] text-sm font-medium">
-                        {instructor.approved ? "Approved" : "Not Approved"}
-                      </div>
-                    </div>
-
-
-                    {instructor.courses.length ? (
-                      <div className="flex sm:flex-row flex-col gap-x-10 px-6 py-5">
-                       <p className="text-yellow-50 text-sm font-bold mr-8">Built Courses:</p>
-                        <div className="sm:grid grid-cols-5 gap-y-5 flex sm:flex-row flex-col">
-                          {instructor.courses.map((course) => (
-                            <div className="text-white text-sm" key={course._id}>
-                              <p>{course.courseName}</p>
-                              <p className="text-sm font-normal">Price:{course.price}  $</p>
-                            </div>
-                          ))}
-                        </div>
-                      </div>)
-                      :
-                      <div className="px-6 my-4 text-sm text-gray">Not Purchased any course</div>
-                    }
-                  </div>
-
-                ))}
-          </div>
-      </div>
+  <div className={`${styles.wrapper} ${styles.details}`}>
+    <div className={styles.heading}>
+      <h2 className={`${styles.title} secondary-title`}>All Instructors Details</h2>
+      <strong>
+        Total instructors: {instructorsCount}
+      </strong>
     </div>
-  );
+
+    <div>
+      {loading ? (
+        <>
+          <LoadingSkeleton />
+          <LoadingSkeleton />
+          <LoadingSkeleton />
+        </>
+      ) : !allInstructorDetails || !allInstructorDetails.length ? (
+        <p className="text-center text-white bg-yellow-800 py-4 text-xl">
+          No Data Available
+        </p>
+      ) : (
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Instructor Info</th>
+              <th>Email</th>
+              <th>Gender</th>
+              <th>Mobile</th>
+              <th>Date of Birth</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {allInstructorDetails.map((instructor, index) => (
+              <React.Fragment key={instructor._id}>
+                <tr>
+                  <td>{index + 1}</td>
+                  <td className={styles['student-name']}>
+                    <img
+                      src={instructor.image}
+                      alt="instructor"
+                      className={styles['table-img']}
+                    />
+                    <div>
+                      <p>{instructor.firstName}</p>
+                      <p>{instructor.lastName}</p>
+                    </div>
+                  </td>
+                  <td>{instructor.email}</td>
+                  <td>{instructor.additionalDetails.gender || "Not defined"}</td>
+                  <td>{instructor.additionalDetails.contactNumber || "No Data"}</td>
+                  <td>{instructor.additionalDetails.dateOfBirth || "No Data"}</td>
+                  <td>
+                    <div>
+                      <p>{instructor.active ? "Active" : "Inactive"}</p>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td colSpan="7">
+                    <strong>Built Courses:</strong>
+                    {instructor.courses && instructor.courses.length ? (
+                      <div className={styles['purchased-courses']}>
+                        {instructor.courses.map((course) => (
+                          <div className={styles['courses-item']} key={course._id}>
+                            <p><strong>Name:</strong> {course.courseName}</p>
+                            <p><strong>Price:</strong> {course.price} $</p>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className={styles['no-courses']}>No courses built</div>
+                    )}
+                  </td>
+                </tr>
+              </React.Fragment>
+            ))}
+          </tbody>
+        </table>
+      )}
+    </div>
+  </div>
+);
+
 }
 
 export default AllInstructors;

@@ -1,0 +1,20 @@
+@font-face {
+    font-family: 'Geologica';
+    src: url('assets/fonts/Geologica-Light.ttf') format('ttf'),
+    url('assets/fonts/Geologica-Medium.ttf') format('ttf'),
+    url('assets/fonts/Geologica-Regular.ttf') format('ttf'),
+    url('assets/fonts/Geologica-Bold.ttf') format('ttf'),
+}
+@font-face {
+    font-family: 'Inter';
+    src: url('assets/fonts/Inter-Black.otf') format('otf'),
+    url('assets/fonts/Inter-Bold.otf') format('otf'),
+    url('assets/fonts/Inter-Regular.otf') format('otf'),
+    url('assets/fonts/Inter-Medium.otf') format('otf'),
+    url('assets/fonts/Inter-Thin.otf') format('otf'),
+}
+@font-face {
+    font-family: 'Wadik';
+    src: url('assets/fonts/Wadik.otf') format('truetype'),
+         url('assets/fonts/Wadik.woff') format('woff');
+}

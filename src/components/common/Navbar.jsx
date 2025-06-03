@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Link, matchPath, useLocation } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 
-import { NavbarLinks } from "../../../data/navbar-links"
+// import { NavbarLinks } from "../../../data/navbar-links"
 import studyNotionLogo from '../../assets/Logo/Logo-Full-Light-2.png'
 import { fetchCourseCategories } from './../../services/operations/courseDetailsAPI';
 
@@ -31,9 +31,6 @@ const Navbar = () => {
         try {
             setLoading(true)
             const res = await fetchCourseCategories();
-            // const result = await apiConnector("GET", categories.CATEGORIES_API);
-            // const result = await apiConnector('GET', 'http://localhost:4000/api/v1/course/showAllCategories');
-            // console.log("Printing Sublinks result:", result);
             setSubLinks(res);
         }
         catch (error) {
@@ -41,8 +38,6 @@ const Navbar = () => {
         }
         setLoading(false)
     }
-
-    // console.log('data of store  = ', useSelector((state)=> state))
 
 
     useEffect(() => {
@@ -154,35 +149,14 @@ const Navbar = () => {
                                         </Link>)
                                 }
                             </li>
-                        ))}
+                        ))
+                    }
                 </ul>
 
 
 
 
-                {/* Login/SignUp/Dashboard */}
-                <div className={`${token === null && 'hidden' } flex gap-x-4 items-center`}>
-                    {
-                        user && user?.accountType === "Student" && (
-                            <Link to="/dashboard/cart" className="relative">
-                                <AiOutlineShoppingCart className="text-[2.35rem] text-white hover: rounded-full p-2 duration-200" />
-                                {totalItems > 0 && (
-                                    <span className="absolute top-0 -right-2 grid h-4 w-4 place-items-center overflow-hidden rounded-full  text-center text-[10px] text-black bg-white">
-                                        {totalItems}
-                                    </span>
-                                )}
-                            </Link>
-                        )
-                    }
-                    
-
-                    {/* for large devices */}
-                    {token !== null && <ProfileDropDown />}
-
-                    {/* for small devices */}
-                    {token !== null && <MobileProfileDropDown />}
-
-                </div>
+              
             </div>
         </nav>
     )

@@ -11,7 +11,7 @@ import Loading from './../components/common/Loading';
 import { getCatalogPageData } from '../services/operations/pageAndComponentData'
 import { fetchCourseCategories } from './../services/operations/courseDetailsAPI';
 
-
+import styles from './catalog.module.css'
 
 
 function Catalog() {
@@ -69,59 +69,51 @@ function Catalog() {
                 No Courses found for selected Category
             </div>)
     }
-
+    
+    console.log(catalogPageData.mostSellingCourses
+);
+    
 
     return (
-        <>
-            <div className="px-4 mt-[100px]">
-                <div className="mx-auto flex min-h-[160px] max-w-maxContentTab flex-col justify-center gap-4 lg:max-w-maxContent ">
-                    <p className="text-3xl text-white font-wadik text-2xl text-center">
-                        {catalogPageData?.selectedCategory?.name}
-                    </p>
-                    <p className="max-w-[870px] text-center mr-auto ml-auto font-thin">
-                        {catalogPageData?.selectedCategory?.description}
-                    </p>
-                </div>
+        <div className={styles.wrapper}>
+            <div className={styles['catalog-heading']}>
+                <h1 className="">
+                    {catalogPageData?.selectedCategory?.name}
+                </h1>
+                <p className="">
+                    {catalogPageData?.selectedCategory?.description}
+                </p>
             </div>
-            <div className="mx-auto  w-full max-w-maxContentTab px-4 py-12 lg:max-w-maxContent">
-                <p className="font-wadik text-xl">All courses in this category</p>
-                <div className="py-8">
-                    <div className="grid gap-2 grid-cols-[repeat(auto-fill,minmax(250px,1fr))]">
+            <div className={styles.inner}>
+                <h3 className={styles.heading}>All courses in this category</h3>
+                <div className={styles['projects-wrapper']}>
                     {catalogPageData?.selectedCategory?.courses.map((course, i) => (
-                        <Course_Card course={course} key={i} Height="h-[300px]" />
+                        <Course_Card course={course} key={i}/>
                     ))}
-                    </div>
                 </div>
             </div>
-            <div className=" mx-auto  w-full max-w-maxContentTab px-4 py-12 lg:max-w-maxContent">
+            <div className={styles.inner}>
                 {catalogPageData?.differentCategory && (
-                    <div className="font-wadik text-xl">
+                    <h3 className={styles.heading}>
                         Top 3 courses in: "{catalogPageData?.differentCategory?.name}" 
-                    </div>
+                    </h3>
                 )}
-              
-                <div className="py-8">
-                    <div className="grid gap-2 grid-cols-[repeat(auto-fill,minmax(250px,1fr))]">
-                    {catalogPageData?.differentCategory?.courses.slice(0, 3).map((course, i) => (
-                        <Course_Card course={course} key={i} Height="h-[300px]" />
+                <div className={styles['projects-wrapper']}>
+                    {catalogPageData?.mostSellingCourses.slice(0, 3).map((course, i) => (
+                        <Course_Card course={course} key={i} Height="" />
                     ))}
-                    </div>
                 </div>
             </div>
-            <div className=" mx-auto  w-full max-w-maxContentTab px-4 py-12 lg:max-w-maxContent">
-                <div className="font-wadik text-xl">You May Also Like:</div>
-                <div className="py-8">
-                    <div className="grid gap-2 grid-cols-[repeat(auto-fill,minmax(250px,1fr))]">
+            <div className={styles.inner}>
+                <h3 className={styles.heading}>You May Also Like:</h3>
+                <div className={styles['projects-wrapper']}>
                     {catalogPageData?.mostSellingCourses
                             ?.slice(0, 4).map((course, i) => (
-                        <Course_Card course={course} key={i} Height="h-[300px]" />
+                        <Course_Card course={course} key={i} Height="" />
                     ))}
-                    </div>
                 </div>
             </div>
-
-            {/* <Footer /> */}
-        </>
+        </div>
     )
 }
 

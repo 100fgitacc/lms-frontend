@@ -2,6 +2,8 @@ import { useState } from "react"
 import { Chart, registerables } from "chart.js"
 import { Pie } from "react-chartjs-2"
 
+import styles from '../profile.module.css'
+
 Chart.register(...registerables)
 
 export default function InstructorChart({ courses }) {
@@ -60,35 +62,31 @@ export default function InstructorChart({ courses }) {
   }
 
   return (
-    <div className="flex flex-1 flex-col gap-y-4 rounded-md  p-6  border-2 border-gray">
-      <p className="font-wadik text-lg font-bold text-white">Now you see { currChart === "students" ? "students chart" : "income chart"}</p>
-
-      <div className="space-x-4 font-semibold ">
-        {/* Button to switch to the "students" chart */}
-        <button
-          onClick={() => setCurrChart("students")}
-          className={`rounded-sm p-1 px-3 transition-all duration-200 ${currChart === "students"
-            ? "text-yellow-100 bg-blue-500 border border-gray"
-            : "text-gray bg-gray border border-gray"
-            }`}
-        >
-          Students
-        </button>
-
-        {/* Button to switch to the "income" chart */}
-        <button
-          onClick={() => setCurrChart("income")}
-          className={`bg-blue-700 rounded-sm p-1 px-3 transition-all duration-200 ${currChart === "income"
-            ? "text-yellow-100 bg-blue-500 border border-gray"
-            : "text-gray bg-gray border border-gray"
-            }`}
-        >
-          Income
-        </button>
+    <div className={`${styles.wrapper}`}>
+      <div className={styles.heading}>
+        <h3>Now you can see : { currChart === "students" ? "students chart" : "income chart"}</h3>
+        <div className={styles['chart-switchers']}>
+          <button
+            onClick={() => setCurrChart("students")}
+            className={currChart === "students"
+              ? styles['button-active']
+              : styles.button
+              }
+          >
+            Students
+          </button>
+          <button
+            onClick={() => setCurrChart("income")}
+            className={` ${currChart === "income"
+              ? styles['button-active']
+              : styles.button
+              }`}
+          >
+            Income
+          </button>
+        </div>
       </div>
-
-      <div className="relative mx-auto aspect-square  h-[250px] w-[250px]">
-        {/* Render the Pie chart based on the selected chart */}
+      <div>
         <Pie
           data={currChart === "students" ? chartDataStudents : chartIncomeData}
           options={options}

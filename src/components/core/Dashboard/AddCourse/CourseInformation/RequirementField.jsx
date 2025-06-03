@@ -3,7 +3,7 @@ import { useSelector } from "react-redux"
 
 import { RiDeleteBin6Line } from 'react-icons/ri'
 
-
+import styles from '../../profile.module.css'
 
 
 export default function RequirementsField({ name, label, register, setValue, errors, }) {
@@ -38,51 +38,52 @@ export default function RequirementsField({ name, label, register, setValue, err
   }
 
   return (
-    <div className="flex flex-col space-y-2">
-      <label className="text-sm text-white" htmlFor={name}>
-        {label} <sup className="text-pink-200">*</sup>
+    <>
+      <label className="" htmlFor={name}>
+        {label} <sup>*</sup>
       </label>
-
-      <div className="flex  items-center">
-        <input
-          type="text"
-          id={name}
-          value={requirement}
-          onChange={(e) => setRequirement(e.target.value)}
-          className="form-style w-full"
-        />
-        <button
-          type="button"
-          onClick={handleAddRequirement}
-          className="rounded-md py-3 px-5 font-semibold text-black bg-yellow-100  hover:bg-black  hover:bg-yellow-300 duration-300 ml-5"
-        >
-          Add
-        </button>
-      </div>
-
+      {errors[name] && (
+        <span className="required">
+          {label} is required!
+        </span>
+      )}
+      <input
+        placeholder="Enter instruction and press Enter"
+        type="text"
+        id={name}
+        value={requirement}
+        onChange={(e) => setRequirement(e.target.value)}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            e.preventDefault();
+            if (requirement.trim() && !requirementsList.includes(requirement.trim())) {
+              setRequirementsList([...requirementsList, requirement.trim()]);
+              setRequirement("");
+            }
+          }
+        }}
+        className={styles.input}
+      />
       {requirementsList.length > 0 && (
-        <ul className="mt-2 list-inside list-disc">
+        <ul className={styles['requirement-list']}>
           {requirementsList.map((requirement, index) => (
-            <li key={index} className="flex items-center text-white">
+            <li key={index} className={styles['requirement-list-item']}>
               <span>{requirement}</span>
               <button
                 type="button"
-                className="ml-2 text-xs text-pure-greys-300 "
+                className={styles['remove-requirements']}
                 onClick={() => handleRemoveRequirement(index)}
               >
                 {/* clear  */}
-                <RiDeleteBin6Line className="text-pink-200 text-sm hover:scale-125 duration-200" />
+                <RiDeleteBin6Line className={styles['remove-requirement']} />
+                
               </button>
             </li>
           ))}
         </ul>
       )}
 
-      {errors[name] && (
-        <span className="ml-2 text-xs tracking-wide text-pink-300">
-          {label} is required
-        </span>
-      )}
-    </div>
+      
+    </>
   )
 }

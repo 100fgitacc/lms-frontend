@@ -13,6 +13,9 @@ import { setCourseViewSidebar } from "../../../slices/sidebarSlice"
 import IconBtn from "../../common/IconBtn"
 
 import { HiMenuAlt1 } from 'react-icons/hi'
+import UploadDocs from "../Dashboard/AddCourse/UploadDocs"
+
+import CourseOverview from './CourseOverview'
 
 
 const VideoDetails = () => {
@@ -36,7 +39,7 @@ const VideoDetails = () => {
       if (!courseSectionData.length) return
       if (!courseId && !sectionId && !subSectionId) {
         navigate(`/dashboard/enrolled-courses`)
-      } else {
+      }else {
         // console.log("courseSectionData", courseSectionData)
         const filteredData = courseSectionData.filter(
           (course) => course._id === sectionId
@@ -153,93 +156,51 @@ const VideoDetails = () => {
   // for good looking i have try this 
   if (courseViewSidebar && window.innerWidth <= 640) return;
 
-  return (
-    <div className="flex flex-col gap-5 text-white">
 
-      {/* open - close side bar icons */}
-      <div className="sm:hidden text-white absolute left-7 top-3 cursor-pointer " onClick={() => dispatch(setCourseViewSidebar(!courseViewSidebar))}>
-        {
-          !courseViewSidebar && <HiMenuAlt1 size={33} />
+
+  const currentTimeRef = useRef(0)
+
+  useEffect(() => {
+    const player = playerRef.current?.video
+  
+    if (player) {
+      const handleTimeUpdate = () => {
+        currentTimeRef.current = player.video?.currentTime || 0
+      }
+  
+      const handleSeeking = () => {
+        const newTime = player.video?.currentTime
+        const lastTime = currentTimeRef.current
+  
+        if (newTime > lastTime) {
+          player.video.currentTime = lastTime
         }
-      </div>
+      }
+  
+      player.video.addEventListener("timeupdate", handleTimeUpdate)
+      player.video.addEventListener("seeking", handleSeeking)
+  
+      return () => {
+        player.video.removeEventListener("timeupdate", handleTimeUpdate)
+        player.video.removeEventListener("seeking", handleSeeking)
+      }
+    }
+  }, [videoData])
 
+  
 
-      {!videoData ? (
-        <img
-          src={previewSource}
-          alt="Preview"
-          className="h-full w-full rounded-md object-cover"
-        />
-      ) : (
-        <Player
-          ref={playerRef}
-          aspectRatio="16:9"
-          playsInline
-          autoPlay
-          onEnded={() => setVideoEnded(true)}
-          src={videoData?.videoUrl}
-        >
-          <BigPlayButton position="center" />
-          {/* Render When Video Ends */}
-          {videoEnded && (
-            <div
-              style={{
-                backgroundImage:
-                  "linear-gradient(to top, rgb(0, 0, 0), rgba(0,0,0,0.7), rgba(0,0,0,0.5), rgba(0,0,0,0.1)",
-              }}
-              className="full absolute inset-0 z-[100] grid h-full place-content-center font-inter"
-            >
-              {!completedLectures.includes(subSectionId) && (
-                <IconBtn
-                  disabled={loading}
-                  onclick={() => handleLectureCompletion()}
-                  text={!loading ? "Mark As Completed" : "Loading..."}
-                  customClasses="text-xl max-w-max px-4 mx-auto"
-                />
-              )}
-              <IconBtn
-                disabled={loading}
-                onclick={() => {
-                  if (playerRef?.current) {
-                    // set the current time of the video to 0
-                    playerRef?.current?.seek(0)
-                    setVideoEnded(false)
-                  }
-                }}
-                text="Rewatch"
-                customClasses="text-xl max-w-max px-4 mx-auto mt-2"
-              />
-
-              <div className="mt-10 flex min-w-[250px] justify-center gap-x-4 text-xl">
-                {!isFirstVideo() && (
-                  <button
-                    disabled={loading}
-                    onClick={goToPrevVideo}
-                    className="blackButton"
-                  >
-                    Prev
-                  </button>
-                )}
-                {!isLastVideo() && (
-                  <button
-                    disabled={loading}
-                    onClick={goToNextVideo}
-                    className="blackButton"
-                  >
-                    Next
-                  </button>
-                )}
-              </div>
-            </div>
-          )}
-        </Player>
-      )}
-      <div className="rounded-2xl p-8 px-3 sm:px-12 bg-blue-500">
-        <h1 className="mt-4 text-3xl font-semibold">{videoData?.title}</h1>
-        <p className="pt-2 pb-6">{videoData?.description}</p>
-      </div>
-      
-    </div>
+  return (
+    <>
+        {/* <div>
+            <CourseOverview data={course[0]}/>
+        </div>
+        <div>
+            <ContentHeader page={'course-purchased'} content={course[0] } />
+            <PagePagination currPage={'single-course'} renderPageContent={handleSetContent}/>
+            <CourseContent content={content} data={course[0].overview}/>
+        </div> */}
+        
+    </>
   )
 }
 

@@ -8,7 +8,7 @@ import { createRating } from "../../../services/operations/courseDetailsAPI"
 import IconBtn from './../../common/IconBtn';
 import Img from './../../common/Img';
 
-
+// import styles from './coursePage.module.css'
 
 
 export default function CourseReviewModal({ setReviewModal }) {
@@ -47,13 +47,13 @@ export default function CourseReviewModal({ setReviewModal }) {
   }
 
   return (
-    <div className="fixed inset-0 z-[1000] !mt-0 grid h-screen w-screen place-items-center overflow-auto bg-white bg-opacity-10 backdrop-blur-sm">
-      <div className="my-10 w-11/12 max-w-[700px] rounded-lg border rounded-lg bg-blue-700 ">
+    <div className="">
+      <div className="">
         {/* Modal Header */}
-        <div className="flex items-center justify-between rounded-t-lg  p-5">
-          <p className="text-xl font-semibold text-white">Add Review</p>
+        <div className="">
+          <p className="">Add Review</p>
           <button onClick={() => setReviewModal(false)}>
-            <RxCross2 className="text-2xl text-white" />
+            <RxCross2 className="" />
           </button>
         </div>
 

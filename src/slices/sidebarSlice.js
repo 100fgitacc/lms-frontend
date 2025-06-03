@@ -3,7 +3,7 @@ import { createSlice } from "@reduxjs/toolkit"
 const initialState = {
     openSideMenu: false,
     screenSize: undefined,
-
+    isSidebarHidden: false,
     // course view side bar
     courseViewSidebar: false,
 }
@@ -21,12 +21,18 @@ const sidebarSlice = createSlice({
         },
         setCourseViewSidebar: (state, action) => {
             state.courseViewSidebar = action.payload
-        }
+        },
+        toggleSidebar: (state) => {
+            state.isSidebarHidden = !state.isSidebarHidden;
+        },
+        resetSidebar: (state) => {
+            state.isSidebarHidden = !state.isSidebarHidden;
+        },
 
     }
 })
 
-export const { setOpenSideMenu, setScreenSize, setCourseViewSidebar } = sidebarSlice.actions
+export const { setOpenSideMenu, setScreenSize, setCourseViewSidebar,toggleSidebar, resetSidebar } = sidebarSlice.actions
 
 export default sidebarSlice.reducer
 

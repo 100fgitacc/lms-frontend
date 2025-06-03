@@ -1,0 +1,31 @@
+
+.progress-bar{
+    position: relative;
+    width: 100%;
+    height: 4px;
+    border-radius: 40px;
+    background-color: #F1F5F9;
+}
+.progress-bar-status{
+    position: absolute;
+    top: 0;
+    left: 0;    
+    height: 4px;
+    border-radius: 40px;
+    background-color: #073FC2;
+}
+.progress-percentage{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 5px;
+    font-size: 13px;
+    color: #A4A4A4;
+    font-weight: 400;
+}
+.green .progress-bar-status{
+    background-color: #1EAB1E;
+}
+.total{
+    color: #1EAB1E;;
+}

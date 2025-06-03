@@ -1,0 +1,26 @@
+.wrapper{
+    margin-top: 30px;
+    margin-bottom: 30px;
+    padding: 5px;
+    background-color: #F1F5F9;
+    border-radius: 10px;
+    display: inline-flex;
+}
+.pagination-item{
+    display: inline-flex;
+    padding: 6px 12px;
+    border-radius: 10px;
+    color: #334155;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    background-color: #F1F5F9;
+}
+.active{
+    background-color: #fff;
+    color: #0F172A;
+}
+.pagination-item img{
+    width: 16px;
+    height: 16px;
+    margin-right: 5px;
+}

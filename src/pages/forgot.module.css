@@ -1,0 +1,116 @@
+/* forgot password */
+
+.container {
+max-width: 400px;   
+margin: 0 auto;
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.subtitle{
+  margin: 15px 0;
+}
+
+.form {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  border: 1px solid #dedede;
+  border-radius: 15px;
+  margin-bottom: 25px;
+  padding: 25px;
+}
+.input {
+  width: 100%;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 16px;
+  box-sizing: border-box;
+  padding: 10px 15px;
+}
+
+.input:focus {
+    padding: 10px 15px;
+  border-color: #1858F3;
+  box-shadow: 0 0 0 3px rgba(47, 95, 255, 0.2);
+}
+
+.label {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+.label-text {
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+}
+
+.required {
+  color: red;
+  margin-left: 2px;
+}
+
+
+.icon {
+  margin-right: 5px;
+}
+
+.button {
+  background-color: #1858F3;
+  color: #fff;
+  
+  padding: 12px 24px;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+.button:hover {
+  background-color: #244ad8;
+}
+
+.button-secondary {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: transparent;
+  
+  padding: 10px 15px;
+  border: 1px solid #1858F3;
+  color: #1858F3;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  width: 100%;
+}
+
+.button-secondary:hover {
+  background-color: #1858F3;
+  color: white;
+}
+
+.forgot-link {
+  margin-top: 8px;
+  font-size: 14px;
+  color: #1858F3;
+  text-decoration: underline;
+  align-self: flex-end;
+}
+
+
+/* forgot password end */

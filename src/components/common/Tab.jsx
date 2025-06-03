@@ -1,24 +1,17 @@
+import styles from './index.module.css';
+
 export default function Tab({ tabData, field, setField }) {
   return (
-    <div
-      style={{
-        boxShadow: "inset 0px -1px 0px rgba(255, 255, 255, 0.18)",
-      }}
-      className="flex  p-1 gap-x-1 my-6 rounded-full max-w-max bg-blue-600 "
-    >
-      {
-        tabData.map((tab) => (
-          <button
-            key={tab.id}
-            onClick={() => setField(tab.type)}
-            className={`${field === tab.type
-              ? "bg-yellow-200 text-white"
-              : "bg-transparent "
-              } py-2 px-5 rounded-full transition-all duration-200`}
-          >
-            {tab?.tabName}
-          </button>
-        ))}
+    <div className={styles.container}>
+      {tabData.map((tab) => (
+        <button
+          key={tab.id}
+          onClick={() => setField(tab.type)}
+          className={`${styles.button} ${field === tab.type ? styles.active : ''}`}
+        >
+          {tab.tabName}
+        </button>
+      ))}
     </div>
   );
 }

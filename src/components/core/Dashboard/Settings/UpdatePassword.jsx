@@ -7,6 +7,11 @@ import { useNavigate } from "react-router-dom"
 import { changePassword } from "../../../../services/operations/SettingsAPI"
 import IconBtn from "../../../common/IconBtn"
 
+
+import styles from '../profile.module.css'
+
+
+
 export default function UpdatePassword() {
   const { token } = useSelector((state) => state.auth)
   const navigate = useNavigate()
@@ -31,18 +36,20 @@ export default function UpdatePassword() {
   }
 
   return (
-    <>
+    <div className={styles['update-password']}>
       <form onSubmit={handleSubmit(submitPasswordForm)}>
-        <div className="my-10 flex flex-col gap-y-6 rounded-md   p-8 px-6 sm:px-12 bg-blue-600">
-          <h2 className="text-lg font-semibold text-white">Password</h2>
-
-          <div className="flex flex-col gap-5 lg:flex-row">
-          {/* Current Password */}
-            <div className="relative flex flex-col gap-2 lg:w-[48%]">
+        <div className={styles.wrapper}>
+          <div className={styles['settings-heading']}>
+            <h3>
+              Password update
+            </h3>
+          </div>
+          
+          <div className={styles['row']}>
+            <div className={styles['form-input']}>
               <label htmlFor="oldPassword" className="lable-style">
                 Current Password
               </label>
-
               <input
                 type={showOldPassword ? "text" : "password"}
                 name="oldPassword"
@@ -51,10 +58,9 @@ export default function UpdatePassword() {
                 className="form-style"
                 {...register("oldPassword", { required: true })}
               />
-
               <span
                 onClick={() => setShowOldPassword((prev) => !prev)}
-                className="absolute right-3 top-[38px] z-[10] cursor-pointer"
+                className={styles['password-icon']}
               >
                 {showOldPassword ? (
                   <AiOutlineEyeInvisible fontSize={24} fill="#AFB2BF" />
@@ -64,14 +70,13 @@ export default function UpdatePassword() {
               </span>
 
               {errors.oldPassword && (
-                <span className="-mt-1 text-[12px] text-yellow-100">
+                <span className="">
                   Please enter your Current Password.
                 </span>
               )}
             </div>
 
-            {/* new password */}
-            <div className="relative flex flex-col gap-2 lg:w-[48%]">
+            <div className={styles['form-input']}>
               <label htmlFor="newPassword" className="lable-style">
                 New Password
               </label>
@@ -87,7 +92,7 @@ export default function UpdatePassword() {
 
               <span
                 onClick={() => setShowNewPassword((prev) => !prev)}
-                className="absolute right-3 top-[38px] z-[10] cursor-pointer"
+                className={styles['password-icon']}
               >
                 {showNewPassword ? (
                   <AiOutlineEyeInvisible fontSize={24} fill="#AFB2BF" />
@@ -96,14 +101,12 @@ export default function UpdatePassword() {
                 )}
               </span>
               {errors.newPassword && (
-                <span className="-mt-1 text-[12px] text-yellow-100">
+                <span className="">
                   Please enter your New Password.
                 </span>
               )}
             </div>
-
-            {/*confirm new password */}
-            <div className="relative flex flex-col gap-2 lg:w-[48%]">
+            <div className={styles['form-input']}>
               <label htmlFor="confirmNewPassword" className="lable-style">
                 Confirm New Password
               </label>
@@ -119,7 +122,7 @@ export default function UpdatePassword() {
 
               <span
                 onClick={() => setShowConfirmNewPassword((prev) => !prev)}
-                className="absolute right-3 top-[38px] z-[10] cursor-pointer"
+                className={styles['password-icon']}
               >
                 {showConfirmNewPassword ? (
                   <AiOutlineEyeInvisible fontSize={24} fill="#AFB2BF" />
@@ -128,26 +131,30 @@ export default function UpdatePassword() {
                 )}
               </span>
               {errors.confirmNewPassword && (
-                <span className="-mt-1 text-[12px] text-yellow-100">
+                <span className="">
                   Please enter your Confirm New Password.
                 </span>
               )}
             </div>
 
           </div>
-        </div>
-
-        <div className="flex justify-end gap-2">
+           <div className={styles['btns-container']}>
           <button
             onClick={() => { navigate("/dashboard/my-profile") }}
-            className="cursor-pointer rounded-md  py-2 px-5 font-semibold text-white bg-pink-900 hover:opacity-70 duration-300"
+            className={`${styles['button']} ${styles['delete-btn']}`}
           >
             Cancel
           </button>
-          <IconBtn type="submit" text="Update" />
+          <button
+            onClick={() => { navigate("/dashboard/my-profile") }}
+            className={`${styles['button']} ${styles['select-btn']}`}
+            type="submit"
+          >
+            Save
+          </button>
         </div>
-
+        </div>
       </form>
-    </>
+    </div>
   )
 }
