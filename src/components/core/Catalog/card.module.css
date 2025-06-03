@@ -70,4 +70,11 @@
     margin-top: 15px;
     display: flex;
     justify-content: space-between;
+    align-items: center;
+}
+.in-cart{
+    color: #999999;
+}
+.purchased{
+    color: #267e10;
 }

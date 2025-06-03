@@ -19,6 +19,9 @@ margin: 0 auto;
   margin-bottom: 25px;
   padding: 25px;
 }
+.form-heading{
+  margin-bottom: 15px;
+}
 .input {
   width: 100%;
   border: 1px solid #ccc;

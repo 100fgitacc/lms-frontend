@@ -36,6 +36,8 @@ const LoginForm = () =>{
  return (
    <div className={styles.container}>
     <form onSubmit={handleOnSubmit} className={styles.form}>
+        <h2 className={styles['form-heading']}>Login</h2>
+
         <div className={styles.inner}>
             <label className={styles.label}>
             <p className={styles['label-text']}>

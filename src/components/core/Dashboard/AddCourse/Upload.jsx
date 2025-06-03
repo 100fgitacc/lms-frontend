@@ -52,10 +52,8 @@ export default function Upload({ name, label, register, setValue, errors, video 
       <label className="" htmlFor={name}>
         {label} {!viewData && <sup>*</sup>}
       </label>
-
-      <div className={`${isDragActive ? "" : ""}`}>
-        {previewSource ? (
-          <div className="">
+  {previewSource ? (
+          <>
             {!video ? (
               <img
                 src={previewSource}
@@ -63,7 +61,24 @@ export default function Upload({ name, label, register, setValue, errors, video 
                 className={styles['thumbnail-img']}
               />
             ) : (
-              <Player aspectRatio="16:9" playsInline src={previewSource} />
+             <div
+                style={{
+                  position: "relative",
+                  width: "100%",
+                }}
+              >
+                <Player
+                  playsInline
+                  src={previewSource}
+                  style={{
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    width: "100%",
+                    height: "100%",
+                  }}
+                />
+              </div>
             )}
 
             {!viewData && (
@@ -79,7 +94,7 @@ export default function Upload({ name, label, register, setValue, errors, video 
                 Cancel
               </button>
             )}
-          </div>
+          </>
         ) : (
           <div
             className=""
@@ -100,7 +115,6 @@ export default function Upload({ name, label, register, setValue, errors, video 
             </ul>
           </div>
         )}
-      </div>
       {errors[name] && (
         <span className="required">
           {label} is required

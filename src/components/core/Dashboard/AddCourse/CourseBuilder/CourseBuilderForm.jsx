@@ -113,7 +113,7 @@ export default function CourseBuilderForm() {
                 text={editSectionName ? "Edit Section Name" : "Create Section"}
                 outline={true}
               >
-                <IoAddCircleOutline size={20} className="" />
+                <IoAddCircleOutline size={20} className="btn-icon" />
               </IconBtn>
              </div>
               {/* if editSectionName mode is on */}

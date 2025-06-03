@@ -19,10 +19,10 @@ export default function EditProfile() {
 
   const { register, handleSubmit, formState: { errors } } = useForm()
 
-  const submitProfileForm = async (data) => {
-    // console.log("Form Data - ", data)
+  const submitProfileForm = (data) => {
     try {
       dispatch(updateProfile(token, data))
+      navigate("/dashboard/my-profile")
     } catch (error) {
       console.log("ERROR MESSAGE - ", error.message)
     }
@@ -72,7 +72,7 @@ export default function EditProfile() {
                 defaultValue={user?.lastName}
               />
               {errors.lastName && (
-                <span className="-mt-1 text-[12px] text-yellow-100">
+                <span className="">
                   Please enter your last name.
                 </span>
               )}
@@ -102,7 +102,7 @@ export default function EditProfile() {
                 defaultValue={user?.additionalDetails?.dateOfBirth}
               />
               {errors.dateOfBirth && (
-                <span className="-mt-1 text-[12px] text-yellow-100">
+                <span className="">
                   {errors.dateOfBirth.message}
                 </span>
               )}
@@ -129,7 +129,7 @@ export default function EditProfile() {
                 })}
               </select>
               {errors.gender && (
-                <span className="-mt-1 text-[12px] text-yellow-100">
+                <span className="">
                   Please enter your Date of Birth.
                 </span>
               )}
@@ -158,14 +158,14 @@ export default function EditProfile() {
                 defaultValue={user?.additionalDetails?.contactNumber}
               />
               {errors.contactNumber && (
-                <span className="-mt-1 text-[12px] text-yellow-100">
+                <span className="">
                   {errors.contactNumber.message}
                 </span>
               )}
             </div>
 
             <div className="">
-              <label htmlFor="about" className="lable-style">
+              <label htmlFor="about">
                 About
               </label>
               <input
@@ -178,7 +178,7 @@ export default function EditProfile() {
                 defaultValue={user?.additionalDetails?.about}
               />
               {errors.about && (
-                <span className="-mt-1 text-[12px] text-yellow-100">
+                <span className="">
                   Please enter your About.
                 </span>
               )}
@@ -186,13 +186,11 @@ export default function EditProfile() {
           </div>
           <div className={styles['btns-container']}>
             <button
-              onClick={() => { navigate("/dashboard/my-profile") }}
               className={`${styles['button']} ${styles['delete-btn']}`}
             >
               Cancel
             </button>
             <button
-              onClick={() => { navigate("/dashboard/my-profile") }}
               className={`${styles['button']} ${styles['select-btn']}`}
               type="submit"
             >

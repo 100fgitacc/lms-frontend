@@ -123,17 +123,19 @@
     left: -15px;
 }
 .title{
+    max-width: 700px;
     margin-top: 5px;
     margin-right: 25px;
-    font-size: 28px !important;
+    font-size: 24px !important;
 }
 .course .title{
     position: relative;
-    margin-top: 100px;
+    margin-top: 80px;
     margin-left: 60px;
     font-size: 34px;
     color: #fff;
     z-index: 4;
+    font-size: 24px !important;
 }
 .course .subtitle{
     position: relative;
@@ -202,6 +204,7 @@
 .course-info > div:not(:nth-child(2)){
     display: flex;
     justify-content: space-between;
+    max-width: 250px;
 }
 .course-info > div:first-child{
     color: #5C5C5C;
@@ -266,7 +269,7 @@
 }
 .course-overview .subtitle{
     font-weight: 300;
-    max-width: 700px;
+    max-width: 500px;
     margin-top: 5px;
 }
 .course-includes{
@@ -292,6 +295,10 @@
 .instructions{
     margin-bottom: 5px;
     margin-left: 10px;
+    font-size: 12px;
+}
+.instructions-title{
+    margin-bottom: 15px;
 }
 .share-btn{
     display: flex;

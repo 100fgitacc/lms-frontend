@@ -83,15 +83,7 @@ const [confirmationModal, setConfirmationModal] = useState(null)
 
          
           <li
-            onClick={() => handleConfirmationModal() }
-            className={styles['menu-item']}
-          >
-          <div className={styles.icon}>
-            <img src='/assets/img/icons/log-out.png' alt='icon'/>
-          </div>
-          {!isHidden && 
-            <p 
-              onClick={() => setConfirmationModal({
+            onClick={() => setConfirmationModal({
                 text1: "Are you sure ?",
                 text2: "You will be logged out of your account.",
                 btn1Text: "Logout",
@@ -99,6 +91,13 @@ const [confirmationModal, setConfirmationModal] = useState(null)
                 btn1Handler: () => dispatch(logout(navigate)),
                 btn2Handler: () => setConfirmationModal(null),
               })}
+            className={styles['menu-item']}
+          >
+          <div className={styles.icon}>
+            <img src='/assets/img/icons/log-out.png' alt='icon'/>
+          </div>
+          {!isHidden && 
+            <p
             >Logout</p>
           }
           </li>

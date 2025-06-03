@@ -57,6 +57,10 @@ function Course_Card({ course, Height }) {
 
   const some = cart.cart.find(item => item._id === course._id);
  
+  const isEnrolled = course?.studentsEnrolled?.some(
+    (entry) => entry.user === user._id
+  );
+    
 
   return (
     <div className={styles['courses-item']}>
@@ -86,12 +90,21 @@ function Course_Card({ course, Height }) {
                   <TbListDetails className='react-icon' />
                   <p>Course details </p>
                 </Link>
-                {(!user || !course?.studentsEnrolled.includes(user?._id) && !some?._id && user?.accountType === ACCOUNT_TYPE.STUDENT) ? (
-                  <button onClick={handleAddToCart} className={`button`} >
-                    Add to Cart
-                  </button>
-                ) : some?._id === course._id && user?.accountType === ACCOUNT_TYPE.STUDENT? (<p className="">Already in Cart</p>): user?.accountType === ACCOUNT_TYPE.STUDENT ?(<p className="">Purchased</p>) : null
-                }
+            {user?.accountType === ACCOUNT_TYPE.STUDENT ? (
+            isEnrolled ? (
+              <p className={styles['purchased']}>Purchased</p>
+            ) : some?._id === course._id ? (
+              <p className={styles['in-cart']}>Already in Cart</p>
+            ) : (
+              <button onClick={handleAddToCart} className={`button`}>
+                Add to Cart
+              </button>
+            )
+          ) : null}
+
+
+
+
               </div>
             
           </div>

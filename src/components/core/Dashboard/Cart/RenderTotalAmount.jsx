@@ -1,3 +1,4 @@
+import { useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { useNavigate } from "react-router-dom"
 
@@ -17,18 +18,25 @@ export default function RenderTotalAmount() {
 
 
   const handleBuyCourse = async () => {
+    setPayPalOn(true);
     const courses = cart.map((course) => course._id)
     await buyCourse(token, courses, user, navigate, dispatch)
   }
-
+  const [payPalOn, setPayPalOn] = useState(false);
   return (
     <div>
       <h3>Total amounth:</h3>
       <p className={styles['cart-price']}>{total} $</p>
-      <IconBtn
-        text="Buy Now"
-        onclick={handleBuyCourse}
-      />
+      
+      {!payPalOn ? (
+        <IconBtn
+          text="Buy Now"
+          onclick={handleBuyCourse}
+        />
+      ) : (
+        <div id="paypal-button-container"></div>
+      )}
+     
     </div>
   )
 }

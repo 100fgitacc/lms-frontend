@@ -93,6 +93,7 @@ function SignupForm() {
     {/* <Tab tabData={tabData} field={accountType} setField={setAccountType} /> */}
     {/* Form */}
     <form onSubmit={handleOnSubmit} className={styles.form}>
+      <h2 className={styles['form-heading']}>Create account</h2>
       <div className={styles.inner}>
         {/* First Name */}
         <label className={styles.label}>

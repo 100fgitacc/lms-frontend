@@ -197,7 +197,7 @@ button, input, optgroup, select, textarea {
   content: '';
   position: absolute;
   top: 50%;
-  left: 15px;
+  left: 75px;
   transform: translateY(-50%); 
   background-image: url('/assets/img/icons/chevron-right.png');
   background-size: contain;
@@ -537,6 +537,7 @@ label{
   background-color: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(5px);
   animation: fadeIn 0.3s ease-in-out;
+  overflow-y: scroll;
 }
 
 .modal-content {
@@ -699,4 +700,13 @@ label{
 }
 .btn-icon{
   margin-left: 5px;
+}
+.video-react .video-react-big-play-button {
+  left: 50% !important;
+  top: 50% !important;
+  transform: translate(-50%, -50%) !important;
+}
+#paypal-button-container{
+  margin: 15px 0;
+  transition: all 0,3s ease;
 }

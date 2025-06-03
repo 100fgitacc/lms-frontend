@@ -79,7 +79,7 @@ export default function NestedView({ handleChangeEditSectionName }) {
                   className={`button`}
                 >
                   Edit section
-                  <MdEdit className="" />
+                  <MdEdit className="btn-icon" />
                 </button>
 
                 <button
@@ -96,7 +96,7 @@ export default function NestedView({ handleChangeEditSectionName }) {
                   className={`button cancel-button`}
                 >
                   Delete section
-                  <RiDeleteBin6Line className="" />
+                  <RiDeleteBin6Line className="btn-icon" />
                 </button>
               </div>
               </div>

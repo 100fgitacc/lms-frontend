@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
-
+import { useDispatch, useSelector } from "react-redux"
 // import CourseCard from "../components/Catalog/CourseCard"
 // import CourseSlider from "../components/Catalog/CourseSlider"
 import Footer from "../components/common/Footer"
@@ -12,6 +12,8 @@ import { getCatalogPageData } from '../services/operations/pageAndComponentData'
 import { fetchCourseCategories } from './../services/operations/courseDetailsAPI';
 
 import styles from './catalog.module.css'
+import Sidebar from "../components/core/Dashboard/sidebar/sidebar"
+import Header from "../components/common/header/header"
 
 
 function Catalog() {
@@ -21,7 +23,7 @@ function Catalog() {
     const [catalogPageData, setCatalogPageData] = useState(null)
     const [categoryId, setCategoryId] = useState("")
     const [loading, setLoading] = useState(false);
-
+    const isHidden = useSelector((state) => state.sidebar.isSidebarHidden);
     // Fetch All Categories
     useEffect(() => {
         ; (async () => {
@@ -58,60 +60,75 @@ function Catalog() {
 
     if (loading) {
         return (
-            <div className="grid min-h-[calc(100vh-3.5rem)] place-items-center bg-blue-800">
+            <div className="">
                 <Loading />
             </div>
         )
     }
     if (!loading && !catalogPageData) {
         return (
-            <div className="text-white text-4xl flex justify-center items-center mt-[20%]">
-                No Courses found for selected Category
-            </div>)
+              <div className='page-template'>
+            <Sidebar/>
+            <div className={`content ${styles['course-overview']} ${styles['lesson-content']} ${isHidden? 'full-width': ''} `}>
+            <Header/>
+            <div className={styles.wrapper}>
+                 <div className={styles['catalog-heading']}>
+                    <p className="">
+                         No Courses found for selected Category
+                    </p>
+                </div>
+            </div>
+            </div>
+        </div>
+            )
     }
     
-    console.log(catalogPageData.mostSellingCourses
-);
-    
+   
 
     return (
-        <div className={styles.wrapper}>
-            <div className={styles['catalog-heading']}>
-                <h1 className="">
-                    {catalogPageData?.selectedCategory?.name}
-                </h1>
-                <p className="">
-                    {catalogPageData?.selectedCategory?.description}
-                </p>
-            </div>
-            <div className={styles.inner}>
-                <h3 className={styles.heading}>All courses in this category</h3>
-                <div className={styles['projects-wrapper']}>
-                    {catalogPageData?.selectedCategory?.courses.map((course, i) => (
-                        <Course_Card course={course} key={i}/>
-                    ))}
+        <div className='page-template'>
+            <Sidebar/>
+            <div className={`content ${styles['course-overview']} ${styles['lesson-content']} ${isHidden? 'full-width': ''} `}>
+            <Header/>
+            <div className={styles.wrapper}>
+                <div className={styles['catalog-heading']}>
+                    <h1 className="">
+                        {catalogPageData?.selectedCategory?.name}
+                    </h1>
+                    <p className="">
+                        {catalogPageData?.selectedCategory?.description}
+                    </p>
+                </div>
+                <div className={styles.inner}>
+                    <h3 className={styles.heading}>All courses in this category</h3>
+                    <div className={styles['projects-wrapper']}>
+                        {catalogPageData?.selectedCategory?.courses.map((course, i) => (
+                            <Course_Card course={course} key={i}/>
+                        ))}
+                    </div>
+                </div>
+                <div className={styles.inner}>
+                    {catalogPageData?.differentCategory && (
+                        <h3 className={styles.heading}>
+                            Top 3 courses in: "{catalogPageData?.differentCategory?.name}" 
+                        </h3>
+                    )}
+                    <div className={styles['projects-wrapper']}>
+                        {catalogPageData?.mostSellingCourses.slice(0, 3).map((course, i) => (
+                            <Course_Card course={course} key={i} Height="" />
+                        ))}
+                    </div>
+                </div>
+                <div className={styles.inner}>
+                    <h3 className={styles.heading}>You May Also Like:</h3>
+                    <div className={styles['projects-wrapper']}>
+                        {catalogPageData?.mostSellingCourses
+                                ?.slice(0, 4).map((course, i) => (
+                            <Course_Card course={course} key={i} Height="" />
+                        ))}
+                    </div>
                 </div>
             </div>
-            <div className={styles.inner}>
-                {catalogPageData?.differentCategory && (
-                    <h3 className={styles.heading}>
-                        Top 3 courses in: "{catalogPageData?.differentCategory?.name}" 
-                    </h3>
-                )}
-                <div className={styles['projects-wrapper']}>
-                    {catalogPageData?.mostSellingCourses.slice(0, 3).map((course, i) => (
-                        <Course_Card course={course} key={i} Height="" />
-                    ))}
-                </div>
-            </div>
-            <div className={styles.inner}>
-                <h3 className={styles.heading}>You May Also Like:</h3>
-                <div className={styles['projects-wrapper']}>
-                    {catalogPageData?.mostSellingCourses
-                            ?.slice(0, 4).map((course, i) => (
-                        <Course_Card course={course} key={i} Height="" />
-                    ))}
-                </div>
             </div>
         </div>
     )

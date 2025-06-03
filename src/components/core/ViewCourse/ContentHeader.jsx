@@ -52,7 +52,6 @@ const ContentHeader = ({ page, content }) => {
   const { user } = useSelector((state) => state.profile)
   const { token } = useSelector((state) => state.auth)
 
-  console.log(courseEntireData);
   const navigate = useNavigate()
  const handleBuyCourse = () => {
     if (token) {
@@ -99,6 +98,7 @@ const ContentHeader = ({ page, content }) => {
 
   const [payPalOn, setPayPalOn] = useState(false);
 
+  
 
     return (
         <>
@@ -154,14 +154,14 @@ const ContentHeader = ({ page, content }) => {
                   </div>
                 </div>
                 <div className={styles['course-info']}>
-                    
-
-                     {/* <button className={`${styles['start-course-success']} button-success`} onClick={()=>handleExploreClick([content.overview[0]])}>Explore the course!</button> */}
                      
                       {!payPalOn ? (
                       <>
-                       
-                        <div className={` ${user?.accountType === ACCOUNT_TYPE.STUDENT && 'pt-5'} mt-7`}>
+                        <div>
+                            <p>{courseEntireData?.studentsEnrolled?.length || 0} members</p>
+                            <p>{courseEntireData?.price !== 0 ? courseEntireData?.price + '$' : 'Free'}</p>
+                        </div>
+                        <div className={` ${user?.accountType === ACCOUNT_TYPE.STUDENT}`}>
                           {
                             user?.accountType === ACCOUNT_TYPE.STUDENT && (
                             <>
@@ -190,7 +190,7 @@ const ContentHeader = ({ page, content }) => {
                               <FaShareSquare size={15} /> <span>Share</span>
                             </button>
                         </div>
-                        <h3 className={styles['third-title']}>Course instructions:</h3>
+                        <h4 className={styles['instructions-title']}>Course instructions:</h4>
                         <div>
                           <p>
                             {(courseEntireData?.instructions || []).map((item, index) => (
@@ -201,7 +201,24 @@ const ContentHeader = ({ page, content }) => {
                         </div>
                       </>
                       ) : (
-                        <div id="paypal-button-container" ></div>
+                        <>
+                          <>
+                        <div>
+                            <p>{courseEntireData?.studentsEnrolled?.length || 0} members</p>
+                            <p>{courseEntireData?.price !== 0 ? courseEntireData?.price + '$' : 'Free'}</p>
+                        </div>
+                        <div id="paypal-button-container"></div>
+                        <h4 className={styles['instructions-title']}>Course instructions:</h4>
+                        <div>
+                          <p>
+                            {(courseEntireData?.instructions || []).map((item, index) => (
+                              <p className={styles['instructions']} key={index}>- {item}</p>
+                            ))}
+                              
+                          </p>
+                        </div>
+                      </>
+                        </>
                       )}
                   
                 </div>
