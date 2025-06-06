@@ -94,6 +94,7 @@
 }
 .cart{
     padding: 25px;
+    color: red !important;
 }
 .cart-count{
     position: absolute;

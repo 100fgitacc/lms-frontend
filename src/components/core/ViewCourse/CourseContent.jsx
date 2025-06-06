@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { useLocation } from "react-router-dom"
 import { useNavigate, useParams } from "react-router-dom"
@@ -8,20 +8,14 @@ import { BigPlayButton, Player } from "video-react"
 
 import { markLectureAsComplete } from "../../../services/operations/courseDetailsAPI"
 import { updateCompletedLectures } from "../../../slices/viewCourseSlice"
-import { setCourseViewSidebar } from "../../../slices/sidebarSlice"
 
 import IconBtn from "../../common/IconBtn"
-
-import { HiMenuAlt1 } from 'react-icons/hi'
 import UploadDocs from "../Dashboard/AddCourse/UploadDocs"
 
 
 import styles from '../../../pages/coursePage.module.css'
 import CourseOverview from "./CourseOverview"
 import ContentHeader from "../Dashboard/content-header"
-
-
-
 
 
 
@@ -65,7 +59,6 @@ const CourseContent = ({content, data}) => {
     })()
   }, [courseSectionData, courseEntireData, location.pathname])
 
-  // check if the lecture is the first video of the course
   const isFirstVideo = () => {
     const currentSectionIndx = courseSectionData.findIndex((data) => data._id === sectionId)
 
@@ -80,15 +73,12 @@ const CourseContent = ({content, data}) => {
 
   // go to the next video
   const goToNextVideo = () => {
-    // console.log(courseSectionData)
 
     const currentSectionIndx = courseSectionData.findIndex((data) => data._id === sectionId)
 
     const noOfSubsections = courseSectionData[currentSectionIndx].subSection.length
 
     const currentSubSectionIndx = courseSectionData[currentSectionIndx].subSection.findIndex((data) => data._id === subSectionId)
-
-    // console.log("no of subsections", noOfSubsections)
 
     if (currentSubSectionIndx !== noOfSubsections - 1) {
       const nextSubSectionId = courseSectionData[currentSectionIndx].subSection[currentSubSectionIndx + 1]._id
@@ -101,7 +91,6 @@ const CourseContent = ({content, data}) => {
     }
   }
 
-  // check if the lecture is the last video of the course
   const isLastVideo = () => {
     const currentSectionIndx = courseSectionData.findIndex((data) => data._id === sectionId)
 
@@ -123,7 +112,6 @@ const CourseContent = ({content, data}) => {
 
   // go to the previous video
   const goToPrevVideo = () => {
-    // console.log(courseSectionData)
 
     const currentSectionIndx = courseSectionData.findIndex((data) => data._id === sectionId)
 
@@ -173,8 +161,8 @@ useEffect(() => {
   const player = playerRef.current?.video
 
   if (player) {
-    const videoElement = player.video
-
+    const videoElement = playerRef.current?.video?.video || document.querySelector("video");
+  console.log('safari: ' + videoElement)
     const handleTimeUpdate = () => {
       currentTimeRef.current = videoElement?.currentTime || 0
     }
@@ -183,7 +171,9 @@ useEffect(() => {
       const newTime = videoElement?.currentTime
       const lastTime = currentTimeRef.current
 
-      if (newTime > lastTime) {
+      const isCompleted = completedLectures.includes(subSectionId)
+
+      if (!isCompleted && newTime > lastTime) {
         videoElement.currentTime = lastTime
       }
     }
@@ -200,8 +190,6 @@ useEffect(() => {
   }
 }, [videoData])
 
-
-  
    
     return (
       <>

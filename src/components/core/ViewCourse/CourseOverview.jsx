@@ -1,15 +1,15 @@
-import React, { useState } from 'react';
-// import styles from './coursePage.module.css';
-import { useLocation, useNavigate, useParams } from "react-router-dom"
+import  { useState } from 'react';
+import { useNavigate, useParams } from "react-router-dom"
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSelector, useDispatch } from 'react-redux';
-// import { resetExplore } from '../../store';
 // import ProgressBar from 'components/progress-bar';
 import styles from '../../../pages/coursePage.module.css'
 
 
 
 const CourseOverview  = ({content}) => {
+    
+    const navigate = useNavigate()
     const dispatch = useDispatch();
     const { courseSectionData, courseEntireData, completedLectures } = useSelector((state) => state.viewCourse)
 
@@ -25,11 +25,7 @@ const CourseOverview  = ({content}) => {
     }
     
 
-    const handleExploreClick = () => {
-        dispatch(resetExplore());
-        
-    };
-    const navigate = useNavigate()
+    const { subSectionId } = useParams();
 
     return(
         <>
@@ -59,17 +55,17 @@ const CourseOverview  = ({content}) => {
                             </p>
                             {
                                 item.subSection.map((content, index)=>{
-                                    // const key = `${elemIndex}-${index}`;
                                     return(
                                         <div 
-                                        className={`${styles['overview-item']} 
-                                        ${completedLectures.includes(content?._id) && styles['inactive']}`} key={index} 
-                                        onClick={()=>{
-                                            // handleTextOpened(elemIndex, index);
-                                            navigate(`/view-course/${courseEntireData?._id}/section/${item?._id}/sub-section/${content?._id}`)
-                                        }
-                                        }
-
+                                            className={`${styles['overview-item']} 
+                                                ${completedLectures.includes(content?._id) && styles['inactive']}
+                                                ${content._id === subSectionId && styles['current-lesson']} 
+                                            `} 
+                                            key={index}
+                                            onClick={()=>{
+                                                navigate(`/view-course/${courseEntireData?._id}/section/${item?._id}/sub-section/${content?._id}`)
+                                            }
+                                            }
                                         >  
                                             <p className={styles['overview-item-title']}>{content.title}</p>
                                             {completedLectures.includes(content?._id) && (
@@ -84,19 +80,6 @@ const CourseOverview  = ({content}) => {
                                                     <label htmlFor="customCheckbox"></label>
                                                 </div>
                                             )}
-                                            {/* <AnimatePresence>
-                                                {visibleItems[key] && (
-                                                    <motion.p
-                                                        className={styles['overview-item-text']}
-                                                        initial={{ opacity: 0, height: 0, marginTop:0 }}
-                                                        animate={{ opacity: 1, height: 'auto', marginTop:10  }}
-                                                        exit={{ opacity: 0, height: 0, marginTop:0  }}
-                                                        transition={{ duration: 0.3 }}
-                                                    >
-                                                    
-                                                    </motion.p>
-                                                )}
-                                            </AnimatePresence> */}
                                         </div>
                                     )
                                 })

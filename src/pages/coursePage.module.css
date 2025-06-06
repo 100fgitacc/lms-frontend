@@ -34,6 +34,9 @@
     color: #333333;
     font-size: 22px;
 }
+.course-content-title{
+   margin-bottom: 15px;
+}
 .overview-wrapper{
     padding: 25px;
     border: 1px solid #DEDEDE;
@@ -171,6 +174,9 @@
 }
 .inactive{
     opacity: 0.6;
+}
+.current-lesson{
+    border: 1px solid #073FC2;
 }
 .wrapper{
     position: relative;

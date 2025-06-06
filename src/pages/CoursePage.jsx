@@ -1,13 +1,7 @@
 import { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
-import { Outlet, useParams } from "react-router-dom"
-import { motion, AnimatePresence } from 'framer-motion';
-import CourseReviewModal from "../components/core/ViewCourse/CourseReviewModal"
-import VideoDetailsSidebar from "../components/core/ViewCourse/VideoDetailsSidebar"
+import { useParams } from "react-router-dom"
 import { getFullDetailsOfCourse } from "../services/operations/courseDetailsAPI"
-
-
-import { setCourseViewSidebar } from "../slices/sidebarSlice"
 
 
 import styles from './coursePage.module.css'
@@ -28,7 +22,6 @@ export default function CoursePage() {
   const { courseId } = useParams()
   const { token } = useSelector((state) => state.auth)
   const dispatch = useDispatch()
-  const [reviewModal, setReviewModal] = useState(false)
 
 
   // get Full Details Of Course
@@ -48,29 +41,6 @@ export default function CoursePage() {
 
   }, [])
 
-  
-
-
-  // handle sidebar for small devices
-  const { courseViewSidebar } = useSelector(state => state.sidebar)
-  const [screenSize, setScreenSize] = useState(undefined)
-
-  // set curr screen Size
-  useEffect(() => {
-    const handleScreenSize = () => setScreenSize(window.innerWidth)
-
-    window.addEventListener('resize', handleScreenSize);
-    handleScreenSize();
-    return () => window.removeEventListener('resize', handleScreenSize);
-  })
-
-  // close / open sidebar according screen size
-  useEffect(() => {
-    if (screenSize <= 640) {
-      dispatch(setCourseViewSidebar(false))
-    } else dispatch(setCourseViewSidebar(true))
-  }, [screenSize])
-    
 
   const isHidden = useSelector((state) => state.sidebar.isSidebarHidden);
   const [content, setContent] = useState('Single-course');
@@ -78,7 +48,12 @@ export default function CoursePage() {
   const handleSetContent = (e) => {
       setContent(e);
   }
-    
+
+  const { sectionId, subSectionId } = useParams();
+
+  const courseSectionData = useSelector(state => state.viewCourse.courseSectionData);
+  const currentSection = courseSectionData?.find(section => section._id === sectionId);
+  const currentSubSection = currentSection?.subSection?.find(sub => sub._id === subSectionId);
   return (
     <div className='page-template'>
         <Sidebar/>
@@ -91,16 +66,11 @@ export default function CoursePage() {
                 <div>
                     <ContentHeader page={'course-purchased'}/>
                     <PagePagination currPage={'single-course'} renderPageContent={handleSetContent}/>
+                    <h3 className={styles['course-content-title']}>{currentSubSection?.title}</h3>
                     <CourseContent content={'Lesson'}/>
                 </div>
             </div>
         </div>
-          {/* {confirmationModal && <ConfirmationModal modalData={confirmationModal} />} */}
     </div>
-
-
-     
-
-      /* {reviewModal && <CourseReviewModal setReviewModal={setReviewModal} />} */
   )
 }
