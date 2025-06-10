@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { useForm } from "react-hook-form"
+import { useForm, Controller  } from "react-hook-form"
 import { toast } from "react-hot-toast"
 import { RxCross2 } from "react-icons/rx"
 import { useDispatch, useSelector } from "react-redux"
@@ -21,6 +21,7 @@ export default function SubSectionModal({ modalData, setModalData, add = false, 
     handleSubmit,
     setValue,
     watch,
+    control,
     formState: { errors },
     getValues,
   } = useForm({
@@ -29,6 +30,10 @@ export default function SubSectionModal({ modalData, setModalData, add = false, 
       enableSeek: false,
     },
   });
+    useEffect(() => {
+    register("allowSkip");
+    register("enableSeek");
+  }, [register]);
 
   // console.log("view", view)
   // console.log("edit", edit)
@@ -166,35 +171,37 @@ export default function SubSectionModal({ modalData, setModalData, add = false, 
           viewData={view ? modalData.videoUrl : null}
           editData={edit ? modalData.videoUrl : null}
         />
-        <Checkbox
-          icon={<FiCheck color="#1858f3" size={14} />}
-          checked={watch("allowSkip")}
-          onChange={(checked) => {
-            console.log("Checkbox changed:", checked);
-            setValue("allowSkip", checked);
-          }}
-          label="User can skip this lesson"
-          labelStyle={{
-            marginLeft: 8,
-            cursor: 'pointer',
-          }}
-          containerStyle={{
-            cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-          }}
-          borderColor="#1858f3"
-          size={18}
+       <Controller
+          control={control}
+          name="allowSkip"
+          render={({ field: { onChange, value } }) => (
+            <Checkbox
+              icon={<FiCheck color="#1858f3" size={14} />}
+              checked={value}
+              onChange={onChange}
+              label="User can skip this lesson"
+              labelStyle={{ marginLeft: 8, cursor: 'pointer' }}
+              containerStyle={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}
+              borderColor="#1858f3"
+              size={18}
+            />
+          )}
         />
-        <Checkbox
-          icon={<FiCheck color="#1858f3" size={14} />}
-          checked={watch("enableSeek")}
-          onChange={(checked) => setValue("enableSeek", checked)}
-          label="Allow video seeking"
-          labelStyle={{ marginLeft: 8, cursor: 'pointer' }}
-          containerStyle={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}
-          borderColor="#1858f3"
-          size={18}
+        <Controller
+        control={control}
+        name="enableSeek"
+        render={({ field: { onChange, value } }) => (
+          <Checkbox
+            icon={<FiCheck color="#1858f3" size={14} />}
+            checked={value}
+            onChange={onChange}
+            label="Allow video seeking"
+            labelStyle={{ marginLeft: 8, cursor: 'pointer' }}
+            containerStyle={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}
+            borderColor="#1858f3"
+            size={18}
+          />
+        )}
         />
 
         {/* Title */}
