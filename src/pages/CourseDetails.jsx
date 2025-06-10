@@ -1,28 +1,14 @@
 
 import React, { useEffect, useState } from "react"
-import { BiInfoCircle } from "react-icons/bi"
-import { HiOutlineGlobeAlt } from "react-icons/hi"
-import { FaShareSquare } from "react-icons/fa"
-// import { ReactMarkdown } from "react-markdown/lib/react-markdown"
 import { useDispatch, useSelector } from "react-redux"
 import { useNavigate, useParams } from "react-router-dom"
-
-import ConfirmationModal from "../components/common/ConfirmationModal"
-import Footer from "../components/common/Footer"
-import RatingStars from "../components/common/RatingStars"
-import CourseAccordionBar from "../components/core/Course/CourseAccordionBar"
-import CourseDetailsCard from "../components/core/Course/CourseDetailsCard"
-import { formatDate } from "../services/formatDate"
 import { fetchCourseDetails } from "../services/operations/courseDetailsAPI"
 import { buyCourse } from "../services/operations/studentFeaturesAPI"
 
 import GetAvgRating from "../utils/avgRating"
 import { ACCOUNT_TYPE } from './../utils/constants';
 import { addToCart } from "../slices/cartSlice"
-
 import { IoChevronBack    } from 'react-icons/io5'
-import { MdOutlineVerified } from 'react-icons/md'
-import Img from './../components/common/Img';
 import toast from "react-hot-toast"
 
 
@@ -30,17 +16,14 @@ import toast from "react-hot-toast"
 import styles from './coursePage.module.css'
 import Sidebar from "../components/core/Dashboard/sidebar/sidebar";
 import Header from "../components/common/header/header";
-import CourseContent from "../components/core/ViewCourse/CourseContent";
 import CourseOverview from "../components/core/ViewCourse/CourseOverview";
 import ContentHeader from "../components/core/ViewCourse/ContentHeader";
-import PagePagination from "../components/core/page-pagination";
 
 
 import {
   setCompletedLectures,
   setCourseSectionData,
-  setEntireCourseData,
-  setTotalNoOfLectures,
+  setEntireCourseData
 } from "../slices/viewCourseSlice"
 
 import { getFullDetailsOfCourse } from "../services/operations/courseDetailsAPI"
@@ -53,7 +36,6 @@ function CourseDetails() {
   const { paymentLoading } = useSelector((state) => state.course)
   const dispatch = useDispatch()
   const navigate = useNavigate()
-  const { courseSectionData, courseEntireData, completedLectures } = useSelector((state) => state.viewCourse)
   const isHidden = useSelector((state) => state.sidebar.isSidebarHidden);
  useEffect(() => {
       ; (async () => {
@@ -85,22 +67,7 @@ function CourseDetails() {
   // Declear a state to save the course details
   const [response, setResponse] = useState(null)
   const [confirmationModal, setConfirmationModal] = useState(null)
-  // const [isHidden, setIsHidden] = useState(false);
-  
-  // useEffect(() => {
-  //   const handleResize = () => {
-  //     if (window.innerWidth < 768) {  
-  //       setIsHidden(true);
-  //     } else {
-  //       setIsHidden(false);
-  //     }
-  //   };
 
-  //   window.addEventListener('resize', handleResize);
-  //   handleResize(); // Убедитесь, что событие срабатывает сразу после загрузки
-
-  //   return () => window.removeEventListener('resize', handleResize);
-  // }, []);
   useEffect(() => {
     // Calling fetchCourseDetails fucntion to fetch the details
     const fectchCourseDetailsData = async () => {
@@ -123,10 +90,6 @@ function CourseDetails() {
     const count = GetAvgRating(response?.data?.courseDetails.ratingAndReviews)
     setAvgReviewCount(count)
   }, [response])
-  // console.log("avgReviewCount: ", avgReviewCount)
-
-  // Collapse all
-  // const [collapse, setCollapse] = useState("")
   const [isActive, setIsActive] = useState(Array(0))
   const handleActive = (id) => {
     // console.log("called", id)
@@ -153,45 +116,6 @@ function CourseDetails() {
   }, [])
 
 
-  // Loading skeleton
-  if (paymentLoading || loading || !response) {
-    return (
-      <div className={`mt-24 p-5 flex flex-col justify-center gap-4  `}>
-        <div className="flex flex-col sm:flex-col-reverse  gap-4 ">
-          <p className="h-44 sm:h-24 sm:w-[60%] rounded-xl skeleton"></p>
-          <p className="h-9 sm:w-[39%] rounded-xl skeleton"></p>
-        </div>
-
-        <p className="h-4 w-[55%] lg:w-[25%] rounded-xl skeleton"></p>
-        <p className="h-4 w-[75%] lg:w-[30%] rounded-xl skeleton"></p>
-        <p className="h-4 w-[35%] lg:w-[10%] rounded-xl skeleton"></p>
-
-        {/* Floating Courses Card */}
-        <div className="right-[1.5rem] top-[20%] hidden lg:block lg:absolute min-h-[575px] w-1/3 max-w-[410px] 
-            translate-y-24 md:translate-y-0 rounded-xl skeleton">
-        </div>
-
-        <p className="mt-24 h-60 lg:w-[60%] rounded-xl skeleton"></p>
-      </div>
-    )
-  }
-
-
-  // extract course data
-  const {
-    _id: course_id,
-    courseName,
-    courseDescription,
-    thumbnail,
-    price,
-    whatYouWillLearn,
-    courseContent,
-    ratingAndReviews,
-    instructor,
-    studentsEnrolled,
-    createdAt,
-    tag
-  } = response?.data?.courseDetails
 
   // Buy Course handler
   const handleBuyCourse = () => {

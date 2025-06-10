@@ -5,27 +5,11 @@ import { useNavigate } from "react-router-dom";
 import { getAllInstructorDetails } from "../../../services/operations/adminApi";
 
 import styles from './profile.module.css'
+import Loader from "../../common/Loader";
 
 
 
-// loading skeleton
-const LoadingSkeleton = () => {
-  return (<div className="flex p-5 flex-col gap-6 border-b border-2 border-b-richblack-500">
-    <div className="flex flex-col sm:flex-row gap-5 items-center mt-7">
-      <p className='h-[75px] w-[75px] rounded-full mr-10skeleton'></p>
-      <div className="flex flex-col gap-2 ">
-        <p className='h-4 w-[160px] rounded-xl skeleton'></p>
-        <p className='h-4 w-[270px] rounded-xl skeleton'></p>
-        <p className='h-4 w-[100px] rounded-xl skeleton'></p>
-      </div>
-    </div>
-    <div className='flex gap-5'>
-      <p className="h-7 w-full sm:w-1/2 rounded-xl skeleton"></p>
-      <p className="h-7 w-full sm:w-1/2 rounded-xl skeleton"></p>
-      <p className="h-7 w-full sm:w-1/2 rounded-xl skeleton"></p>
-    </div>
-  </div>)
-}
+
 
 
 function AllInstructors() {
@@ -33,24 +17,24 @@ function AllInstructors() {
   const navigate = useNavigate();
   const [allInstructorDetails, setAllInstructorDetails] = useState([]);
   const [instructorsCount, setInstructorsCount] = useState();
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(true)
 
 
 
-  useEffect(() => {
-    const fetchInstructorsData = async () => {
-      setLoading(true)
-      const { allInstructorsDetails, instructorsCount } = await getAllInstructorDetails(token);
-      if (allInstructorsDetails) {
-        setAllInstructorDetails(allInstructorsDetails);
-        setInstructorsCount(instructorsCount)
-      }
-      setLoading(false)
-    };
+  // useEffect(() => {
+  //   const fetchInstructorsData = async () => {
+  //     setLoading(true)
+  //     const { allInstructorsDetails, instructorsCount } = await getAllInstructorDetails(token);
+  //     if (allInstructorsDetails) {
+  //       setAllInstructorDetails(allInstructorsDetails);
+  //       setInstructorsCount(instructorsCount)
+  //     }
+  //     setLoading(false)
+  //   };
 
-    fetchInstructorsData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  //   fetchInstructorsData();
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, []);
 
   return (
   <div className={`${styles.wrapper} ${styles.details}`}>
@@ -63,13 +47,9 @@ function AllInstructors() {
 
     <div>
       {loading ? (
-        <>
-          <LoadingSkeleton />
-          <LoadingSkeleton />
-          <LoadingSkeleton />
-        </>
+        <Loader/>
       ) : !allInstructorDetails || !allInstructorDetails.length ? (
-        <p className="text-center text-white bg-yellow-800 py-4 text-xl">
+        <p>
           No Data Available
         </p>
       ) : (

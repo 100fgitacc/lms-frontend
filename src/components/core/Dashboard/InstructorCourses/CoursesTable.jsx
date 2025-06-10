@@ -1,22 +1,16 @@
 
-import { useDispatch, useSelector } from "react-redux"
-
-
+import { useSelector } from "react-redux"
 import { useState } from "react"
-import { FaCheck } from "react-icons/fa"
-import { FiEdit2 } from "react-icons/fi"
-import { HiClock } from "react-icons/hi"
-import { RiDeleteBin6Line } from "react-icons/ri"
 import { useNavigate } from "react-router-dom"
-
 import { formatDate } from "../../../../services/formatDate"
 import { deleteCourse, fetchInstructorCourses, } from "../../../../services/operations/courseDetailsAPI"
 import { COURSE_STATUS } from "../../../../utils/constants"
 import ConfirmationModal from "../../../common/ConfirmationModal"
-import Img from './../../../common/Img';
 import toast from 'react-hot-toast'
+import { MdDeleteOutline    } from 'react-icons/md';
 
 import styles from '../profile.module.css'
+import Loader from "../../../common/Loader"
 
 
 
@@ -42,33 +36,10 @@ export default function CoursesTable({ courses, setCourses, loading, setLoading 
     toast.dismiss(toastId)
   }
 
-  // Loading Skeleton
-  const skItem = () => {
-    return (
-      <div className="flex border-b border-richblack-800 px-6 py-8 w-full">
-        <div className="flex flex-1 gap-x-4">
-          <div className='h-[148px] min-w-[300px] rounded-xl skeleton'></div>
-
-          <div className="flex flex-col w-[40%]">
-            <p className="h-5 w-[50%] rounded-xl skeleton"></p>
-            <p className="h-20 w-[60%] rounded-xl mt-3 skeleton"></p>
-
-            <p className="h-2 w-[20%] rounded-xl skeleton mt-3"></p>
-            <p className="h-2 w-[20%] rounded-xl skeleton mt-2"></p>
-          </div>
-        </div>
-      </div>
-    )
-  }
-
   return (
     <>
         {loading && (
-          <div>
-            {skItem()}
-            {skItem()}
-            {skItem()}
-          </div>
+          <Loader/>
         )}
         <div>
           {!loading && courses?.length === 0 ? (
@@ -117,30 +88,39 @@ export default function CoursesTable({ courses, setCourses, loading, setLoading 
                           <h3 className={styles.price}>{course.price} $</h3>
                           <div className={styles['course-manage']}>
                             <button
-                              disabled={loading}
-                              onClick={() => {
-                                navigate(`/dashboard/edit-course/${course._id}`)
-                              }}
-                              title="Edit"
-                              className={styles['edit-btn']}
-                            >Edit course
-                            </button>
-                            <button
-                              disabled={loading}
-                              onClick={() => {
-                                setConfirmationModal({
-                                  text1: "Do you want to delete this course?",
-                                  text2: "All the data related to this course will be deleted",
-                                  btn1Text: !loading ? "Delete" : "Loading...  ",
-                                  btn2Text: "Cancel",
-                                  btn1Handler: !loading ? () => handleCourseDelete(course._id) : () => {},
-                                  btn2Handler: !loading ? () => setConfirmationModal(null) : () => {},
-                                })
-                              }}
-                              title="Delete"
-                             className={styles['delete-btn']}
-                            >Delete course
-                            </button>
+                                disabled={loading}
+                                onClick={() => {
+                                  navigate(`/dashboard/assignments/${course._id}`)
+                                }}
+                                title="Edit"
+                                className={`button ${styles['assignments-btn']}`}
+                              >Assignments</button>
+                            <div>
+                              <button
+                                disabled={loading}
+                                onClick={() => {
+                                  navigate(`/dashboard/edit-course/${course._id}`)
+                                }}
+                                title="Edit"
+                                className={styles['edit-btn']}
+                              >Edit course
+                              </button>
+                              <button
+                                disabled={loading}
+                                onClick={() => {
+                                  setConfirmationModal({
+                                    text1: "Do you want to delete this course?",
+                                    text2: "All the data related to this course will be deleted",
+                                    btn1Text: !loading ? "Delete" : "Loading...  ",
+                                    btn2Text: "Cancel",
+                                    btn1Handler: !loading ? () => handleCourseDelete(course._id) : () => {},
+                                    btn2Handler: !loading ? () => setConfirmationModal(null) : () => {},
+                                  })
+                                }}
+                                title="Delete"
+                                className={styles['delete-btn']}
+                              ><MdDeleteOutline    /></button>
+                            </div>
                           </div>
                         </div>
                       </div>

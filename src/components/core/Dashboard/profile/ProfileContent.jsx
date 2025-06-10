@@ -1,39 +1,15 @@
 import React, { useState, useEffect  } from 'react';
 import { Link, useNavigate } from "react-router-dom"
-import { useSelector, useDispatch } from "react-redux"
+import { useSelector } from "react-redux"
 import { formattedDate } from '../../../../utils/dateFormatter';
 import { fetchInstructorCourses } from '../../../../services/operations/courseDetailsAPI';
 
 
 import ProgressBar from '../progress-bar';
-import FeedUi from '../feed-ui';
 import { MdOutlineEdit } from "react-icons/md";
 import styles from '../profile.module.css'
 
-// import { showToast } from '../toast-сonfig';
-// import Swal from 'sweetalert2';
-// import withReactContent from 'sweetalert2-react-content';
-// import WalletPopup from 'components/popups/wallet-popup';
-// import {setActiveMenuItem } from '../../store';
-
-// const MySwal = withReactContent(Swal);
-
 const ProfileContent = ({content}) => {
-    const dispatch = useDispatch();
-    // const showAlert = () => {
-    //     MySwal.fire({
-    //         showCloseButton: true, 
-    //         showConfirmButton: false, 
-    //         backdrop: true, 
-    //         html: <WalletPopup/>,  
-    //         customClass: {
-    //             popup: 'wallet-popup-inner'
-    //         },
-    //         backdrop: `
-    //             rgba(0, 0, 0, 0.8) 
-    //         `,
-    //     });
-    // };
 
     const [coursesState, setCoursesState] = useState();
 
@@ -43,18 +19,10 @@ const ProfileContent = ({content}) => {
             updateCourses[index].isStarted  = true;
             return updateCourses
         })
-        // showToast(`You have added to the course "${name}"`);
     }
     const [projectsState, setProjectsState] = useState();
 
-    const handleProjectSubmit = (index, name) =>{
-        setProjectsState(prevProjects => {
-            const updateProjects = [...prevProjects];
-            updateProjects[index].isMember  = true;
-            return updateProjects
-        })
-        // showToast(`You have added to the Crypto Project "${name}"`);
-    }
+   
 
     const [loading, setLoading] = useState(false)
     const { token } = useSelector((state) => state.auth)

@@ -4,10 +4,8 @@ import { useSelector } from "react-redux"
 import { useNavigate } from "react-router-dom"
 
 import { getUserEnrolledCourses } from "../../../services/operations/profileAPI"
-import Img from './../../common/Img';
-
 import styles from './profile.module.css'
-
+import Loader from '../../common/Loader';
 
 export default function EnrolledCourses() {
   const { token } = useSelector((state) => state.auth)
@@ -31,26 +29,7 @@ export default function EnrolledCourses() {
     getEnrolledCourses();
   }, [])
 
-  // Loading Skeleton
-  const sklItem = () => {
-    return (
-      <div className="flex border border-gray px-5 py-3 w-full">
-        <div className="flex flex-1 gap-x-4 ">
-          <div className='h-14 w-14 rounded-lg skeleton '></div>
-
-          <div className="flex flex-col w-[40%] ">
-            <p className="h-2 w-[50%] rounded-xl  skeleton"></p>
-            <p className="h-2 w-[70%] rounded-xl mt-3 skeleton"></p>
-          </div>
-        </div>
-
-        <div className="flex flex-[0.4] flex-col ">
-          <p className="h-2 w-[20%] rounded-xl skeleton mt-2"></p>
-          <p className="h-2 w-[40%] rounded-xl skeleton mt-3"></p>
-        </div>
-      </div>
-    )
-  }
+  
 
   // return if data is null
   if (enrolledCourses?.length == 0) {
@@ -75,13 +54,7 @@ export default function EnrolledCourses() {
 
 
           {/* loading Skeleton */}
-          {!enrolledCourses && <div >
-            {sklItem()}
-            {sklItem()}
-            {sklItem()}
-            {sklItem()}
-            {sklItem()}
-          </div>}
+          {!enrolledCourses && <Loader/>} 
 
           {/* Course Names */}
           <div className={styles['courses-wrapper']}>

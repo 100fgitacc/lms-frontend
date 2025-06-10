@@ -12,16 +12,23 @@ import { setCourse } from "../../../../../slices/courseSlice"
 import IconBtn from "../../../../common/IconBtn"
 import Upload from "../Upload"
 
-
+import Checkbox from "react-custom-checkbox"
+import { FiCheck } from "react-icons/fi"
 
 export default function SubSectionModal({ modalData, setModalData, add = false, view = false, edit = false, }) {
   const {
     register,
     handleSubmit,
     setValue,
+    watch,
     formState: { errors },
     getValues,
-  } = useForm()
+  } = useForm({
+    defaultValues: {
+      allowSkip: false,
+      enableSeek: false,
+    },
+  });
 
   // console.log("view", view)
   // console.log("edit", edit)
@@ -34,10 +41,12 @@ export default function SubSectionModal({ modalData, setModalData, add = false, 
 
   useEffect(() => {
     if (view || edit) {
-      // console.log("modalData", modalData)
+      console.log("modalData", modalData.allowSkip)
       setValue("lectureTitle", modalData.title)
       setValue("lectureDesc", modalData.description)
       setValue("lectureVideo", modalData.videoUrl)
+      setValue("allowSkip", modalData.allowSkip) 
+      setValue("enableSeek", modalData.enableSeek);
     }
   }, [])
 
@@ -48,7 +57,9 @@ export default function SubSectionModal({ modalData, setModalData, add = false, 
     if (
       currentValues.lectureTitle !== modalData.title ||
       currentValues.lectureDesc !== modalData.description ||
-      currentValues.lectureVideo !== modalData.videoUrl
+      currentValues.lectureVideo !== modalData.videoUrl ||
+      currentValues.allowSkip !== modalData.allowSkip ||
+      currentValues.enableSeek !== modalData.enableSeek
     ) {
       return true
     }
@@ -57,12 +68,13 @@ export default function SubSectionModal({ modalData, setModalData, add = false, 
 
   // handle the editing of subsection
   const handleEditSubsection = async () => {
-    const currentValues = getValues()
-    // console.log("changes after editing form values:", currentValues)
+    const currentValues = getValues();
+    console.log("changes after editing form values:", currentValues)
     const formData = new FormData()
     // console.log("Values After Editing form values:", currentValues)
     formData.append("sectionId", modalData.sectionId)
     formData.append("subSectionId", modalData._id)
+    
     if (currentValues.lectureTitle !== modalData.title) {
       formData.append("title", currentValues.lectureTitle)
     }
@@ -72,6 +84,10 @@ export default function SubSectionModal({ modalData, setModalData, add = false, 
     if (currentValues.lectureVideo !== modalData.videoUrl) {
       formData.append("video", currentValues.lectureVideo)
     }
+    formData.append("allowSkip", currentValues.allowSkip)
+
+    formData.append("enableSeek", currentValues.enableSeek)
+
     setLoading(true)
     const result = await updateSubSection(formData, token)
     if (result) {
@@ -82,6 +98,7 @@ export default function SubSectionModal({ modalData, setModalData, add = false, 
       )
       const updatedCourse = { ...course, courseContent: updatedCourseContent }
       dispatch(setCourse(updatedCourse))
+      console.log("Updated courseContent:", updatedCourseContent)
     }
     setModalData(null)
     setLoading(false)
@@ -105,6 +122,8 @@ export default function SubSectionModal({ modalData, setModalData, add = false, 
     formData.append("title", data.lectureTitle)
     formData.append("description", data.lectureDesc)
     formData.append("video", data.lectureVideo)
+    formData.append("allowSkip", data.allowSkip)
+    formData.append("enableSeek", data.enableSeek);
     setLoading(true)
     const result = await createSubSection(formData, token)
     if (result) {
@@ -146,6 +165,36 @@ export default function SubSectionModal({ modalData, setModalData, add = false, 
           video={true}
           viewData={view ? modalData.videoUrl : null}
           editData={edit ? modalData.videoUrl : null}
+        />
+        <Checkbox
+          icon={<FiCheck color="#1858f3" size={14} />}
+          checked={watch("allowSkip")}
+          onChange={(checked) => {
+            console.log("Checkbox changed:", checked);
+            setValue("allowSkip", checked);
+          }}
+          label="User can skip this lesson"
+          labelStyle={{
+            marginLeft: 8,
+            cursor: 'pointer',
+          }}
+          containerStyle={{
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+          }}
+          borderColor="#1858f3"
+          size={18}
+        />
+        <Checkbox
+          icon={<FiCheck color="#1858f3" size={14} />}
+          checked={watch("enableSeek")}
+          onChange={(checked) => setValue("enableSeek", checked)}
+          label="Allow video seeking"
+          labelStyle={{ marginLeft: 8, cursor: 'pointer' }}
+          containerStyle={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}
+          borderColor="#1858f3"
+          size={18}
         />
 
         {/* Title */}

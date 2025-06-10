@@ -10,6 +10,7 @@ import UploadDocs from "../Dashboard/AddCourse/UploadDocs"
 import styles from '../../../pages/coursePage.module.css'
 import CourseOverview from "./CourseOverview"
 import ContentHeader from "../Dashboard/content-header"
+import Loader from "../../common/Loader"
 
 const CourseContent = ({ content }) => {
   const { courseId, sectionId, subSectionId } = useParams()
@@ -56,8 +57,8 @@ const CourseContent = ({ content }) => {
       if (!isCompleted && t > maxWatched) setMaxWatched(t)
     }
     const handleSeeking = () => {
-      if (!isCompleted && video.currentTime > maxWatched + 0.5) {
-        video.currentTime = maxWatched
+      if (!isCompleted && !videoData?.enableSeek && video.currentTime > maxWatched + 0.5) {
+        video.currentTime = maxWatched;
       }
     }
 
@@ -75,15 +76,16 @@ const CourseContent = ({ content }) => {
   }
 
   const handleProgressChange = (e) => {
-    const newTime = parseFloat(e.target.value)
-    const video = playerRef.current
-    const allowedMax = isCompleted ? duration : maxWatched
+    const newTime = parseFloat(e.target.value);
+    const video = playerRef.current;
+    const allowedMax = isCompleted || videoData?.enableSeek ? duration : maxWatched;
     if (video && newTime <= allowedMax) {
-      video.currentTime = newTime
-      setCurrentTime(newTime)
+      video.currentTime = newTime;
+      setCurrentTime(newTime);
     }
   }
-
+  console.log(videoData);
+  
   const isFirstVideo = () => {
     const sectionIndex = courseSectionData.findIndex((s) => s._id === sectionId)
     const subIndex = courseSectionData[sectionIndex]?.subSection.findIndex((s) => s._id === subSectionId)
@@ -161,16 +163,39 @@ const CourseContent = ({ content }) => {
                 value={currentTime}
                 onChange={handleProgressChange}
                 className={styles['progress-bar']}
-                style={{ width: '100%', background: `linear-gradient(to right, #3b82f6 0%, #3b82f6 ${watchedPercent}%, #e5e7eb ${watchedPercent}%, #e5e7eb 100%)` }}
+                style={{
+                  width: '100%',
+                  background: `linear-gradient(to right, ${
+                    videoData?.enableSeek ? '#3b82f6' : '#a1a1aa'
+                  } 0%, ${
+                    videoData?.enableSeek ? '#3b82f6' : '#a1a1aa'
+                  } ${watchedPercent}%, #e5e7eb ${watchedPercent}%, #e5e7eb 100%)`,
+                  height: '8px',
+                  borderRadius: '8px',
+                  boxShadow: videoData?.enableSeek
+                    ? '0 0 4pxrgb(106, 151, 206)'
+                    : ''
+                }}
               />
 
               <div className={styles['controls']}>
-                <button className={styles['play-btn']} onClick={() => playerRef.current.paused ? playerRef.current.play() : playerRef.current.pause()}>
-                  ▶︎/❚❚
-                </button>
-                <button className={styles['rewatch-btn']} onClick={() => { playerRef.current.currentTime = 0; playerRef.current.play(); setVideoEnded(false); setCurrentTime(0); setMaxWatched(0); }}>
-                  ↻
-                </button>
+                <div className={styles['controls']}>
+                  {playerRef.current?.paused ? (
+                    <button
+                      className={styles['play-btn']}
+                      onClick={() => playerRef.current.play()}
+                    >
+                      ▶︎ Play
+                    </button>
+                  ) : (
+                    <button
+                      className={styles['play-btn']}
+                      onClick={() => playerRef.current.pause()}
+                    >
+                      ❚❚ Pause
+                    </button>
+                  )}
+                </div>
               </div>
 
               {videoEnded && (
@@ -182,7 +207,7 @@ const CourseContent = ({ content }) => {
               )}
             </div>
           ) : (
-            <img src={courseEntireData.thumbnail} alt="Preview" />
+            <Loader/>
           )}
 
           <div className={styles.wrapper}>

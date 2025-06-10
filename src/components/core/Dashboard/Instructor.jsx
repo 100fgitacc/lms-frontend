@@ -6,16 +6,15 @@ import { useNavigate } from "react-router-dom"
 import { fetchInstructorCourses } from "../../../services/operations/courseDetailsAPI"
 import { getInstructorData } from "../../../services/operations/profileAPI"
 import InstructorChart from "./InstructorDashboard/InstructorChart"
-import Img from './../../common/Img';
 import { getAllStudentsByInstructorData } from "../../../services/operations/adminApi"
 
 
 import styles from './profile.module.css'
+import Loader from "../../common/Loader"
 
 
 export default function Instructor() {
   const { token } = useSelector((state) => state.auth)
-  const { user } = useSelector((state) => state.profile)
 
   const [loading, setLoading] = useState(false)
   const [instructorData, setInstructorData] = useState(null)
@@ -42,48 +41,6 @@ export default function Instructor() {
   const totalStudents = instructorData?.reduce((acc, curr) => acc + curr.totalStudentsEnrolled, 0)
 
 
-  // skeleton loading
-  const skItem = () => {
-    return (
-      <div className="mt-5 w-full flex flex-col justify-between  rounded-xl ">
-        <div className="flex border p-4 border-richblack-600 ">
-          <div className="w-full">
-            <p className="w-[100px] h-4 rounded-xl skeleton"></p>
-            <div className="mt-3 flex gap-x-5">
-              <p className="w-[200px] h-4 rounded-xl skeleton"></p>
-              <p className="w-[100px] h-4 rounded-xl skeleton"></p>
-            </div>
-
-            <div className="flex justify-center items-center flex-col">
-              <div className="w-[80%] h-24 rounded-xl mt-5 skeleton"></div>
-              {/* circle */}
-              <div className="w-60 h-60 rounded-full  mt-4 grid place-items-center skeleton"></div>
-            </div>
-          </div>
-          {/* right column */}
-          <div className="sm:flex hidden min-w-[250px] flex-col rounded-xl p-6 skeleton"></div>
-        </div>
-
-        {/* bottom row */}
-        <div className="flex flex-col gap-y-6  mt-5">
-          <div className="flex justify-between">
-            <p className="text-lg font-bold text-white pl-5">Last 3 Courses</p>
-            <Link to="/dashboard/my-courses">
-              <p className="text-xs font-semibold text-yellow-50 hover:underline pr-5">View All</p>
-            </Link>
-          </div>
-
-          <div className="flex flex-col sm:flex-row  gap-6 ">
-            <p className=" h-[201px] w-full rounded-xl  skeleton"></p>
-            <p className=" h-[201px] w-full rounded-xl  skeleton"></p>
-            <p className=" h-[201px] w-full rounded-xl  skeleton"></p>
-          </div>
-        </div>
-      
-      </div>
-    )
-  }
-
   const [allStudentsDetails, setAllStudentsDetails] = useState([]);
 
   useEffect(() => {
@@ -101,9 +58,7 @@ export default function Instructor() {
   return (
     <div className={styles['content-container']} >
       {loading ? (
-        <div>
-          {skItem()}
-        </div>
+        <Loader type='fullscreen'/>
       )
         :
         courses.length > 0 ? (

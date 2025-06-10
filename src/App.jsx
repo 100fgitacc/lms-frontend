@@ -3,18 +3,15 @@ import { useEffect, useState } from "react";
 import { Route, Routes, useLocation, Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 
-import Home from "./pages/Home"
 import LoginPage from "./pages/LoginPage"
 import SignupForm from "./components/core/Auth/SignupForm"
 import ForgotPassword from "./pages/ForgotPassword";
 import UpdatePassword from "./pages/UpdatePassword";
 import VerifyEmail from "./pages/VerifyEmail";
-import Contact from "./pages/Contact";
 import PageNotFound from "./pages/PageNotFound";
 import CourseDetails from './pages/CourseDetails';
 import Catalog from './pages/Catalog';
 
-import Navbar from "./components/common/Navbar"
 
 import OpenRoute from "./components/core/Auth/OpenRoute"
 import ProtectedRoute from "./components/core/Auth/ProtectedRoute";
@@ -24,6 +21,8 @@ import Profile from "./components/core/Dashboard/profile";
 import Settings from "./components/core/Dashboard/Settings/Settings";
 import MyCourses from './components/core/Dashboard/MyCourses';
 import EditCourse from './components/core/Dashboard/EditCourse/EditCourse';
+import AssignmentsCourse from './components/core/Dashboard/AssignmentsCourse/AssignmentsCourse';
+import StudentLesson from './components/core/Dashboard/AssignmentsCourse/StudentLesson';
 import Instructor from './components/core/Dashboard/Instructor';
 
 
@@ -36,7 +35,6 @@ import VideoDetails from './components/core/ViewCourse/VideoDetails';
 
 import { ACCOUNT_TYPE } from './utils/constants';
 
-import { HiArrowNarrowUp } from "react-icons/hi"
 import CreateCategory from "./components/core/Dashboard/CreateCategory";
 import AllStudents from './components/core/Dashboard/AllStudents';
 import AllStudentsByInstructor from './components/core/Dashboard/AllStudentsByInstructor';
@@ -170,8 +168,13 @@ function App() {
               <Route path="dashboard/instructor" element={<Instructor />} />
               <Route path="dashboard/add-course" element={<AddCourse />} />
               <Route path="dashboard/my-courses" element={<MyCourses />} />
-               <Route path="dashboard/all-students-by-instructor" element={<AllStudentsByInstructor />} />
+              <Route path="dashboard/all-students-by-instructor" element={<AllStudentsByInstructor />} />
               <Route path="dashboard/edit-course/:courseId" element={<EditCourse />} />
+              <Route path="dashboard/assignments/:courseId" element={<AssignmentsCourse />} />
+             <Route
+              path="dashboard/assignments/:courseId/student/:studentId/lesson/:lessonId"
+              element={<StudentLesson />}
+            />
             </>
           )}
         </Route>

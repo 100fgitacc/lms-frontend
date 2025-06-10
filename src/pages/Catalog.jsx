@@ -1,12 +1,8 @@
 import React, { useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
-import { useDispatch, useSelector } from "react-redux"
-// import CourseCard from "../components/Catalog/CourseCard"
-// import CourseSlider from "../components/Catalog/CourseSlider"
-import Footer from "../components/common/Footer"
+import { useSelector } from "react-redux"
 import Course_Card from '../components/core/Catalog/Course_Card'
-import Course_Slider from "../components/core/Catalog/Course_Slider"
-import Loading from './../components/common/Loading';
+import Loader from '../components/common/Loader';
 
 import { getCatalogPageData } from '../services/operations/pageAndComponentData'
 import { fetchCourseCategories } from './../services/operations/courseDetailsAPI';
@@ -19,12 +15,10 @@ import Header from "../components/common/header/header"
 function Catalog() {
 
     const { catalogName } = useParams()
-    const [active, setActive] = useState(1)
     const [catalogPageData, setCatalogPageData] = useState(null)
     const [categoryId, setCategoryId] = useState("")
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
     const isHidden = useSelector((state) => state.sidebar.isSidebarHidden);
-    // Fetch All Categories
     useEffect(() => {
         ; (async () => {
             try {
@@ -38,8 +32,6 @@ function Catalog() {
             }
         })()
     }, [catalogName])
-
-
     useEffect(() => {
         if (categoryId) {
             ; (async () => {
@@ -55,34 +47,34 @@ function Catalog() {
         }
     }, [categoryId])
 
-    // console.log('======================================= ', catalogPageData)
-    // console.log('categoryId ==================================== ', categoryId)
-
     if (loading) {
-        return (
-            <div className="">
-                <Loading />
-            </div>
-        )
+    return (
+        <div className="page-template">
+        <Sidebar />
+        <div className={`content ${styles['course-overview']} ${styles['lesson-content']} ${isHidden ? 'full-width' : ''}`}>
+            <Header />
+            <Loader type={'fullscreen'} />
+        </div>
+        </div>
+    )
     }
+
     if (!loading && !catalogPageData) {
-        return (
-              <div className='page-template'>
-            <Sidebar/>
-            <div className={`content ${styles['course-overview']} ${styles['lesson-content']} ${isHidden? 'full-width': ''} `}>
-            <Header/>
+    return (
+        <div className="page-template">
+        <Sidebar />
+        <div className={`content ${styles['course-overview']} ${styles['lesson-content']} ${isHidden ? 'full-width' : ''}`}>
+            <Header />
             <div className={styles.wrapper}>
-                 <div className={styles['catalog-heading']}>
-                    <p className="">
-                         No Courses found for selected Category
-                    </p>
-                </div>
+            <div className={styles['catalog-heading']}>
+                <p className={styles['no-courses-text']}>No Courses found for selected Category</p>
             </div>
             </div>
         </div>
-            )
+        </div>
+    )
     }
-    
+        
    
 
     return (

@@ -35,14 +35,9 @@ const Header = () => {
         setLoading(false)
     }
 
-
     useEffect(() => {
         fetchSublinks();
     }, [])
-
-    // const matchRoute = (route) => {
-    //     return matchPath({ path: route }, location.pathname);
-    // }
 
 
     const [isCatalog, setisCatalog] = useState(false);

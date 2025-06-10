@@ -1,14 +1,17 @@
-import  { useState } from 'react';
+import  { useState, useEffect } from 'react';
 import { useNavigate, useParams } from "react-router-dom"
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSelector, useDispatch } from 'react-redux';
 // import ProgressBar from 'components/progress-bar';
 import styles from '../../../pages/coursePage.module.css'
-
-
+import {
+  setCourseSectionData
+} from "../../../slices/viewCourseSlice"
+import { getFullDetailsOfCourse } from "../../../services/operations/courseDetailsAPI"
 
 const CourseOverview  = ({content}) => {
-    
+
+    const { token } = useSelector((state) => state.auth)
     const navigate = useNavigate()
     const dispatch = useDispatch();
     const { courseSectionData, courseEntireData, completedLectures } = useSelector((state) => state.viewCourse)
@@ -27,6 +30,39 @@ const CourseOverview  = ({content}) => {
 
     const { subSectionId } = useParams();
 
+    useEffect(() => {
+    if (!courseEntireData?._id || !token) return;
+
+    (async () => {
+        const courseData = await getFullDetailsOfCourse(courseEntireData._id, token);
+        if (courseData?.courseDetails?.courseContent) {
+        dispatch(setCourseSectionData(courseData.courseDetails.courseContent));
+        }
+    })()
+    }, [completedLectures, courseEntireData?._id, token]);
+
+
+    const entireState = useSelector(state => state);
+    console.log(entireState);
+
+    const userId = useSelector(state => state.profile.user._id);
+    const isUserEnrolled = courseEntireData?.studentsEnrolled?.some(enrollment => enrollment.user === userId);
+    console.log(isUserEnrolled);
+    
+    // Функция проверки доступности лекции
+    const isLectureAccessible = (section, lessonIndex) => {
+    if (!isUserEnrolled) return false; // Если не записан — доступ запрещён
+
+    const lesson = section.subSection[lessonIndex];
+
+    if (lesson.allowSkip) return true; // Если урок можно пропускать — всегда доступен
+
+    if (lessonIndex === 0) return true; // Первый урок доступен
+
+    // Иначе доступ если предыдущий урок пройден
+    const prevLesson = section.subSection[lessonIndex - 1];
+    return completedLectures.includes(prevLesson._id);
+    };
     return(
         <>
         {
@@ -55,18 +91,23 @@ const CourseOverview  = ({content}) => {
                             </p>
                             {
                                 item.subSection.map((content, index)=>{
+                                    const accessible = isLectureAccessible(item, index);
+                                    console.log(content.allowSkip);
+                                    
                                     return(
-                                        <div 
-                                            className={`${styles['overview-item']} 
-                                                ${completedLectures.includes(content?._id) && styles['inactive']}
-                                                ${content._id === subSectionId && styles['current-lesson']} 
-                                            `} 
-                                            key={index}
-                                            onClick={()=>{
-                                                navigate(`/view-course/${courseEntireData?._id}/section/${item?._id}/sub-section/${content?._id}`)
-                                            }
-                                            }
-                                        >  
+                                       <div 
+                                    className={`${styles['overview-item']} 
+                                        ${completedLectures.includes(content?._id) && styles['inactive']}
+                                        ${content._id === subSectionId && styles['current-lesson']} 
+                                        ${!accessible ? styles['disabled'] : ''}
+                                    `} 
+                                    key={index}
+                                    onClick={() => {
+                                        if (accessible) {
+                                        navigate(`/view-course/${courseEntireData?._id}/section/${item?._id}/sub-section/${content?._id}`)
+                                        }
+                                    }}
+                                    >  
                                             <p className={styles['overview-item-title']}>{content.title}</p>
                                             {completedLectures.includes(content?._id) && (
                                                 <div className={`checkbox-container  ${styles['lecture-status']}`}>

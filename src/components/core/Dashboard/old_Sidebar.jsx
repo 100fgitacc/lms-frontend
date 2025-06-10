@@ -7,7 +7,7 @@ import { sidebarLinks } from '../../../../data/dashboard-links';
 import { logout } from "../../../services/operations/authAPI"
 import ConfirmationModal from "../../common/ConfirmationModal"
 import SidebarLink from "./SidebarLink"
-import Loading from '../../common/Loading';
+import Loading from '../../common/Loader';
 
 import { HiMenuAlt1 } from 'react-icons/hi'
 import { IoMdClose } from 'react-icons/io'

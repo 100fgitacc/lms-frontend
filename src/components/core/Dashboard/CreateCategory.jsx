@@ -7,17 +7,8 @@ import { useSelector } from "react-redux";
 import { RiDeleteBin6Line } from "react-icons/ri";
 
 import styles from './profile.module.css'
+import Loader from "../../common/Loader";
 
-
-// loading skeleton
-const LoadingSkeleton = () => {
-  return (<div className="flex  flex-col gap-6 ">
-    <p className="h-7 w-full sm:w-1/2 rounded-xl skeleton"></p>
-    <p className="h-7 w-full sm:w-1/2 rounded-xl skeleton"></p>
-    <p className="h-7 w-full sm:w-1/2 rounded-xl skeleton"></p>
-    <p className="h-7 w-full sm:w-1/2 rounded-xl skeleton"></p>
-  </div>)
-}
 
 
 const CreateCategory = () => {
@@ -98,7 +89,7 @@ const CreateCategory = () => {
         </div>
           <div className={`${styles.col} ${styles.wrapper}`}>
             {loading ? (
-              <LoadingSkeleton />
+              <Loader/>
             ) : (
               <div>
                 <h3 className={styles['third-title']}>

@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { Outlet } from "react-router-dom"
-import Loading from '../components/common/Loading'
+import Loading from '../components/common/Loader'
 import styles from './dashboard.module.css'
 import Header from '../components/common/header/header'
 import Sidebar from '../components/core/Dashboard/sidebar/sidebar'

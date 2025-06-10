@@ -24,7 +24,7 @@
     width: 120px;
 }
 .edit-btn,.delete-btn{
-    padding: 10px 15px;
+    padding: 10px 12px;
     color: #fff;
     cursor: pointer;
     border-radius: 6px;
@@ -34,11 +34,19 @@
 }
 .delete-btn {
     background-color: #f3184f !important;
+    margin-left: 5px;
+}
+.assignments-btn{
+    background-color: #1eb25e !important;
 }
 .course-manage{
     font-size: 12px;
     display: flex;
     justify-content: space-between;
+}
+.course-manage > div{
+  display: flex;
+    justify-content: space-between;  
 }
 .country-container{
     display: flex;
@@ -768,3 +776,6 @@
     margin: 15px;
     font-size: 12px;
 }
+
+
+

@@ -1,10 +1,7 @@
 import { useEffect, useRef, useState } from "react"
-import { FiUpload } from "react-icons/fi"
 import { useDispatch, useSelector } from "react-redux"
 
 import { updateUserProfileImage } from "../../../../services/operations/SettingsAPI"
-import IconBtn from "../../../common/IconBtn"
-import Img from './../../../common/Img';
 import styles from '../profile.module.css'
 
 
