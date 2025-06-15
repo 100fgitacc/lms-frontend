@@ -43,7 +43,7 @@ export default function CoursePage() {
 
 
   const isHidden = useSelector((state) => state.sidebar.isSidebarHidden);
-  const [content, setContent] = useState('Single-course');
+  const [content, setContent] = useState('Lesson');
   
   const handleSetContent = (e) => {
       setContent(e);
@@ -54,6 +54,9 @@ export default function CoursePage() {
   const courseSectionData = useSelector(state => state.viewCourse.courseSectionData);
   const currentSection = courseSectionData?.find(section => section._id === sectionId);
   const currentSubSection = currentSection?.subSection?.find(sub => sub._id === subSectionId);
+
+
+
   return (
     <div className='page-template'>
         <Sidebar/>
@@ -61,13 +64,21 @@ export default function CoursePage() {
             <Header/>
             <div className={`content-inner ${styles['lesson-content-inner']} ${!isHidden  && styles['lesson-content-inner-full']}`}>
                 <div>
-                    <CourseOverview content={content}/>
+                    <CourseOverview content={content} />
                 </div>
                 <div>
                     <ContentHeader page={'course-purchased'}/>
-                    <PagePagination currPage={'single-course'} renderPageContent={handleSetContent}/>
+                    <PagePagination currPage={'single-course'} renderPageContent={handleSetContent} currentSubSection={currentSubSection}/>
+                    {currentSubSection?.requiresHomeworkCheck && (
+                      <div className={`${styles['lesson-homework-mark']}`}>
+                        <p>
+                          Attention: Homework evaluation is required for this lesson!
+                        </p>
+                        <img src='/assets/img/icons/medal.png' alt='icon'/>
+                      </div>
+                    )}
                     <h3 className={styles['course-content-title']}>{currentSubSection?.title}</h3>
-                    <CourseContent content={'Lesson'}/>
+                    <CourseContent content={content}/>
                 </div>
             </div>
         </div>

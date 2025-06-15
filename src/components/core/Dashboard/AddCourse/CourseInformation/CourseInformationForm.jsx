@@ -119,7 +119,7 @@ export default function CourseInformationForm() {
           dispatch(setCourse(result))
         }
       } else {
-        toast.error("No changes made to the form")
+        toast.error("No changes made to the form! Just close the window")
       }
       return
     }

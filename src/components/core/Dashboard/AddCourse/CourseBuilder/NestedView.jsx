@@ -1,9 +1,8 @@
 import { useState } from "react"
-import { AiFillCaretDown } from "react-icons/ai"
 import { FaPlus } from "react-icons/fa"
 import { MdEdit,MdVisibility } from "react-icons/md"
 import { RiDeleteBin6Line } from "react-icons/ri"
-import { RxDropdownMenu } from "react-icons/rx"
+import { MdAssignment } from "react-icons/md"
 import { useDispatch, useSelector } from "react-redux"
 
 import { deleteSection, deleteSubSection } from "../../../../../services/operations/courseDetailsAPI"
@@ -50,7 +49,8 @@ export default function NestedView({ handleChangeEditSectionName }) {
     }
     setConfirmationModal(null)
   }
-
+  console.log(course?.courseContent[0].subSection[0]);
+  
   return (
     <>
       <div
@@ -78,7 +78,7 @@ export default function NestedView({ handleChangeEditSectionName }) {
                   }
                   className={`button`}
                 >
-                  Edit section
+                  Edit section name
                   <MdEdit className="btn-icon" />
                 </button>
 
@@ -109,6 +109,17 @@ export default function NestedView({ handleChangeEditSectionName }) {
                   className=""
                 >
                   <div className={styles['lecture-wrapper']}>
+                    {data.homeworks.length > 0 ? (
+                      data.requiresHomeworkCheck ? (
+                        <p className={styles['homework-title']}>
+                          <span>Lecture Including homework and requires homework check</span> <MdAssignment style={{ marginLeft: '5px' }} size={10} color="#fff" />
+                        </p>
+                      ) : (
+                        <p className={styles['homework-title']}>
+                          <span>Lecture Including homework</span> <MdAssignment style={{ marginLeft: '5px' }} size={10} color="#fff" />
+                        </p>
+                      )
+                    ) : null}
                     <div>
                       <MdVisibility className={styles['view-lecture']} onClick={() => setViewSubSection(data)}/>
                       <div>

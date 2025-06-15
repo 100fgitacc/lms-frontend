@@ -5,13 +5,27 @@ import { FiUploadCloud } from "react-icons/fi"
 import styles from '../../../../pages/coursePage.module.css'
 
 export default function UploadDocs({
-  type = "image", 
+  type = "image",
   viewData = null,
   editData = null,
+  name,
+  register,
+  setValue,
+  errors,
+  disabled = false,
 }) {
+
   const [selectedFile, setSelectedFile] = useState(null)
-  const [previewSource, setPreviewSource] = useState(viewData ? viewData : editData ? editData : "")
+  const [previewSource, setPreviewSource] = useState(
+    viewData ? viewData : editData ? editData : ""
+  )
   const inputRef = useRef(null)
+
+  useEffect(() => {
+    if (register && name) {
+      register(name)
+    }
+  }, [register, name])
 
   const getAcceptedTypes = () => {
     switch (type) {
@@ -23,6 +37,9 @@ export default function UploadDocs({
           "application/pdf": [".pdf"],
           "application/vnd.openxmlformats-officedocument.wordprocessingml.document": [".docx"],
           "text/csv": [".csv"],
+          "application/zip": [".zip"],
+          "application/vnd.ms-powerpoint": [".ppt"],
+          "application/vnd.openxmlformats-officedocument.presentationml.presentation": [".pptx"],
         }
       default:
         return { "image/*": [".jpeg", ".jpg", ".png"] }
@@ -31,11 +48,16 @@ export default function UploadDocs({
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     accept: getAcceptedTypes(),
+    multiple: false,
+    disabled,
     onDrop: (acceptedFiles) => {
       const file = acceptedFiles[0]
       if (file) {
         previewFile(file)
         setSelectedFile(file)
+        if (setValue && name) {
+          setValue(name, file, { shouldValidate: true, shouldDirty: true })
+        }
       }
     },
   })
@@ -52,13 +74,36 @@ export default function UploadDocs({
       setPreviewSource(reader.result)
     }
   }
+  function decodeFileName(filename) {
+    try {
+      return decodeURIComponent(filename);
+    } catch {
+      return filename;
+    }
+  }
+  function downloadFile(url, filename) {
+    fetch(url)
+      .then(res => res.blob())
+      .then(blob => {
+        const link = document.createElement('a');
+        link.href = window.URL.createObjectURL(blob);
+        link.download = filename;
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        window.URL.revokeObjectURL(link.href);
+      })
+      .catch(() => {
+        window.open(url, '_blank');
+      });
+  }
+
 
   return (
-   <div className={styles['thumbnail-container']}>
-    
-      <div className={``}>
+    <div className={styles['thumbnail-container']}>
+      <div>
         {previewSource ? (
-          <div className="">
+          <div>
             {type === "image" && (
               <img
                 src={previewSource}
@@ -67,18 +112,45 @@ export default function UploadDocs({
               />
             )}
             {type === "video" && (
-              <Player aspectRatio="16:9" playsInline src={previewSource} />
+              <video
+                controls
+                src={previewSource}
+                style={{ maxWidth: "100%", height: "auto" }}
+              />
             )}
             {type === "text" && (
-              <p className="">{previewSource}</p>
+              typeof previewSource === "string" ? (
+                previewSource.startsWith("http") ? (
+                  <p
+                    onClick={() => downloadFile(previewSource, decodeFileName(previewSource.split('/').pop()))}
+                    style={{ cursor: 'pointer', color: 'blue', textDecoration: 'underline' }}
+                  >
+                    {decodeFileName(previewSource.split('/').pop())}
+                  </p>
+                ) : (
+                  <p>{previewSource}</p>
+                )
+              ) : (
+                previewSource && typeof previewSource === "object" ? (
+                  <p
+                    onClick={() => downloadFile(previewSource.url, decodeFileName(previewSource.filename))}
+                    style={{ cursor: 'pointer', color: 'blue', textDecoration: 'underline' }}
+                  >
+                    {decodeFileName(previewSource.filename)}
+                  </p>
+                ) : null
+              )
             )}
 
-            {!viewData && (
+            {!disabled && (
               <button
                 type="button"
                 onClick={() => {
                   setPreviewSource("")
                   setSelectedFile(null)
+                  if (setValue && name) {
+                    setValue(name, null, { shouldValidate: true, shouldDirty: true })
+                  }
                 }}
                 className={`button ${styles['cancel-button']}`}
               >
@@ -88,27 +160,30 @@ export default function UploadDocs({
           </div>
         ) : (
           <div
-            className=""
             {...getRootProps()}
+            style={{
+              border: "2px dashed #888",
+              padding: 20,
+              textAlign: "center",
+              cursor: disabled ? "not-allowed" : "pointer",
+            }}
           >
-            <input {...getInputProps()} ref={inputRef} />
-            <div className="">
-              <FiUploadCloud className="" />
-            </div>
-            <p className="">
-              Drag and drop a {type} file, or click to{" "}
-              <span className="">Browse</span>
+            <input {...getInputProps()} ref={inputRef} name={name} />
+            <FiUploadCloud size={40} color="#888" />
+            <p>
+              Drag and drop a {type} file, or click to <span>Browse</span>
             </p>
             {type === "text" && (
-              <ul className="">
-                <li>Supported: TXT, PDF, DOCX, CSV</li>
+              <ul style={{ listStyle: "none", paddingLeft: 0 }}>
+                <li>Supported: TXT, PDF, DOCX, CSV, PPT, PPTX, ZIP</li>
               </ul>
+            )}
+            {errors && errors[name] && (
+              <p style={{ color: "red", marginTop: 8 }}>{errors[name].message || "File is required"}</p>
             )}
           </div>
         )}
       </div>
-
-    
     </div>
   )
 }

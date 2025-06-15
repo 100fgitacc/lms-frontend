@@ -1,16 +1,17 @@
 import { useEffect, useRef, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
+import { useForm } from "react-hook-form";
 import { useLocation, useNavigate, useParams } from "react-router-dom"
 
 import { markLectureAsComplete } from "../../../services/operations/courseDetailsAPI"
 import { updateCompletedLectures } from "../../../slices/viewCourseSlice"
 
 import IconBtn from "../../common/IconBtn"
-import UploadDocs from "../Dashboard/AddCourse/UploadDocs"
 import styles from '../../../pages/coursePage.module.css'
 import CourseOverview from "./CourseOverview"
 import ContentHeader from "../Dashboard/content-header"
 import Loader from "../../common/Loader"
+import UploadDocs from "../Dashboard/AddCourse/UploadDocs"
 
 const CourseContent = ({ content }) => {
   const { courseId, sectionId, subSectionId } = useParams()
@@ -84,7 +85,6 @@ const CourseContent = ({ content }) => {
       setCurrentTime(newTime);
     }
   }
-  console.log(videoData);
   
   const isFirstVideo = () => {
     const sectionIndex = courseSectionData.findIndex((s) => s._id === sectionId)
@@ -139,6 +139,25 @@ const CourseContent = ({ content }) => {
 
   const watchedPercent = duration ? ((isCompleted ? duration : maxWatched) / duration) * 100 : 0
 
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors },
+    reset,
+  } = useForm();
+
+  const onSubmit = (data) => {
+    console.log("Submitted data:", data);
+    if (!data.answerText && !data.homeworkFile) {
+      toast.error("Please provide either a text answer or attach a file.");
+      return;
+    }
+
+    onSubmitHomework(data);
+    reset();
+  };
+  const [previewFileUrl, setPreviewFileUrl] = useState("")
   return (
     <>
       {content === 'Lesson' ? (
@@ -154,7 +173,6 @@ const CourseContent = ({ content }) => {
                 src={videoData.videoUrl}
                 className={styles['video-element']}
               />
-
               <input
                 type="range"
                 min={0}
@@ -177,7 +195,6 @@ const CourseContent = ({ content }) => {
                     : ''
                 }}
               />
-
               <div className={styles['controls']}>
                 <div className={styles['controls']}>
                   {playerRef.current?.paused ? (
@@ -197,7 +214,6 @@ const CourseContent = ({ content }) => {
                   )}
                 </div>
               </div>
-
               {videoEnded && (
                 <div className={styles['video-ended-controls']}>
                   {!isFirstVideo() && <button disabled={loading} onClick={goToPrevVideo} className={`button ${styles['button-step']}`}>Prev</button>}
@@ -205,16 +221,112 @@ const CourseContent = ({ content }) => {
                   {!isLastVideo() && <button disabled={loading} onClick={goToNextVideo} className={`button ${styles['button-step']}`}>Next</button>}
                 </div>
               )}
+              <div className={`${styles.wrapper} ${styles['homework-wrapper']}`}>
+                <h4 className={styles.title}>Lesson description:</h4>
+                <p className={styles['lesson-desc']}>{videoData.description}</p>
+                <h4 className={styles.title}>Homework:</h4>
+                {videoData?.homeworks.length > 0 ?
+                  (
+                    <div className={`${styles['homework-materials']}`}>
+                      {videoData.homeworks.length > 0 &&
+                      videoData.homeworks.map((item, index) => (
+                        <div key={item._id || index} style={{ marginBottom: '1rem' }}>
+                          {item.type === 'text' && (
+                            <>
+                              <h6>Your task:</h6>
+                              <p>{item.value}</p>
+                            </>
+                          )}
+
+                          {item.type === 'link' && (
+                            <>
+                              <h6>Useful link:</h6>
+                              <a href={item.value} target="_blank" rel="noopener noreferrer">
+                                {item.value}
+                              </a>
+                            </>
+                          )}
+
+                          {item.type === 'file' && (
+                            <>
+                              <h6>Lesson materials:</h6>
+                              <a href={item.value.url} download={item.value.filename}>
+                                {item.value.filename}
+                              </a>
+                            </>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <small>This lesson is not including homework!</small>
+                  )
+                }
+              </div>
             </div>
           ) : (
             <Loader/>
           )}
-
-          <div className={styles.wrapper}>
-            <h4 className={styles.materials}>Upload your materials:</h4>
-            <UploadDocs type="text" />
-          </div>
+         
         </div>
+      ) : content === 'Homework' ? (
+        <>
+          <div className={`${styles['homework-wrapper']} ${styles.wrapper}`}>
+            <h5 className={`${styles['homework-title']} `}>Homework:</h5>
+            <div className={`${styles['homework-materials']}`}>
+            {videoData.homeworks.length > 0 &&
+            videoData.homeworks.map((item, index) => (
+              <div key={item._id || index} style={{ marginBottom: '1rem' }}>
+                {item.type === 'text' && (
+                  <>
+                    <h6>Your task:</h6>
+                    <p>{item.value}</p>
+                  </>
+                )}
+
+                {item.type === 'link' && (
+                  <>
+                    <h6>Useful link:</h6>
+                    <a href={item.value} target="_blank" rel="noopener noreferrer">
+                      {item.value}
+                    </a>
+                  </>
+                )}
+
+                {item.type === 'file' && (
+                  <>
+                    <h6>Lesson materials:</h6>
+                    <a href={item.value.url} download={item.value.filename}>
+                      {item.value.filename}
+                    </a>
+                  </>
+                )}
+              </div>
+            ))}
+            </div>
+            <h5 className={`${styles['homework-title']}`}>Your Answer:</h5>
+            <form onSubmit={handleSubmit(onSubmit)} className={styles["homework-zone"]}>
+                <textarea
+                  placeholder="Typing your answer"
+                  className={`textarea`}
+                  {...register("answerText")}
+                />
+                <UploadDocs
+                  type="text"
+                  name="homeworkFile"
+                  register={register}
+                  setValue={setValue}
+                  errors={errors}
+                  editData={previewFileUrl}
+                />
+                <button type="submit" className={`button`}>
+                Send homework
+              </button>
+
+              
+            </form>
+          </div>
+        </>
       ) : (
         <>
           <ContentHeader page={'course'} />

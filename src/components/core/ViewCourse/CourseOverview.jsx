@@ -42,24 +42,18 @@ const CourseOverview  = ({content}) => {
     }, [completedLectures, courseEntireData?._id, token]);
 
 
-    const entireState = useSelector(state => state);
-    console.log(entireState);
-
     const userId = useSelector(state => state.profile.user._id);
     const isUserEnrolled = courseEntireData?.studentsEnrolled?.some(enrollment => enrollment.user === userId);
-    console.log(isUserEnrolled);
     
-    // Функция проверки доступности лекции
     const isLectureAccessible = (section, lessonIndex) => {
-    if (!isUserEnrolled) return false; // Если не записан — доступ запрещён
+    if (!isUserEnrolled) return false; 
 
     const lesson = section.subSection[lessonIndex];
 
-    if (lesson.allowSkip) return true; // Если урок можно пропускать — всегда доступен
+    if (lesson.allowSkip) return true; 
 
-    if (lessonIndex === 0) return true; // Первый урок доступен
+    if (lessonIndex === 0) return true; 
 
-    // Иначе доступ если предыдущий урок пройден
     const prevLesson = section.subSection[lessonIndex - 1];
     return completedLectures.includes(prevLesson._id);
     };
@@ -92,7 +86,6 @@ const CourseOverview  = ({content}) => {
                             {
                                 item.subSection.map((content, index)=>{
                                     const accessible = isLectureAccessible(item, index);
-                                    console.log(content.allowSkip);
                                     
                                     return(
                                        <div 
@@ -108,19 +101,19 @@ const CourseOverview  = ({content}) => {
                                         }
                                     }}
                                     >  
-                                            <p className={styles['overview-item-title']}>{content.title}</p>
-                                            {completedLectures.includes(content?._id) && (
-                                                <div className={`checkbox-container  ${styles['lecture-status']}`}>
-                                                    <p>Lesson Completed</p>
-                                                    <input 
-                                                    type="checkbox" 
-                                                    id="customCheckbox" 
-                                                    className={`custom-checkbox`} 
-                                                    checked={completedLectures.includes(content?._id)}
-                                                    onChange={() => { }}/>
-                                                    <label htmlFor="customCheckbox"></label>
-                                                </div>
-                                            )}
+                                        <p className={styles['overview-item-title']}>{content.title}</p>
+                                        {completedLectures.includes(content?._id) && (
+                                        <div className={`checkbox-container  ${styles['lecture-status']}`}>
+                                            <p>Lesson Completed</p>
+                                            <input 
+                                            type="checkbox" 
+                                            id="customCheckbox" 
+                                            className={`custom-checkbox`} 
+                                            checked={completedLectures.includes(content?._id)}
+                                            onChange={() => { }}/>
+                                            <label htmlFor="customCheckbox"></label>
+                                        </div>
+                                        )}
                                         </div>
                                     )
                                 })

@@ -644,6 +644,20 @@
     max-width: 300px;
     margin-right: 15px;
 }
+.homework-title{
+    position: absolute;
+    top: 0;
+    left: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform: translateX(-50%);
+    font-size: 10px;
+    padding: 1px;
+    background: #1da71d;
+    color: #fff;
+    width: 100%;
+}
 .lecture-constructor .btns-container{
     margin-top: 0;
     font-size: 13px;
@@ -666,6 +680,7 @@
     color: #fff;
 }
 .lecture-wrapper{
+    position: relative;
     display: flex;
     justify-content: space-between;
     padding: 25px 40px;

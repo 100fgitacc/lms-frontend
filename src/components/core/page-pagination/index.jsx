@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styles from './index.module.css';
 import { useSelector } from 'react-redux';
-const PagePagination = ({currPage, content, renderPageContent, context, renderOptionsContent,renderSubOptionsContent}) => {
+const PagePagination = ({currPage, renderPageContent, currentSubSection, content, context}) => {
     // const isDashboard = useSelector((state) => state.explore.isDashboard);
     const [activePage, setActivePage] = useState('Account');
     const [activeOptions, setActiveOptions] = useState('Table');
@@ -104,12 +104,15 @@ const PagePagination = ({currPage, content, renderPageContent, context, renderOp
                     <ul className={styles.wrapper}>
                         <li className={`${styles['pagination-item']} ${activePage === 'Lesson' ? styles.active : '' }`} onClick={()=>handleMenuItemClick('Lesson')}>
                             <img src='/assets/img/icons/file-video.png' alt='icon'/>
-                            <p>Lesson</p>
+                            <p>Lesson & Materials</p>
                         </li>
-                        <li className={`${styles['pagination-item']} ${activePage === 'Materials' ? styles.active : '' }`} onClick={()=>handleMenuItemClick('Materials')}>
-                            <img src='/assets/img/icons/book-b.png' alt='icon'/>
-                            <p>Course Materials</p>
-                        </li>
+                        {currentSubSection?.homeworks.length > 0 && (
+                            <li className={`${styles['pagination-item']} ${activePage === 'Homework' ? styles.active : '' }`}  onClick={()=>handleMenuItemClick('Homework')}>
+                                <img src='/assets/img/icons/book-b.png' alt='icon'/>
+                                <p>Homework zone</p>
+                            </li>
+                        )}
+                        
                     </ul>
                 ): currPage === 'Manage' && !context ? (
                     <ul className={styles.wrapper}>

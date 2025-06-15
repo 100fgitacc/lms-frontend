@@ -23,7 +23,23 @@
 .course-overview .lesson-content-inner > div:last-child{
     width: 100%;
 }
-
+.lesson-homework-mark{
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin-bottom: 25px;
+    background: #202b68;
+    color: #fff;
+    padding: 10px 15px;
+    font-size: 12px;
+    font-weight: 100;
+    text-decoration: underline;
+}
+.lesson-homework-mark img{
+    width: 20px;
+    height: 20px;
+    margin-left: 10px;
+}
 
 .title{
     margin-top: 35px;
@@ -210,6 +226,7 @@
     margin-bottom: 25px;
     padding: 25px;
     box-shadow: 0px 16px 48px -4px rgb(0 0 0 / 10%);
+    border-radius: 20px;
 }
 .materials{
     margin-bottom: 15px;
@@ -275,4 +292,40 @@
   border: none;
   border-radius: 6px;
   cursor: pointer;
+}
+.homework-wrapper{
+    min-height: 200px;
+    margin-bottom: 0;
+}
+.homework-wrapper .title{
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+.homework-wrapper .title:nth-of-type(2){
+    margin-top: 15px;
+}
+.lesson-desc{
+    margin-top: 10px;
+    padding-bottom: 25px;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #DEDEDE;
+}
+.homework-materials{
+    margin-top: 15px;
+    padding: 25px;
+    border-top: 1px solid #DEDEDE;
+    border-bottom: 1px solid #DEDEDE;
+}
+.homework-materials h6{
+    margin-bottom: 5px;
+}
+.homework-title:nth-of-type(2){
+    margin-top: 15px;
+    margin-bottom: 10px;
+}
+.homework-zone textarea{
+    margin: 10px 0;
+}
+.homework-zone button{
+    margin-top: 25px;
 }
