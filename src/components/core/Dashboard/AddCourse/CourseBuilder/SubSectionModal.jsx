@@ -305,7 +305,7 @@
                 icon={<FiCheck color="#1858f3" size={14} />}
                 checked={value}
                 onChange={onChange}
-                label="Lesson locked. You must complete previous lesson to unlock this one"
+                label="Free lesson"
                 labelStyle={{ marginLeft: 8, cursor: 'pointer' }}
                 containerStyle={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}
                 borderColor="#1858f3"
