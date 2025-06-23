@@ -13,6 +13,7 @@ export default function UploadDocs({
   setValue,
   errors,
   disabled = false,
+  homeworkFile
 }) {
 
   const [selectedFile, setSelectedFile] = useState(null)
@@ -97,7 +98,12 @@ export default function UploadDocs({
         window.open(url, '_blank');
       });
   }
-
+  useEffect(() => {
+      if (!homeworkFile) {
+        setSelectedFile(null);
+        setPreviewSource("");
+      }
+    }, [homeworkFile]);
 
   return (
     <div className={styles['thumbnail-container']}>

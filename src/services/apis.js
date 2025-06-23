@@ -18,14 +18,20 @@ export const profileEndpoints = {
 
 // ADMIN ENDPOINTS
 export const adminEndPoints = {
-  GET_ALL_STUDENTS_DATA_API: BASE_URL + "/auth/all-students",
+   GET_ALL_STUDENTS_DATA_API: BASE_URL + "/auth/all-students",
   GET_ALL_STUDENTS_BY_INSTRUCTOR_DATA_API: BASE_URL + "/auth/all-students-by-instructor",
   GET_ALL_INSTRUCTORS_DATA_API: BASE_URL + "/auth/all-instructors",
+}
+// HOMEWORK ENDPOINTS
+export const homeworkEndPoints = {
+  UPDATE_HOMEWORK_STATUS: BASE_URL + "/course/updateHomeworkStatus",
 }
 
 
 // STUDENTS ENDPOINTS
 export const studentEndpoints = {
+  HOMEWORK_SUBMIT_API: BASE_URL + "/course/sendHomework",
+  GET_HOMEWORK_API: BASE_URL + "/course/getHomeworkBySubSection",
   COURSE_PAYMENT_API: BASE_URL + "/payment/capturePayment",
   COURSE_VERIFY_API: BASE_URL + "/payment/verifyPayment",
   SEND_PAYMENT_SUCCESS_EMAIL_API: BASE_URL + "/payment/sendPaymentSuccessEmail",

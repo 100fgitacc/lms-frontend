@@ -1,12 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import styles from './index.module.css';
 import { useSelector } from 'react-redux';
+import { useParams } from 'react-router-dom';
+import { getHomeworkBySubSection } from "../../../services/operations/studentFeaturesAPI"
 const PagePagination = ({currPage, renderPageContent, currentSubSection, content, context}) => {
-    // const isDashboard = useSelector((state) => state.explore.isDashboard);
+
+
+
+
+
+
+
     const [activePage, setActivePage] = useState('Account');
     const [activeOptions, setActiveOptions] = useState('Table');
     const [activeSubOptions, setActiveSubOptions] = useState('Times');
-    
+    const { user } = useSelector((state) => state.profile);
+    const { token } = useSelector((state) => state.auth)
     const handleMenuItemClick = (e) => {
         if (context ==='audience-options') {
             setActiveOptions(e);
@@ -61,6 +70,25 @@ const PagePagination = ({currPage, renderPageContent, currentSubSection, content
             break
         }
     }, [content]);
+
+
+    const { courseId, sectionId, subSectionId } = useParams()
+    const [homework, setHomework] = useState(null);
+    useEffect(() => {
+        const fetchData = async () => {
+          if (!courseId || !sectionId || !subSectionId) {
+            navigate("/dashboard/enrolled-courses");
+            return;
+          }
+        if (!user?._id) return;
+          const homeworkData = await getHomeworkBySubSection(subSectionId, token, user._id);
+          setHomework(homeworkData);
+        };
+    
+        fetchData();
+      }, [location.pathname]);
+      
+      
     
     
     return(
@@ -107,9 +135,16 @@ const PagePagination = ({currPage, renderPageContent, currentSubSection, content
                             <p>Lesson & Materials</p>
                         </li>
                         {currentSubSection?.homeworks.length > 0 && (
-                            <li className={`${styles['pagination-item']} ${activePage === 'Homework' ? styles.active : '' }`}  onClick={()=>handleMenuItemClick('Homework')}>
-                                <img src='/assets/img/icons/book-b.png' alt='icon'/>
-                                <p>Homework zone</p>
+                           <li
+                            className={`${styles['pagination-item']} ${activePage === 'Homework' ? styles.active : ''}`}
+                            onClick={() => handleMenuItemClick('Homework')}
+                            >
+                            <img src="/assets/img/icons/book-b.png" alt="icon" />
+                            <p>Homework zone</p>
+
+                            {homework?.status === "resubmission" && homework.feedback.trim() !== "" && (
+                                <span className={styles['notification-indicator']}>!</span>
+                            )}
                             </li>
                         )}
                         

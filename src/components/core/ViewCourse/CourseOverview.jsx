@@ -8,14 +8,19 @@ import {
   setCourseSectionData
 } from "../../../slices/viewCourseSlice"
 import { getFullDetailsOfCourse } from "../../../services/operations/courseDetailsAPI"
+import { getHomeworkBySubSection } from '../../../services/operations/studentFeaturesAPI';
 
 const CourseOverview  = ({content}) => {
 
+    const { user } = useSelector((state) => state.profile);
     const { token } = useSelector((state) => state.auth)
     const navigate = useNavigate()
     const dispatch = useDispatch();
     const { courseSectionData, courseEntireData, completedLectures } = useSelector((state) => state.viewCourse)
 
+
+
+    
     const [visibleItems, setVisibleItems] = useState({});
 
     const handleTextOpened = (elemIndex, index) =>{
@@ -28,7 +33,7 @@ const CourseOverview  = ({content}) => {
     }
     
 
-    const { subSectionId } = useParams();
+    const { courseId, sectionId, subSectionId } = useParams()
 
     useEffect(() => {
     if (!courseEntireData?._id || !token) return;
@@ -57,6 +62,40 @@ const CourseOverview  = ({content}) => {
     const prevLesson = section.subSection[lessonIndex - 1];
     return completedLectures.includes(prevLesson._id);
     };
+
+
+    
+    const [homeworks, setHomeworks] = useState({});
+    
+    
+    useEffect(() => {
+        const fetchHomeworks = async () => {
+            if (!courseSectionData.length || !user?._id) return;
+
+            const allHomeworkData = {};
+
+            for (const section of courseSectionData) {
+            for (const sub of section.subSection) {
+                const data = await getHomeworkBySubSection(sub._id, token, user._id);
+                allHomeworkData[sub._id] = data;
+            }
+            }
+
+            setHomeworks(allHomeworkData);
+        };
+
+        fetchHomeworks();
+    }, [courseSectionData, token, user]);
+
+    const totalLessons = courseSectionData?.reduce(
+    (sum, section) => sum + section.subSection.length,
+    0
+    );
+
+    const completedCount = completedLectures.length;
+
+    const allLessonsCompleted = totalLessons > 0 && completedCount === totalLessons;
+
     return(
         <>
         {
@@ -67,6 +106,11 @@ const CourseOverview  = ({content}) => {
                     <div className={`${styles['header-image'] }`}>
                         <h1 className={`${styles.title} main-title`}>{courseEntireData?.courseName}</h1>
                     </div>
+                    {allLessonsCompleted && (
+                        <div className={styles['course-finished-banner']}>
+                            🎉 Congratulations! 🎉 You've completed this course! Great job!
+                        </div>
+                    )}
                     <div className={styles['header-info']}>
                         <div className={styles.desc}>
                             {/* <ProgressBar progress={data.progress}/> */}
@@ -102,15 +146,15 @@ const CourseOverview  = ({content}) => {
                                     }}
                                     >  
                                         <p className={styles['overview-item-title']}>{content.title}</p>
-                                        {completedLectures.includes(content?._id) && (
+                                       {(completedLectures.includes(content?._id) || homeworks[content._id]?.status === 'reviewed') && (
                                         <div className={`checkbox-container  ${styles['lecture-status']}`}>
                                             <p>Lesson Completed</p>
                                             <input 
                                             type="checkbox" 
-                                            id="customCheckbox" 
                                             className={`custom-checkbox`} 
-                                            checked={completedLectures.includes(content?._id)}
-                                            onChange={() => { }}/>
+                                            checked={true}
+                                            readOnly
+                                            />
                                             <label htmlFor="customCheckbox"></label>
                                         </div>
                                         )}

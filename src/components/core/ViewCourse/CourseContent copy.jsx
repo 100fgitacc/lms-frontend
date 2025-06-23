@@ -232,16 +232,6 @@ const CourseContent = ({ content }) => {
     }
     setVideoEnded(false)
   };
-
-
-
-  useEffect(() => {
-    setVideoEnded(false)
-    setCurrentTime(0)
-    setMaxWatched(0)
-    setIsPaused(true)
-  }, [subSectionId])
-
   
   return (
     <>

@@ -6,7 +6,7 @@ import { setPaymentLoading } from "../../slices/courseSlice";
 import { resetCart } from "../../slices/cartSlice";
 
 
-const { COURSE_PAYMENT_API, COURSE_VERIFY_API, SEND_PAYMENT_SUCCESS_EMAIL_API } = studentEndpoints;
+const { COURSE_PAYMENT_API, COURSE_VERIFY_API, SEND_PAYMENT_SUCCESS_EMAIL_API, HOMEWORK_SUBMIT_API, GET_HOMEWORK_API } = studentEndpoints;
 
 function loadScript(src) {
     return new Promise((resolve) => {
@@ -150,3 +150,51 @@ async function verifyPayment(bodyData, token, navigate, dispatch) {
     toast.dismiss(toastId);
     dispatch(setPaymentLoading(false));
 }
+
+// ================ send homework ================
+export const homeworkSend = async (data, token) => {
+  let result = null
+  const toastId = toast.loading("Submitting...")
+  
+  try {
+    const response = await apiConnector("POST", HOMEWORK_SUBMIT_API , data,
+      {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "multipart/form-data",
+      })
+
+    if (!response.data.success) {
+      throw new Error(response.data.message || "Submission failed")
+    }
+
+    result = true
+  } catch (error) {
+    console.error("SUBMIT_HOMEWORK_API ERROR:", error)
+    toast.error(error.message)
+    result = false
+  }
+
+  toast.dismiss(toastId)
+  return result
+}
+// ================ get homework ================
+
+export const getHomeworkBySubSection = async (subSectionId, token, userId) => {
+    console.log(userId);
+    
+  try {
+    const response = await apiConnector(
+      "GET",
+      `${GET_HOMEWORK_API}/${subSectionId}?userId=${userId}`,
+      null,
+      {
+        Authorization: `Bearer ${token}`,
+      }
+    );
+
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error getting homework:", error);
+    return null;
+  }
+};

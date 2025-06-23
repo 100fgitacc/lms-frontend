@@ -183,6 +183,30 @@
   padding: 20px;
   text-align: center;
 }
+.video-ended-text{
+    color: #fff;
+    margin-bottom: 25px;
+}
+.video-ended-container{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.rewatch-btn {
+    max-width: 150px;
+    margin-top: 10px;
+    padding: 10px 15px;
+    border: 1px solid #fff;
+    color: #fff;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+}
+.rewatch-btn:hover {
+  opacity: 0.3;
+}
+
 .button-step{
     background: unset !important;
     border: 1px solid #1858f3 !important;
@@ -328,4 +352,31 @@
 }
 .homework-zone button{
     margin-top: 25px;
+}
+
+.homework-feedback{
+    margin-bottom: 25px;
+    padding: 25px;
+    box-shadow: 0px 1px 11px 6px rgb(235 134 0 / 10%);
+}
+.feedback-title{
+    font-size: 17px;
+    font-weight: 300;
+    color: #c57712;
+    margin-bottom: 10px;
+}
+.feedback{
+    padding: 0 25px;
+    text-decoration: underline;
+}
+
+.course-finished-banner {
+  background-color: #dcfce7;
+  color: #065f46;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  font-weight: bold;
+  text-align: center;
+  border: 2px solid #bbf7d0;
 }

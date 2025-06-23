@@ -10,14 +10,15 @@ import Select from 'react-select'
 
 const homeworkOptions = [
   { value: "all", label: "All Homework" },
-  { value: "assigned", label: "Assigned" },
-  { value: "not_assigned", label: "Not Assigned" },
+  { value: "homework_sent", label: "Homework Sent" },
+  { value: "without_homework", label: "Without Homework" },
 ]
 const statusOptions = [
   { value: "all", label: "All Statuses" },
   { value: "reviewed", label: "Reviewed" },
   { value: "not_reviewed", label: "Not Reviewed" },
   { value: "resubmission", label: "Resubmission Required" },
+  { value: "not_started", label: "Homework is not started" },
 ]
 
 
@@ -70,19 +71,16 @@ useEffect(() => {
 }, [courseId, token])
 
   const homeworkFilter = (homework) => {
-    if (filterHomework === "all") return true
-    if (filterHomework === "assigned") return homework === true
-    if (filterHomework === "not_assigned") return homework === false
-    return true
-  }
+    if (filterHomework === "all") return true;
+    if (filterHomework === "homework_sent") return homework?.answerText?.trim();
+    if (filterHomework === "without_homework") return !homework?.answerText?.trim();
+    return true;
+  };
 
   const statusFilter = (status) => {
-    if (filterStatus === "all") return true
-    if (filterStatus === "reviewed") return status === "Reviewed"
-    if (filterStatus === "not_reviewed") return status === "Not Reviewed"
-    if (filterStatus === "resubmission") return status === "Resubmission Required"
-    return true
-  }
+    if (filterStatus === "all") return true;
+    return filterStatus === status;
+  };
 
   if (loading) {
     return <Loader type="fullscreen" />
@@ -94,6 +92,59 @@ useEffect(() => {
       [studentId]: !prev[studentId],
     }))
   }
+
+  
+  const formatStatus = (status) => {
+    switch (status) {
+      case "reviewed": return "Reviewed"
+      case "not_reviewed": return "Not Reviewed"
+      case "resubmission": return "Resubmission Required"
+      case "not_started": return "Not Started"
+      default: return status
+    }
+  }
+
+  let totalSubmitted = 0;
+let reviewed = 0;
+let notReviewed = 0;
+let resubmission = 0;
+let notStarted = 0;
+
+coursesData.forEach((student) => {
+  student.courses.forEach((course) => {
+    const homeworks = course.homeworksBySubSection || {};
+    course.courseContent.forEach(section => {
+      section.subSection.forEach(lesson => {
+        const hwArr = homeworks[lesson._id] || [];
+        const hw = hwArr[0];
+
+        if (!hw) {
+          notStarted++;
+          return;
+        }
+
+        if (hw.answerText?.trim()) {
+          totalSubmitted++;
+        }
+
+        switch (hw.status) {
+          case "reviewed":
+            reviewed++;
+            break;
+          case "not_reviewed":
+            notReviewed++;
+            break;
+          case "resubmission":
+            resubmission++;
+            break;
+          case "not_started":
+            notStarted++;
+            break;
+        }
+      });
+    });
+  });
+});
 
   return (
     <>
@@ -175,21 +226,16 @@ useEffect(() => {
                   </tr>
                 </tbody>
                 </table>
-           
-
-            
-
-            
-
             
           </div>
 
           <div className={styles['stats']}>
             <h3>Course stats:</h3>
-            <p>Total Assignments Submitted: <span>1000</span></p>
-            <p>Reviewed: <span>10</span></p>
-            <p>Not Reviewed: <span>1020</span></p>
-            <p>Resubmission Required: <span>190</span></p>
+            <p>Total Assignments Submitted: <span>{totalSubmitted}</span></p>
+            <p>Reviewed: <span>{reviewed}</span></p>
+            <p>Not Reviewed: <span>{notReviewed}</span></p>
+            <p>Resubmission Required: <span>{resubmission}</span></p>
+            <p>Not Started: <span>{notStarted}</span></p>
           </div>
         </div>
 
@@ -216,18 +262,17 @@ useEffect(() => {
               {openStudents[student._id] && student.courses.map((course) => {
                 const filteredLessons = course.courseContent.flatMap((section) =>
                   section.subSection.filter((lesson) => {
-                    if (filterTitle && !lesson.title.toLowerCase().includes(filterTitle.toLowerCase())) {
-                      return false
-                    }
-                    if (!homeworkFilter(lesson.homework)) {
-                      return false
-                    }
-                    if (!statusFilter(lesson.status)) {
-                      return false
-                    }
-                    return true
+                    const hwArr = course.homeworksBySubSection?.[lesson._id] || [];
+                    const homework = hwArr.length > 0 ? hwArr[0] : null;
+
+                    if (filterTitle && !lesson.title.toLowerCase().includes(filterTitle.toLowerCase())) return false;
+                    if (!homeworkFilter(homework)) return false;
+                    if (!statusFilter(homework?.status || "not_started")) return false;
+
+                    return true;
                   })
-                )
+                );
+
 
                 return (
                   <div key={course._id}>
@@ -240,19 +285,43 @@ useEffect(() => {
                         </tr>
                       </thead>
                       <tbody>
-                        {filteredLessons.map((lesson) => (
-                          <tr key={lesson._id} 
-                           onClick={() =>
-                            navigate(
-                              `/dashboard/assignments/${courseId}/student/${student._id}/lesson/${lesson._id}`
-                            )
-                          }
-                          >
-                            <td>{lesson.title}</td>
-                            <td>{lesson.homework ? "Assigned" : "Not Assigned"}</td>
-                            <td>Not Reviewed</td>
-                          </tr>
-                        ))}
+                        {filteredLessons.map((lesson) => {
+                            const hwArr = course.homeworksBySubSection?.[lesson._id] || [];
+                            const homework = hwArr.length > 0 ? hwArr[0] : null;
+                          return(
+                            <tr key={lesson._id} 
+                            onClick={() =>
+                              navigate(
+                                `/dashboard/assignments/${courseId}/student/${student._id}/lesson/${lesson._id}`
+                              )
+                            }
+                            >
+                              <td>{lesson.title}</td>
+                              <td>
+                                  <span className={`${styles.badge} ${homework?.answerText?.trim() ? styles.sent : styles.missing}`}>
+                                    {homework?.answerText?.trim() ? "Homework Sent" : "Without Homework"}
+                                  </span>
+                                </td>
+                                <td>
+                                  <span
+                                    className={`${styles.badge} ${
+                                      homework?.status === "reviewed"
+                                        ? styles.reviewed
+                                        : homework?.status === "not_reviewed"
+                                        ? styles.notReviewed
+                                        : homework?.status === "resubmission"
+                                        ? styles.resubmission
+                                        : styles.notStarted
+                                    }`}
+                                  >
+                                    {homework?.status ? formatStatus(homework.status) : "Not Started"}
+                                  </span>
+                                </td>
+
+                            </tr>
+                          )
+                        }
+                        )}
                       </tbody>
                     </table>
                   </div>

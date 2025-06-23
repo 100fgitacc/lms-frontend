@@ -27,18 +27,17 @@
       getValues,
     } = useForm({
       defaultValues: {
-        allowSkip: false,
+        allowSkip: true,
         enableSeek: false,
         requiresHomeworkCheck: false,
-        minScore: "",
-        maxScore: ""
+        minScore: '',
+        maxScore: ''
       },
     });
       useEffect(() => {
       register("allowSkip");
       register("enableSeek");
       register("homework");
-      register("requiresHomeworkCheck");
     }, [register]);
 
       
@@ -57,37 +56,43 @@
         setValue("homeworkText", "")
         setValue("homeworkLink", "")
         setValue("homeworkFile", null)
+        setValue("requiresHomeworkCheck", false);
+        setValue("minScore", "");
+        setValue("maxScore", "");
       }
     }, [homeworkChecked])
     const [previewFileUrl, setPreviewFileUrl] = useState("")
 
     useEffect(() => {
       if (view || edit) {
-        console.log("modalData", modalData.allowSkip)
         setValue("lectureTitle", modalData.title)
         setValue("lectureDesc", modalData.description)
         setValue("lectureVideo", modalData.videoUrl)
-        setValue("allowSkip", modalData.allowSkip) 
-        setValue("enableSeek", modalData.enableSeek);
+        setValue("allowSkip", modalData.allowSkip)
+        setValue("enableSeek", modalData.enableSeek)
+
+        setValue("requiresHomeworkCheck", !!modalData.requiresHomeworkCheck)
+        setValue("minScore", modalData.minScore ?? "")
+        setValue("maxScore", modalData.maxScore ?? "")
+
         if (modalData.homeworks && Array.isArray(modalData.homeworks)) {
-        setValue("homework", modalData.homeworks.length > 0)
-        modalData.homeworks.forEach(hw => {
-        if (hw.type === "text") setValue("homeworkText", hw.value)
-        if (hw.type === "link") setValue("homeworkLink", hw.value)
-        if (hw.type === "file") {
-          const fileUrl = modalData.fileBaseUrl ? `${modalData.fileBaseUrl}/${hw.value}` : hw.value
-          setValue("homeworkFile", hw.value)  
-          setPreviewFileUrl(fileUrl)          
+          setValue("homework", modalData.homeworks.length > 0)
+
+          modalData.homeworks.forEach(hw => {
+            if (hw.type === "text") setValue("homeworkText", hw.value)
+            if (hw.type === "link") setValue("homeworkLink", hw.value)
+            if (hw.type === "file") {
+              const fileUrl = modalData.fileBaseUrl
+                ? `${modalData.fileBaseUrl}/${hw.value}`
+                : hw.value
+              setValue("homeworkFile", hw.value)
+              setPreviewFileUrl(fileUrl)
+            }
+          })
         }
-        if (modalData.requiresHomeworkCheck) {
-          setValue("requiresHomeworkCheck", true)
-          setValue("minScore", modalData.minScore || "")
-          setValue("maxScore", modalData.maxScore || "")
-        }
-      })
-      }
       }
     }, [modalData])
+
 
     // detect whether form is updated or not
   const isFormUpdated = () => {
@@ -162,11 +167,22 @@
       }
       formData.append("homeworks", JSON.stringify(homeworks))
       formData.append("requiresHomeworkCheck", currentValues.requiresHomeworkCheck)
-      if (currentValues.requiresHomeworkCheck) {
-        formData.append("minScore", currentValues.minScore)
-        formData.append("maxScore", currentValues.maxScore)
-      }
       
+      
+
+      if (currentValues.requiresHomeworkCheck) {
+        const minScore = Number(currentValues.minScore);
+        const maxScore = Number(currentValues.maxScore);
+
+        if (!Number.isNaN(minScore)) {
+          formData.append("minScore", minScore);
+        }
+
+        if (!Number.isNaN(maxScore)) {
+          formData.append("maxScore", maxScore);
+        }
+      }
+            
 
       setLoading(true)
       const result = await updateSubSection(formData, token)
@@ -184,54 +200,74 @@
       setLoading(false)
     }
 
-    const onSubmit = async (data) => {
-      // console.log(data)
-      if (view) return
+  const onSubmit = async (data) => {
+    console.log(data);
+    
+    if (view) return;
 
-      if (edit) {
-        if (!isFormUpdated()) {
-          toast.error("No changes made to the form! Just close the window")
-        } else {
-          handleEditSubsection()
-        }
-        return
+    if (edit) {
+      if (!isFormUpdated()) {
+        toast.error("No changes made to the form! Just close the window");
+      } else {
+        handleEditSubsection();
       }
-
-      const formData = new FormData()
-      formData.append("sectionId", modalData)
-      formData.append("title", data.lectureTitle)
-      formData.append("description", data.lectureDesc)
-      formData.append("video", data.lectureVideo)
-      formData.append("allowSkip", data.allowSkip)
-      formData.append("enableSeek", data.enableSeek);
-      const homeworks = []
-      if (data.homework) {
-        if (data.homeworkText?.trim()) {
-          homeworks.push({ type: "text", value: data.homeworkText.trim() })
-        }
-        if (data.homeworkLink?.trim()) {
-          homeworks.push({ type: "link", value: data.homeworkLink.trim() })
-        }
-        if (data.homeworkFile) {
-          formData.append("homeworkFile", data.homeworkFile)
-          homeworks.push({ type: "file", value: data.homeworkFile.name })
-        }
-      }
-      formData.append("homeworks", JSON.stringify(homeworks))
-
-      setLoading(true)
-      const result = await createSubSection(formData, token)
-      if (result) {
-        // update the structure of course
-        const updatedCourseContent = course.courseContent.map((section) =>
-          section._id === modalData ? result : section
-        )
-        const updatedCourse = { ...course, courseContent: updatedCourseContent }
-        dispatch(setCourse(updatedCourse))
-      }
-      setModalData(null)
-      setLoading(false)
+      return;
     }
+
+    const formData = new FormData();
+    formData.append("sectionId", modalData);
+    formData.append("title", data.lectureTitle);
+    formData.append("description", data.lectureDesc);
+    formData.append("video", data.lectureVideo);
+    formData.append("allowSkip", data.allowSkip);
+    formData.append("enableSeek", data.enableSeek);
+
+    const homeworks = [];
+    if (data.homework) {
+      if (data.homeworkText?.trim()) {
+        homeworks.push({ type: "text", value: data.homeworkText.trim() });
+      }
+      if (data.homeworkLink?.trim()) {
+        homeworks.push({ type: "link", value: data.homeworkLink.trim() });
+      }
+      if (data.homeworkFile) {
+        formData.append("homeworkFile", data.homeworkFile);
+        homeworks.push({ type: "file", value: data.homeworkFile.name });
+      }
+    }
+    formData.append("homeworks", JSON.stringify(homeworks));
+
+    formData.append("requiresHomeworkCheck", data.requiresHomeworkCheck);
+
+    if (data.requiresHomeworkCheck) {
+      const minScore = Number(data.minScore);
+      const maxScore = Number(data.maxScore);
+
+      if (!Number.isNaN(minScore)) {
+        formData.append("minScore", minScore);
+      }
+
+      if (!Number.isNaN(maxScore)) {
+        formData.append("maxScore", maxScore);
+      }
+    }
+
+
+    setLoading(true);
+    const result = await createSubSection(formData, token);
+    if (result) {
+      const updatedCourseContent = course.courseContent.map((section) =>
+        section._id === modalData ? result : section
+      );
+      const updatedCourse = { ...course, courseContent: updatedCourseContent };
+      dispatch(setCourse(updatedCourse));
+    }
+    setModalData(null);
+    setLoading(false);
+  };
+
+    
+    
 
     return (
     <div className="modal-overlay">
@@ -269,7 +305,7 @@
                 icon={<FiCheck color="#1858f3" size={14} />}
                 checked={value}
                 onChange={onChange}
-                label="User can skip this lesson"
+                label="Lesson locked. You must complete previous lesson to unlock this one"
                 labelStyle={{ marginLeft: 8, cursor: 'pointer' }}
                 containerStyle={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}
                 borderColor="#1858f3"
@@ -376,7 +412,8 @@
                           type="number"
                           min={0}
                           {...register("minScore", {
-                            required: true,
+                            required: "Min score is required",
+                            valueAsNumber: true,
                             validate: (val) => !isNaN(val) || "Min score must be a number"
                           })}
                           className="input"
