@@ -379,7 +379,7 @@ const CourseContent = ({ content }) => {
                   </div>
                 ) : homework.status === 'reviewed' ? (
                   <div className={`${styles['homework-wrapper']} ${styles.wrapper}`}>
-                      {homework?.score ? (
+                      {homework?.score && homework?.score > 0 ? (
                         <p>Lesson is done!   Your score:{homework?.score} points </p>
                       ) : (
                         <p>Lesson is done!</p>
@@ -484,7 +484,7 @@ const CourseContent = ({ content }) => {
             </div>
         )  : homework?.status === 'reviewed' ? (
           <div className={`${styles['homework-wrapper']} ${styles.wrapper}`}>
-            {homework?.score ? (
+            {homework?.score && homework?.score > 0 ? (
               <p>Lesson is done!   Your score:{homework?.score} points </p>
             ) : (
               <p>Lesson is done!</p>
