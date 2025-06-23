@@ -240,6 +240,8 @@ const CourseContent = ({ content }) => {
     setCurrentTime(0)
     setMaxWatched(0)
     setIsPaused(true)
+    console.log('11111111111');
+    
   }, [subSectionId])
 
   
@@ -248,8 +250,9 @@ const CourseContent = ({ content }) => {
       {content === 'Lesson' ? (
         <div className={styles['content-container']}>
           {videoData ? (
-            <div key={videoData._id} className={styles['video-wrapper']}>
+            <div className={styles['video-wrapper']}>
               <video
+                key={subSectionId}
                 ref={playerRef}
                 width="100%"
                 controls={false}

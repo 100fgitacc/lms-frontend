@@ -82,12 +82,14 @@ const PagePagination = ({currPage, renderPageContent, currentSubSection, content
           }
         if (!user?._id) return;
           const homeworkData = await getHomeworkBySubSection(subSectionId, token, user._id);
+          
           setHomework(homeworkData);
         };
-    
+        if(currentSubSection?.homeworks.length === 0){
+            handleMenuItemClick('Lesson')
+        }
         fetchData();
       }, [location.pathname]);
-      
       
     
     
