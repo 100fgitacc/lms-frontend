@@ -61,6 +61,26 @@
 .projects-image,.courses-image{
     position: relative
 }
+.course-stats{
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    padding: 3px 10px;
+    border-radius: 10px;
+    border: 1px solid #1858F3;
+    text-transform: uppercase;
+    background: #F1F5F9;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.course-stats span{
+    display: flex;
+    align-items: center;
+    margin: 0 1px;
+}
+
 /* .projects-image span,
 .courses-image span{
     position: absolute;
@@ -88,6 +108,9 @@
     overflow: hidden;
     position: relative;
     border-radius: 20px;
+}
+.courses-item a{
+    
     cursor: pointer;
 }
 .courses-item h3{
@@ -111,6 +134,7 @@
     padding: 15px;
     padding-bottom: 25px;
     border-top: none;
+    cursor: pointer;
 }
 .courses-desc{
     height: 35px;
@@ -791,6 +815,5 @@
     margin: 15px;
     font-size: 12px;
 }
-
 
 

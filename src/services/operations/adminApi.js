@@ -5,13 +5,12 @@ const { GET_ALL_STUDENTS_DATA_API, GET_ALL_INSTRUCTORS_DATA_API, GET_ALL_STUDENT
 
 // ================ get all Students Data  ================
 export async function getAllStudentsData(token) {
-    console.log("Token used for request:", token)
     let result = []
     try {
         const response = await apiConnector("GET", GET_ALL_STUDENTS_DATA_API, null, {
             Authorization: `Bearer ${token}`,
         })
-        console.log("GET_ALL_STUDENTS_DATA_API RESPONSE............", response)
+        // console.log("GET_ALL_STUDENTS_DATA_API RESPONSE............", response)
         result = response?.data
     } catch (error) {
         console.log("GET_ALL_STUDENTS_DATA_API ERROR............", error)

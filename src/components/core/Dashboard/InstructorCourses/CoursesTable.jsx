@@ -7,7 +7,7 @@ import { deleteCourse, fetchInstructorCourses, } from "../../../../services/oper
 import { COURSE_STATUS } from "../../../../utils/constants"
 import ConfirmationModal from "../../../common/ConfirmationModal"
 import toast from 'react-hot-toast'
-import { MdDeleteOutline    } from 'react-icons/md';
+import { MdDeleteOutline,MdOutlinePeople, MdOutlinePendingActions } from 'react-icons/md';
 
 import styles from '../profile.module.css'
 import Loader from "../../../common/Loader"
@@ -36,6 +36,11 @@ export default function CoursesTable({ courses, setCourses, loading, setLoading 
     toast.dismiss(toastId)
   }
 
+
+ 
+
+  
+
   return (
     <>
         {loading && (
@@ -49,15 +54,24 @@ export default function CoursesTable({ courses, setCourses, loading, setLoading 
           ) : (
             <div className={styles['courses-wrapper']}>
               {
-                courses?.map((course) => (
+                courses?.map((course) => {
+                  const studentsCount = course?.studentsEnrolled?.length || 0;
+                  const notReviewedCount = course?.notReviewedCount || 0; 
+                  return(
                   <div key={course._id} className={styles['courses-item']}>
                     <div className={styles['courses-image']}>
+                      <div className={styles['course-stats']}> 
+                        <span><MdOutlinePeople /> {studentsCount} </span>
+                        <span> | </span>
+                        <span> {notReviewedCount} <MdOutlinePendingActions /></span>
+                      </div>
                       <img src={course?.thumbnail} alt={course?.courseName}/>
                     </div>
                     <div className={styles['courses-content']}>
-                      <h3 className={styles['courses-title']}>
-                        {course.courseName}
-                      </h3>
+                      <a onClick={() => { navigate(`/dashboard/assignments/${course._id}`)}}>
+                        <h3 className={styles['courses-title']}>{course.courseName}</h3>
+                      </a>
+                     
                       <div className={styles['courses-desc']}>
                         <p>
                           {course.courseDescription.split(" ").length > TRUNCATE_LENGTH
@@ -126,7 +140,7 @@ export default function CoursesTable({ courses, setCourses, loading, setLoading 
                       </div>
                     </div>
                   </div>
-                ))
+                )})
               }
             </div>
           )}

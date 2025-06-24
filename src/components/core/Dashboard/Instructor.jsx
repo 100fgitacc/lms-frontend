@@ -107,7 +107,7 @@ export default function Instructor() {
                     </h3>
                     <div>
                       <p className={styles['courses-desc']}>
-                        {course.studentsEnrolled.length} students enrolled
+                        {course?.studentsEnrolled?.length} students enrolled
                       </p>
                       <p>{course.price} $</p>
                     </div>

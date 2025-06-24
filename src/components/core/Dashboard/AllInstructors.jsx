@@ -21,20 +21,19 @@ function AllInstructors() {
 
 
 
-  // useEffect(() => {
-  //   const fetchInstructorsData = async () => {
-  //     setLoading(true)
-  //     const { allInstructorsDetails, instructorsCount } = await getAllInstructorDetails(token);
-  //     if (allInstructorsDetails) {
-  //       setAllInstructorDetails(allInstructorsDetails);
-  //       setInstructorsCount(instructorsCount)
-  //     }
-  //     setLoading(false)
-  //   };
+  useEffect(() => {
+    const fetchInstructorsData = async () => {
+      setLoading(true)
+      const { allInstructorsDetails, instructorsCount } = await getAllInstructorDetails(token);
+      if (allInstructorsDetails) {
+        setAllInstructorDetails(allInstructorsDetails);
+        setInstructorsCount(instructorsCount)
+      }
+      setLoading(false)
+    };
 
-  //   fetchInstructorsData();
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, []);
+    fetchInstructorsData();
+  }, []);
 
   return (
   <div className={`${styles.wrapper} ${styles.details}`}>

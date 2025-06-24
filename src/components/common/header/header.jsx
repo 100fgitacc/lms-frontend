@@ -7,6 +7,7 @@ import { NavbarLinks } from '../../../../data/header-links';
 import useOnClickOutside from '../../../hooks/useOnClickOutside';
 import Img from './../../common/Img';
 import { fetchCourseCategories } from '../../../services/operations/courseDetailsAPI';
+import { logout } from "../../../services/operations/authAPI"
 
 
 import { MdShoppingCart } from 'react-icons/md';

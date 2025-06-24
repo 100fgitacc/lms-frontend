@@ -1,7 +1,6 @@
 
 import { useEffect, useState } from "react";
 import { Route, Routes, useLocation, Link } from "react-router-dom";
-import { useSelector } from "react-redux";
 
 import LoginPage from "./pages/LoginPage"
 import SignupForm from "./components/core/Auth/SignupForm"
@@ -41,6 +40,11 @@ import AllStudentsByInstructor from './components/core/Dashboard/AllStudentsByIn
 import AllInstructors from './components/core/Dashboard/AllInstructors';
 import LoginForm from "./components/core/Auth/LoginForm";
 
+import { jwtDecode } from 'jwt-decode';
+import { useDispatch, useSelector } from "react-redux";
+import { setToken } from "./slices/authSlice";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-hot-toast"
 
 function App() {
 
@@ -70,12 +74,33 @@ function App() {
     } else setShowArrow(false)
   }
 
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const token = useSelector((state) => state.auth.token);
+
   useEffect(() => {
     window.addEventListener('scroll', handleArrow);
     return () => {
       window.removeEventListener('scroll', handleArrow);
     }
   }, [showArrow])
+
+    useEffect(() => {
+    if (token) {
+      try {
+        const decoded = jwtDecode(token);
+        if (decoded.exp * 1000 < Date.now()) {
+          dispatch(setToken(null));
+          navigate("/");
+          toast.error("Session was expiried. Relogin please!")
+        }
+      } catch (e) {
+        dispatch(setToken(null));
+        navigate("/");
+        toast.error("Session was expiried. Relogin please!")
+      }
+    }
+  }, [token]);
 
 
   return (
