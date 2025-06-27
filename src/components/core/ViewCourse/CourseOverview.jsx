@@ -60,7 +60,7 @@ const CourseOverview  = ({content}) => {
     if (lessonIndex === 0) return true; 
 
     const prevLesson = section.subSection[lessonIndex - 1];
-    return completedLectures.includes(prevLesson._id);
+    return completedLectures.some(lec => lec.subSectionId === prevLesson._id);
     };
 
 
@@ -96,6 +96,9 @@ const CourseOverview  = ({content}) => {
 
     const allLessonsCompleted = totalLessons > 0 && completedCount === totalLessons;
 
+    
+
+    
     return(
         <>
         {
@@ -130,11 +133,10 @@ const CourseOverview  = ({content}) => {
                             {
                                 item.subSection.map((content, index)=>{
                                     const accessible = isLectureAccessible(item, index);
-                                    
                                     return(
                                        <div 
                                     className={`${styles['overview-item']} 
-                                        ${completedLectures.includes(content?._id) && styles['inactive']}
+                                        ${completedLectures.some(lecture => lecture.subSectionId === content?._id) && styles['inactive']}
                                         ${content._id === subSectionId && styles['current-lesson']} 
                                         ${!accessible ? styles['disabled'] : ''}
                                     `} 
@@ -146,7 +148,7 @@ const CourseOverview  = ({content}) => {
                                     }}
                                     >  
                                         <p className={styles['overview-item-title']}>{content.title}</p>
-                                       {(completedLectures.includes(content?._id) || homeworks[content._id]?.status === 'reviewed') && (
+                                       {(completedLectures.some(lecture => lecture.subSectionId === content?._id) || homeworks[content._id]?.status === 'reviewed') && (
                                         <div className={`checkbox-container  ${styles['lecture-status']}`}>
                                             <p>Lesson Completed</p>
                                             <input 

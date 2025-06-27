@@ -240,8 +240,6 @@ const CourseContent = ({ content }) => {
     setCurrentTime(0)
     setMaxWatched(0)
     setIsPaused(true)
-    console.log('11111111111');
-    
   }, [subSectionId])
 
   
@@ -380,7 +378,7 @@ const CourseContent = ({ content }) => {
                 ) : homework.status === 'reviewed' ? (
                   <div className={`${styles['homework-wrapper']} ${styles.wrapper}`}>
                       {homework?.score && homework?.score > 0 ? (
-                        <p>Lesson is done!   Your score:{homework?.score} points </p>
+                        <p>Lesson is done! Your score: {homework?.score} points </p>
                       ) : (
                         <p>Lesson is done!</p>
                       )}
@@ -485,7 +483,7 @@ const CourseContent = ({ content }) => {
         )  : homework?.status === 'reviewed' ? (
           <div className={`${styles['homework-wrapper']} ${styles.wrapper}`}>
             {homework?.score && homework?.score > 0 ? (
-              <p>Lesson is done!   Your score:{homework?.score} points </p>
+              <p>Lesson is done! Your score: {homework?.score} points </p>
             ) : (
               <p>Lesson is done!</p>
             )}

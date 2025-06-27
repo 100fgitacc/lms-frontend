@@ -180,7 +180,6 @@ export const homeworkSend = async (data, token) => {
 // ================ get homework ================
 
 export const getHomeworkBySubSection = async (subSectionId, token, userId) => {
-    console.log(userId);
     
   try {
     const response = await apiConnector(

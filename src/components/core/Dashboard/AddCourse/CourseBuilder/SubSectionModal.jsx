@@ -31,7 +31,9 @@
         enableSeek: false,
         requiresHomeworkCheck: false,
         minScore: '',
-        maxScore: ''
+        maxScore: '',
+        delayedHomeworkCheck: false,
+        homeworkDelaySeconds: ''
       },
     });
       useEffect(() => {
@@ -59,6 +61,8 @@
         setValue("requiresHomeworkCheck", false);
         setValue("minScore", "");
         setValue("maxScore", "");
+        setValue("delayedHomeworkCheck", !!modalData.delayedHomeworkCheck);
+        setValue("homeworkDelaySeconds", modalData.homeworkDelaySeconds ?? "");
       }
     }, [homeworkChecked])
     const [previewFileUrl, setPreviewFileUrl] = useState("")
@@ -101,14 +105,30 @@
       currentValues.lectureTitle !== modalData.title ||
       currentValues.lectureDesc !== modalData.description ||
       currentValues.lectureVideo !== modalData.videoUrl ||
-      currentValues.allowSkip !== modalData.allowSkip ||
-      currentValues.enableSeek !== modalData.enableSeek
+      Boolean(currentValues.allowSkip) !== Boolean(modalData.allowSkip) ||
+      Boolean(currentValues.enableSeek) !== Boolean(modalData.enableSeek)
+    ) {
+      return true;
+    }
+    if (Boolean(currentValues.requiresHomeworkCheck) !== Boolean(modalData.requiresHomeworkCheck)) {
+      return true;
+    }
+    if (
+      Number(currentValues.minScore || 0) !== Number(modalData.minScore || 0) ||
+      Number(currentValues.maxScore || 0) !== Number(modalData.maxScore || 0)
+    ) {
+      return true;
+    }
+
+    if (
+      Boolean(currentValues.delayedHomeworkCheck) !== Boolean(modalData.delayedHomeworkCheck) ||
+      Number(currentValues.homeworkDelaySeconds || 0) !== Number(modalData.homeworkDelaySeconds || 0)
     ) {
       return true;
     }
 
     const modalHasHomework = modalData.homeworks && modalData.homeworks.length > 0;
-    if (currentValues.homework !== modalHasHomework) {
+    if (Boolean(currentValues.homework) !== modalHasHomework) {
       return true;
     }
 
@@ -119,15 +139,17 @@
 
       if ((currentValues.homeworkText || "") !== hwText) return true;
       if ((currentValues.homeworkLink || "") !== hwLink) return true;
-      if (currentValues.homeworkFile) {
+
+      if (currentValues.homeworkFile && typeof currentValues.homeworkFile === "object" && currentValues.homeworkFile.name) {
         if (currentValues.homeworkFile.name !== hwFile) return true;
-      } else if (hwFile) {
-        return true;
+      } else {
+        if (hwFile) return true;
       }
     }
 
     return false;
   };
+
 
 
     // handle the editing of subsection
@@ -181,6 +203,15 @@
         if (!Number.isNaN(maxScore)) {
           formData.append("maxScore", maxScore);
         }
+      }
+
+      formData.append(
+        "delayedHomeworkCheck",
+        !!currentValues.delayedHomeworkCheck
+      );
+
+      if (currentValues.delayedHomeworkCheck && currentValues.homeworkDelaySeconds) {
+        formData.append("homeworkDelaySeconds", Number(currentValues.homeworkDelaySeconds));
       }
             
 
@@ -251,7 +282,14 @@
         formData.append("maxScore", maxScore);
       }
     }
+    formData.append(
+      "delayedHomeworkCheck",
+      !!data.delayedHomeworkCheck
+    );
 
+    if (data.delayedHomeworkCheck && data.homeworkDelaySeconds) {
+      formData.append("homeworkDelaySeconds", Number(data.homeworkDelaySeconds));
+    }
 
     setLoading(true);
     const result = await createSubSection(formData, token);
@@ -380,7 +418,42 @@
                 />
               )}
             />
-            
+            <Controller
+              control={control}
+              name="delayedHomeworkCheck"
+              render={({ field: { onChange, value } }) => (
+                <Checkbox
+                  icon={<FiCheck color="#1858f3" size={14} />}
+                  checked={value}
+                  onChange={onChange}
+                  label="Enable delayed homework check"
+                  labelStyle={{ marginLeft: 8, cursor: 'pointer' }}
+                  containerStyle={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}
+                  borderColor="#1858f3"
+                  size={18}
+                />
+              )}
+            />
+            {watch("delayedHomeworkCheck") && (
+              <div className="form-group">
+                <label>Delay (in seconds)</label>
+                <input
+                  type="number"
+                  min={1}
+                  placeholder="Enter delay in seconds"
+                  {...register("homeworkDelaySeconds", {
+                    required: "Delay time is required",
+                    valueAsNumber: true,
+                    min: { value: 1, message: "Minimum 1 second required" }
+                  })}
+                  className="input"
+                />
+                {errors.homeworkDelaySeconds && (
+                  <span className="required">{errors.homeworkDelaySeconds.message}</span>
+                )}
+              </div>
+            )}
+
 
             {homeworkChecked && (
               <>
@@ -405,32 +478,39 @@
 
                   {/* Inputs for min/max score */}
                   {watch("requiresHomeworkCheck") && (
-                    <div className="flex flex-col gap-2 mt-3">
-                      <div className="form-group">
-                        <label>Min Score</label>
-                        <input
-                          type="number"
-                          min={0}
-                          {...register("minScore", {
-                            required: "Min score is required",
-                            valueAsNumber: true,
-                            validate: (val) => !isNaN(val) || "Min score must be a number"
-                          })}
-                          className="input"
-                        />
-                        {errors.minScore && (
-                          <span className="required">{errors.minScore.message}</span>
-                        )}
-                      </div>
+                    <div className="flex">
+                      {! (watch("requiresHomeworkCheck") && watch("delayedHomeworkCheck")) && (
+                        <div className="form-group">
+                          <label>Min Score</label>
+                          <input
+                            type="number"
+                            min={0}
+                            {...register("minScore", {
+                              required: "Min score is required",
+                              valueAsNumber: true,
+                              validate: (val) => !isNaN(val) || "Min score must be a number"
+                            })}
+                            className="input"
+                            disabled={watch("requiresHomeworkCheck") && watch("delayedHomeworkCheck")}
+                          />
+                          {errors.minScore && (
+                            <span className="required">{errors.minScore.message}</span>
+                          )}
+                        </div>
+                      )}
 
                       <div className="form-group">
-                        <label>Max Score</label>
+                        <label>{watch("requiresHomeworkCheck") && watch("delayedHomeworkCheck") ? "Total score for lesson" : "Max Score"}</label>
                         <input
                           type="number"
                           min={1}
                           {...register("maxScore", {
                             required: true,
-                            validate: (val) => !isNaN(val) || "Max score must be a number"
+                            validate: (val) =>
+                              !isNaN(val) ||
+                              (watch("requiresHomeworkCheck") && watch("delayedHomeworkCheck")
+                                ? "Total score must be a number"
+                                : "Max score must be a number"),
                           })}
                           className="input"
                         />
@@ -440,6 +520,7 @@
                       </div>
                     </div>
                   )}
+
                 </div>
                   <div className="form-group">
                 <label>Homework Text {!view && <sup>*</sup>}</label>

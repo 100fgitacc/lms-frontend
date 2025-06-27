@@ -21,6 +21,7 @@ import Settings from "./components/core/Dashboard/Settings/Settings";
 import MyCourses from './components/core/Dashboard/MyCourses';
 import EditCourse from './components/core/Dashboard/EditCourse/EditCourse';
 import AssignmentsCourse from './components/core/Dashboard/AssignmentsCourse/AssignmentsCourse';
+import PersonalAssignments from './components/core/Dashboard/AssignmentsCourse/PersonalAssignments';
 import StudentLesson from './components/core/Dashboard/AssignmentsCourse/StudentLesson';
 import Instructor from './components/core/Dashboard/Instructor';
 
@@ -196,6 +197,7 @@ function App() {
               <Route path="dashboard/all-students-by-instructor" element={<AllStudentsByInstructor />} />
               <Route path="dashboard/edit-course/:courseId" element={<EditCourse />} />
               <Route path="dashboard/assignments/:courseId" element={<AssignmentsCourse />} />
+              <Route path="dashboard/personal-assignments/:courseId/:studentId" element={<PersonalAssignments />} />
              <Route
               path="dashboard/assignments/:courseId/student/:studentId/lesson/:lessonId"
               element={<StudentLesson />}

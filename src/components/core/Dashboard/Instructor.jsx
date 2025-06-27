@@ -48,6 +48,7 @@ export default function Instructor() {
       const { allStudentsDetails} = await getAllStudentsByInstructorData(token);
       setAllStudentsDetails(allStudentsDetails);
       
+      
     };
     fetchAllStudents();
     
