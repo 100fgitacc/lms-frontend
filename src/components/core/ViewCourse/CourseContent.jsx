@@ -152,6 +152,7 @@ const CourseContent = ({ content }) => {
     
     setLoading(true)
     const res = await markLectureAsComplete({ courseId, subsectionId: subSectionId }, token)
+    
     if (res) dispatch(updateCompletedLectures(subSectionId))
     setLoading(false)
   }

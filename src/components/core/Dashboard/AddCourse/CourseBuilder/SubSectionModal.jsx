@@ -40,6 +40,8 @@
       register("allowSkip");
       register("enableSeek");
       register("homework");
+      register("delayedHomeworkCheck");
+      register("homeworkDelaySeconds");
     }, [register]);
 
       
@@ -225,7 +227,6 @@
         )
         const updatedCourse = { ...course, courseContent: updatedCourseContent }
         dispatch(setCourse(updatedCourse))
-        console.log("Updated courseContent:", updatedCourseContent)
       }
       setModalData(null)
       setLoading(false)
@@ -418,6 +419,8 @@
                 />
               )}
             />
+            {homeworkChecked && (
+              <>
             <Controller
               control={control}
               name="delayedHomeworkCheck"
@@ -455,8 +458,7 @@
             )}
 
 
-            {homeworkChecked && (
-              <>
+           
                 {/* === Homework Check Settings === */}
                 <div className="form-group">
                   <Controller

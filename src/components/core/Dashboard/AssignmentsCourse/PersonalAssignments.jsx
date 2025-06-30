@@ -72,8 +72,6 @@ useEffect(() => {
 }, [courseId, token])
 
 
-  console.log(coursesData);
-  
 
   const homeworkFilter = (homework) => {
     if (filterHomework === "all") return true;

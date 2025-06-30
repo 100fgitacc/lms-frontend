@@ -267,6 +267,7 @@ tr{
   display: flex;
   justify-content: space-between;
   position: relative;
+  width: 1px;
   height: 10px;
   margin-top: 4px;
 }

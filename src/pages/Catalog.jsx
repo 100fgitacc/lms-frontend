@@ -96,7 +96,7 @@ function Catalog() {
                     <div className={styles['projects-wrapper']}>
                         {catalogPageData?.selectedCategory?.courses.map((course, i) => (
                             <Course_Card course={course} key={i}/>
-                        ))}
+                        )).reverse()}
                     </div>
                 </div>
                 <div className={styles.inner}>

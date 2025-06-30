@@ -44,7 +44,6 @@ export default function StudentLesson() {
     fetchData();
   }, [courseId, studentId, lessonId]);
   
-  console.log( lesson?.requiresHomeworkCheck);
   
 
   const handleAccept = async () => {

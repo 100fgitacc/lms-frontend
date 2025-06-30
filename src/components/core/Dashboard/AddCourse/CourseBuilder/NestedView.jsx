@@ -49,7 +49,7 @@ export default function NestedView({ handleChangeEditSectionName }) {
     }
     setConfirmationModal(null)
   }
-  console.log(course?.courseContent[0].subSection[0]);
+  console.log(course?.courseContent);
   
   return (
     <>
