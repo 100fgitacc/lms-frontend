@@ -51,11 +51,15 @@ const CourseOverview  = ({content}) => {
     const isUserEnrolled = courseEntireData?.studentsEnrolled?.some(enrollment => enrollment.user === userId);
     
     const isLectureAccessible = (section, lessonIndex, courseSections) => {
-        if (!isUserEnrolled) return false; 
+        if (!isUserEnrolled) return false;
 
         const lesson = section.subSection[lessonIndex];
 
         if (lesson.allowSkip) return true;
+
+        const isCompleted = (id) =>
+        completedLectures.some(lec => (typeof lec === "string" ? lec : lec.subSectionId) === id);
+
         if (lessonIndex === 0) {
             const firstSection = courseSections[0];
             if (section._id === firstSection._id) {
@@ -65,14 +69,16 @@ const CourseOverview  = ({content}) => {
                 if (sectionIndex > 0) {
                     const prevSection = courseSections[sectionIndex - 1];
                     const lastLessonPrevSection = prevSection.subSection[prevSection.subSection.length - 1];
-                    return completedLectures.some(lec => lec.subSectionId === lastLessonPrevSection._id);
+                    return isCompleted(lastLessonPrevSection._id);
                 }
                 return false;
             }
         }
+
         const prevLesson = section.subSection[lessonIndex - 1];
-        return completedLectures.some(lec => lec.subSectionId === prevLesson._id);
+        return isCompleted(prevLesson._id);
     };
+
 
 
 
@@ -153,25 +159,24 @@ const CourseOverview  = ({content}) => {
                             </p>
                             {
                                 item.subSection.map((content, index)=>{
-                                    
-                                    const accessible = courseSectionData && courseSectionData.length > 0
-                                    ? isLectureAccessible(item, index, courseSectionData)
-                                    : false;
+                                   
                                     
                                     return(
-                                    <div 
-                                        className={`${styles['overview-item']} 
-                                            ${isLectureCompleted(completedLectures, content._id) && styles['inactive']}
-                                            ${content._id === subSectionId && styles['current-lesson']} 
-                                            ${!accessible ? styles['disabled'] : ''}
-                                        `} 
-                                        key={content._id}
-                                        onClick={() => {
-                                            if (accessible) {
-                                            navigate(`/view-course/${courseEntireData?._id}/section/${item?._id}/sub-section/${content?._id}`)
-                                            }
-                                        }}
-                                    >
+                                   <div 
+                                className={`
+                                    ${styles['overview-item']} 
+                                    ${isLectureCompleted(completedLectures, content._id) && styles['inactive']}
+                                    ${content._id === subSectionId && styles['current-lesson']} 
+                                    ${!isLectureAccessible(item, index, courseSectionData) ? styles['disabled'] : ''}
+                                `} 
+                                key={content._id}
+                                onClick={() => {
+                                    if (isLectureAccessible(item, index, courseSectionData)) {
+                                    navigate(`/view-course/${courseEntireData?._id}/section/${item?._id}/sub-section/${content?._id}`)
+                                    }
+                                }}
+                                >
+
                                         <p className={styles['overview-item-title']}>{content.title}</p>
                                          {(isLectureCompleted(completedLectures, content._id) || homeworks[content._id]?.status === 'reviewed') && (
                                             <div className={`checkbox-container  ${styles['lecture-status']}`}>
