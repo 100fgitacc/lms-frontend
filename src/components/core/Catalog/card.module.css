@@ -78,3 +78,23 @@
 .purchased{
     color: #267e10;
 }
+@media screen and (max-width: 768px) {
+    .courses-desc{
+        height: 65px;
+    }
+    
+}
+
+@media screen and (max-width: 480px) {
+    .courses-item{
+        width: 99%;
+    }
+    .details-link{
+        padding: 10px 5px;
+        font-size: 12px;
+    }
+    .in-cart{
+        font-size: 12px;
+    }
+    
+}

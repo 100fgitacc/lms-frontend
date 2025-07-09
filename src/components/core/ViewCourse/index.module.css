@@ -96,7 +96,7 @@
     display: flex;
     align-items: center;
     color: #A4A4A4;
-    font-weight: 400;
+    font-weight: 300;
     margin-bottom: 5px;
 }
 .feed .sub-info{
@@ -163,7 +163,7 @@
 }
 .status{
     color: #1EAB1E;
-    font-weight: 400;
+    font-weight: 300;
 }
 .rate,
 .name,
@@ -307,4 +307,10 @@
     margin-bottom: 15px;
     font-size: 12px;
     color: #5e5e5e;
+}
+
+@media screen and (max-width: 480px) {
+  .wrapper{
+    padding: 15px;
+  }
 }

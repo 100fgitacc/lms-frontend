@@ -112,3 +112,14 @@
 .cart-button{
     position: relative;
 }
+@media screen and (max-width: 1024px) {
+  .wrapper{
+   left: 0 ;
+  }
+}
+@media screen and (max-width: 480px) {
+ 
+  .profile-settings{
+    padding: 10px 20px;
+  }
+}

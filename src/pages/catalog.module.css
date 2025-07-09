@@ -30,3 +30,24 @@
 .projects-wrapper{
     margin-bottom: 130px;
 }
+@media screen and (max-width: 1024px) {
+
+  .catalog-heading{
+    margin-top: 0;
+    padding-top: 100px;
+  }
+  .catalog-heading p{
+    margin-top: 15px;
+  }
+  .heading{
+    margin-bottom: 25px;
+  }
+  .projects-wrapper{
+    margin-bottom: 0;
+  }
+}
+@media screen and (max-width: 768px) {
+  .wrapper{
+    padding: 0 25px;
+  }
+}

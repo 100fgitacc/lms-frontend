@@ -31,3 +31,9 @@
     border-color: transparent;
   }
 }
+
+@media screen and (max-width: 480px) {
+  .wrapper{
+    padding: 15px;
+  }
+}

@@ -95,31 +95,33 @@ const CreateCategory = () => {
                 <h3 className={styles['third-title']}>
                   Current categories:
                 </h3>
-                <table>
-                    <thead>
-                      <tr>
-                        <th>#</th>
-                        <th>Category Name</th>
-                        <th>Description</th>
-                        <th>Manage</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {subLinks?.map((subLink, i) => (
-                        <tr key={i}>
-                          <td>{i + 1}</td>
-                          <td>{subLink.name}</td>
-                          <td>{subLink.description}
-                          </td>
-                          <td>
-                            <button onClick={() => handleDeleteCategory(subLink._id)}>
-                              <RiDeleteBin6Line className="" />
-                            </button>
-                          </td>
+                 <div className="table-wrapper">
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>#</th>
+                          <th>Category Name</th>
+                          <th>Description</th>
+                          <th>Manage</th>
                         </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                      </thead>
+                      <tbody>
+                        {subLinks?.map((subLink, i) => (
+                          <tr key={i}>
+                            <td>{i + 1}</td>
+                            <td>{subLink.name}</td>
+                            <td>{subLink.description}
+                            </td>
+                            <td>
+                              <button onClick={() => handleDeleteCategory(subLink._id)}>
+                                <RiDeleteBin6Line className="" />
+                              </button>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
             )}
           </div>

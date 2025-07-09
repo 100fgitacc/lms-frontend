@@ -63,9 +63,9 @@ export default function UpdatePassword() {
                 className={styles['password-icon']}
               >
                 {showOldPassword ? (
-                  <AiOutlineEyeInvisible fontSize={24} fill="#AFB2BF" />
+                  <AiOutlineEyeInvisible fontSize={15} fill="#AFB2BF" />
                 ) : (
-                  <AiOutlineEye fontSize={24} fill="#AFB2BF" />
+                  <AiOutlineEye fontSize={15} fill="#AFB2BF" />
                 )}
               </span>
 
@@ -95,9 +95,9 @@ export default function UpdatePassword() {
                 className={styles['password-icon']}
               >
                 {showNewPassword ? (
-                  <AiOutlineEyeInvisible fontSize={24} fill="#AFB2BF" />
+                  <AiOutlineEyeInvisible fontSize={15} fill="#AFB2BF" />
                 ) : (
-                  <AiOutlineEye fontSize={24} fill="#AFB2BF" />
+                  <AiOutlineEye fontSize={15} fill="#AFB2BF" />
                 )}
               </span>
               {errors.newPassword && (
@@ -125,9 +125,9 @@ export default function UpdatePassword() {
                 className={styles['password-icon']}
               >
                 {showConfirmNewPassword ? (
-                  <AiOutlineEyeInvisible fontSize={24} fill="#AFB2BF" />
+                  <AiOutlineEyeInvisible fontSize={15} fill="#AFB2BF" />
                 ) : (
-                  <AiOutlineEye fontSize={24} fill="#AFB2BF" />
+                  <AiOutlineEye fontSize={15} fill="#AFB2BF" />
                 )}
               </span>
               {errors.confirmNewPassword && (

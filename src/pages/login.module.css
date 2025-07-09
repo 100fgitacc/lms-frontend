@@ -1,3 +1,39 @@
+.auth-template{
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  height: 100vh;
+}
+.left-side{
+  width: 50%;
+  background-image: url('/assets/img/Background-auth.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  height: 100%;
+}
+.right-side{
+  width: 50%;
+}
+.auth-card{
+  border-radius: 20px;
+  box-shadow: 0px 16px 48px -4px rgb(0 0 0 / 10%);
+}
+.auth-btn{
+  padding: 10px 15px;
+  color: #fff;
+  cursor: pointer;
+  border-radius: 6px;
+  background-color: #1858F3;
+}
+.auth-logo{
+  width: 252px;
+  height: 44px;
+}
+.main-logo{
+  width: 169px;
+  height: 36px;
+}
 .title{
     text-transform: uppercase;
     margin-top: 235px;
@@ -37,6 +73,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    background: #fff;
 }
 .card:first-child{
     margin-bottom: 10px;
@@ -57,3 +94,59 @@
     height: 63px;
 }
 
+@media screen and (max-width: 1024px) {
+
+}
+@media screen and (max-width: 768px) {
+    .auth-template{
+        flex-direction: column;
+        justify-content: flex-start;
+
+    }
+    
+    .left-side, .right-side{
+        width: 100%;
+    }
+    .auth-logo{
+        margin: 0 auto;
+        width: 145px;
+        height: 27px;
+    }
+    .title{
+        margin-top: 75px;
+        text-align: center;
+    }
+    .left-side{
+        height: 50%;
+    }
+    .left-side .inner{
+        margin: 0 auto;
+        margin-top: 100px;
+    }
+    .right-side .inner{
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 100%;
+        margin: 0;
+        margin-top: 50px;
+        padding: 0 25px;
+    }
+    .card{
+        padding-right: 20px;
+    }
+    .card .image{
+        width: 40px;
+        height: 40px;
+    }
+    .desc{
+        margin-right: 25px;
+    }
+}
+@media screen and (max-width: 600px) {
+    
+}
+@media screen and (max-width: 480px) {
+    
+}

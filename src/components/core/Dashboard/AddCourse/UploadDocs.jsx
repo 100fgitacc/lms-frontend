@@ -47,19 +47,35 @@ export default function UploadDocs({
     }
   }
 
+  const [fileSizeError, setFileSizeError] = useState("");
+  const MAX_FILE_SIZE = 10 * 1024 * 1024;
+
+  const hasCyrillic = (str) => /[А-Яа-яЁё]/.test(str);
+  
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     accept: getAcceptedTypes(),
     multiple: false,
     disabled,
     onDrop: (acceptedFiles) => {
       const file = acceptedFiles[0]
-      if (file) {
-        previewFile(file)
-        setSelectedFile(file)
-        if (setValue && name) {
-          setValue(name, file, { shouldValidate: true, shouldDirty: true })
+        if (file) {
+          if (hasCyrillic(file.name)) {
+            setFileSizeError("File name must not contain Cyrillic characters.");
+            return; 
+          }
+          if (file.size > MAX_FILE_SIZE) {
+            setFileSizeError("File is too large. Maximum size is 10 MB.")
+            return
+          }
+
+          setFileSizeError("") 
+          previewFile(file)
+          setSelectedFile(file)
+
+          if (setValue && name) {
+            setValue(name, file, { shouldValidate: true, shouldDirty: true })
+          }
         }
-      }
     },
   })
 
@@ -103,7 +119,17 @@ export default function UploadDocs({
         setSelectedFile(null);
         setPreviewSource("");
       }
-    }, [homeworkFile]);
+  }, [homeworkFile]);
+  useEffect(() => {
+    if (viewData) {
+      setPreviewSource(viewData);
+    } else if (editData) {
+      setPreviewSource(editData);
+    } else {
+      setPreviewSource("");
+    }
+  }, [viewData, editData]);
+
 
   return (
     <div className={styles['thumbnail-container']}>
@@ -183,6 +209,9 @@ export default function UploadDocs({
               <ul style={{ listStyle: "none", paddingLeft: 0 }}>
                 <li>Supported: TXT, PDF, DOCX, CSV, PPT, PPTX, ZIP</li>
               </ul>
+            )}
+            {fileSizeError && (
+              <p style={{ color: "red", marginTop: 8 }}>{fileSizeError}</p>
             )}
             {errors && errors[name] && (
               <p style={{ color: "red", marginTop: 8 }}>{errors[name].message || "File is required"}</p>

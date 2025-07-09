@@ -106,151 +106,194 @@ const CourseOverview  = ({content}) => {
     }, [courseSectionData, token, user]);
 
     const totalLessons = courseSectionData?.reduce(
-    (sum, section) => sum + section.subSection.length,
-    0
+      (sum, section) => sum + section.subSection.length,
+      0
     );
 
-    const completedCount = completedLectures.length;
+    const currentLessonIds = new Set(
+      courseSectionData?.flatMap(section => section.subSection.map(sub => sub._id))
+    );
+
+    const completedCount = completedLectures.filter(lecture =>
+      currentLessonIds.has(lecture.subSectionId)
+    ).length;
 
     const allLessonsCompleted = totalLessons > 0 && completedCount === totalLessons;
 
+
     
     
-    const isLectureCompleted = (completedLectures, subSectionId) => {
-        return completedLectures.some(lecture =>
-            typeof lecture === 'string'
-            ? lecture === subSectionId
-            : lecture.subSectionId === subSectionId
+    
+    const isLectureCompleted = (completedLectures, subSectionId, homeworks) => {
+        const id = subSectionId.toString();
+        const isWatched = completedLectures.some(lec =>
+            typeof lec === 'string'
+            ? lec === id
+            : lec.subSectionId?.toString() === id
         );
+
+    const isReviewed = homeworks?.[id]?.status === 'reviewed';
+
+    return isWatched || isReviewed;
     };
 
+    const [isAccordionCollapsed, setIsAccordionCollapsed] = useState(false);
+    const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+    useEffect(() => {
+        const handleResize = () => {
+            setIsMobile(window.innerWidth < 768);
+        };
 
+        window.addEventListener("resize", handleResize);
+        return () => window.removeEventListener("resize", handleResize);
+    }, []);
     
-    return(
-        <>
-        {
-            content !== 'course-overview' ? (
-                <div className={`${styles['overview-wrapper']} ${styles['single-course']}`}>
-                <>
-                    <button className={styles['back-to-button']} onClick={() => { navigate(`/dashboard/enrolled-courses`) }}>Back to courses</button>
-                    <div className={`${styles['header-image'] }`}>
-                        <h1 className={`${styles.title} main-title`}>{courseEntireData?.courseName}</h1>
-                    </div>
-                    {allLessonsCompleted && (
-                        <div className={styles['course-finished-banner']}>
-                            🎉 Congratulations! 🎉 You've completed this course! Great job!
-                        </div>
-                    )}
-                    <div className={styles['header-info']}>
-                        <div className={styles.desc}>
-                            {/* <ProgressBar progress={data.progress}/> */}
-                        </div>
-                        {/* <div className={styles.activity}>
-                            <img src='../assets/img/icons/timer.png' alt='timer icon'/>
-                            <p>Last activity: 04.10.24</p>
-                        </div> */}
-                    </div>
-                </>
-                {courseSectionData &&  (
-                    courseSectionData?.map((item, elemIndex)=>(
-                        <div className={styles['overview-inner']} key={elemIndex}>  
-                            <p className={styles['overview-heading']}>  
-                                {item.sectionName}
-                            </p>
-                            {
-                                item.subSection.map((content, index)=>{
-                                   
-                                    
-                                    return(
-                                   <div 
-                                className={`
-                                    ${styles['overview-item']} 
-                                    ${isLectureCompleted(completedLectures, content._id) && styles['inactive']}
-                                    ${content._id === subSectionId && styles['current-lesson']} 
-                                    ${!isLectureAccessible(item, index, courseSectionData) ? styles['disabled'] : ''}
-                                `} 
-                                key={content._id}
-                                onClick={() => {
-                                    if (isLectureAccessible(item, index, courseSectionData)) {
-                                    navigate(`/view-course/${courseEntireData?._id}/section/${item?._id}/sub-section/${content?._id}`)
-                                    }
-                                }}
-                                >
-
-                                        <p className={styles['overview-item-title']}>{content.title}</p>
-                                         {(isLectureCompleted(completedLectures, content._id) || homeworks[content._id]?.status === 'reviewed') && (
-                                            <div className={`checkbox-container  ${styles['lecture-status']}`}>
-                                                <p>Lesson Completed</p>
-                                                <input 
-                                                type="checkbox" 
-                                                className={`custom-checkbox`} 
-                                                checked={true}
-                                                readOnly
-                                                />
-                                                <label htmlFor="customCheckbox"></label>
-                                            </div>
-                                            )}
-
-                                        </div>
-                                    )
-                                })
-                            }
-                            
-                        
-                        </div>
-                    ))
-                )}
-            </div>
-            ) : (
-            <div className={styles['overview-wrapper']}>
-                {courseSectionData &&  (
-                    courseSectionData?.map((item, elemIndex)=>(
-                        <div className={styles['overview-inner']} key={elemIndex}>  
-                            <p className={styles['overview-heading']}>  
-                                {item.sectionName}
-                            </p>
-                            {
-                                item.subSection.map((content, index)=>{
-                                    const key = `${elemIndex}-${index}`;
-                                    return(
-                                        <div 
-                                        className={`${styles['overview-item']}`} key={index} 
-                                        onClick={()=>{
-                                            handleTextOpened(elemIndex, index);
-                                        }
-                                        }
-                                        >  
-                                        <p className={styles['overview-item-title']}>{content.title}</p>
-                                            <AnimatePresence>
-                                                {visibleItems[key] && (
-                                                    <motion.p
-                                                        className={styles['overview-item-text']}
-                                                        initial={{ opacity: 0, height: 0, marginTop:0 }}
-                                                        animate={{ opacity: 1, height: 'auto', marginTop:10  }}
-                                                        exit={{ opacity: 0, height: 0, marginTop:0  }}
-                                                        transition={{ duration: 0.3 }}
-                                                    >
-                                                    {content.description}
-                                                    </motion.p>
-                                                )}
-                                            </AnimatePresence>
-                                        </div>
-                                    )
-                                })
-                            }
-                            
-                        
-                        </div>
-                    ))
-                )}
-            </div>
-            )
-        } 
-        </>   
     
+    return (
+  <>
+    {content !== 'course-overview' ? (
+      <div className={`${styles['overview-wrapper']} ${styles['single-course']}`}>
+        <button
+          className={styles['back-to-button']}
+          onClick={() => navigate(`/dashboard/enrolled-courses`)}
+        >
+          Back to courses
+        </button>
 
-        
-    );
+        {isMobile && (
+          <button
+            onClick={() => setIsAccordionCollapsed(prev => !prev)}
+            className={styles['content-to-button']}
+          >
+            {isAccordionCollapsed ? 'Show course modules' : 'Hide course modules'}
+          </button>
+        )}
+
+        <div
+          className={`
+            ${isMobile ? styles['collapsible-wrapper'] : ''}
+            ${isAccordionCollapsed ? styles['collapsed'] : styles['expanded']}
+          `}
+        >
+          <div className={styles['header-image']}>
+            <h1 className={`${styles.title} main-title`}>{courseEntireData?.courseName}</h1>
+          </div>
+
+          {allLessonsCompleted && (
+            <div className={styles['course-finished-banner']}>
+              🎉 Congratulations! 🎉 You've completed this course! Great job!
+            </div>
+          )}
+
+          {courseSectionData &&
+            courseSectionData.map((item, elemIndex) => (
+              <div className={styles['overview-inner']} key={elemIndex}>
+                <p className={styles['overview-heading']}>{item.sectionName}</p>
+
+                {item.subSection.map((content, index) => {
+                  const isCompleted = isLectureCompleted(completedLectures, content._id, homeworks);
+                  const isAccessible = isLectureAccessible(item, index, courseSectionData);
+                  const hasHomework = content.homeworks && content.homeworks.length > 0;
+                  const homeworkStatus = homeworks?.[content._id]?.status;
+                  
+                  return (
+                    <div
+                      className={[
+                        styles['overview-item'],
+                        isCompleted && styles['inactive'],
+                        content._id === subSectionId && styles['current-lesson'],
+                        !isAccessible && styles['disabled'],
+                        homeworkStatus === 'resubmission' && styles['resubmission'],
+                      ]
+                        .filter(Boolean)
+                        .join(' ')}
+                      key={content._id}
+                      onClick={() => {
+                        if (isAccessible) {
+                          navigate(
+                            `/view-course/${courseEntireData?._id}/section/${item?._id}/sub-section/${content?._id}`
+                          );
+                        }
+                      }}
+                    >
+                      <p className={[styles['overview-item-title'], hasHomework && styles['has-homework']]
+                        .filter(Boolean)
+                        .join(' ')}
+                      >{content.title}</p>
+
+                     {(isCompleted || homeworkStatus === 'resubmission') && (
+                        <div className={`checkbox-container ${styles['lecture-status']}`}>
+                          {homeworkStatus === 'resubmission' ? (
+                            <p className={styles.resubmission}>You have feedback from teacher</p>
+                          ) : (
+                            <>
+                              <div className={styles['status-score']}>
+                                
+                                <p>Lesson Completed</p>
+                                {content.requiresHomeworkCheck && homeworks?.[content._id]?.status === "reviewed" && (
+                                  <p>
+                                    (Your score: {homeworks[content._id]?.score ?? 0} / {content.maxScore ?? "-"})
+                                  </p>
+                                )}  
+                              </div>
+                              <input
+                                type="checkbox"
+                                className="custom-checkbox"
+                                checked={true}
+                                readOnly
+                              />
+                              <label htmlFor="customCheckbox"></label>
+                            </>
+                          )}
+                        </div>
+                      )}
+
+                    </div>
+                  );
+                })}
+              </div>
+            ))}
+        </div>
+      </div>
+    ) : (
+      <div className={styles['overview-wrapper']}>
+        {courseSectionData &&
+          courseSectionData.map((item, elemIndex) => (
+            <div className={styles['overview-inner']} key={elemIndex}>
+              <p className={styles['overview-heading']}>{item.sectionName}</p>
+
+              {item.subSection.map((content, index) => {
+                const key = `${elemIndex}-${index}`;
+                return (
+                  <div
+                    className={styles['overview-item']}
+                    key={index}
+                    onClick={() => handleTextOpened(elemIndex, index)}
+                  >
+                    <p className={styles['overview-item-title']}>{content.title}</p>
+                    <AnimatePresence>
+                      {visibleItems[key] && (
+                        <motion.p
+                          className={styles['overview-item-text']}
+                          initial={{ opacity: 0, height: 0, marginTop: 0 }}
+                          animate={{ opacity: 1, height: 'auto', marginTop: 10 }}
+                          exit={{ opacity: 0, height: 0, marginTop: 0 }}
+                          transition={{ duration: 0.3 }}
+                        >
+                          {content.description}
+                        </motion.p>
+                      )}
+                    </AnimatePresence>
+                  </div>
+                );
+              })}
+            </div>
+          ))}
+      </div>
+    )}
+  </>
+);
+
 }
 
 export default CourseOverview;

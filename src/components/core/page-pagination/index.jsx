@@ -3,34 +3,21 @@ import styles from './index.module.css';
 import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { getHomeworkBySubSection } from "../../../services/operations/studentFeaturesAPI"
-const PagePagination = ({currPage, renderPageContent, currentSubSection, content, context}) => {
 
 
 
 
-
-
+const PagePagination = ({ currPage, renderPageContent, currentSubSection, content }) => {
 
     const [activePage, setActivePage] = useState('Account');
     const [activeOptions, setActiveOptions] = useState('Table');
     const [activeSubOptions, setActiveSubOptions] = useState('Times');
     const { user } = useSelector((state) => state.profile);
     const { token } = useSelector((state) => state.auth)
-    const handleMenuItemClick = (e) => {
-        if (context ==='audience-options') {
-            setActiveOptions(e);
-            renderOptionsContent(e); 
-        }else if (context ==='audience-subOptions') {
-            setActiveSubOptions(e);
-            renderSubOptionsContent(e); 
-        }else if (context === 'Dashboards') {
-            setActivePage('Dashboards');
-        }else{
-            setActivePage(e);
-            renderPageContent(e);
-        }
-    
-    }
+
+    const handleMenuItemClick = (page) => {
+        renderPageContent(page);
+    };
 
     useEffect(() => {
         switch (currPage) {
@@ -98,47 +85,47 @@ const PagePagination = ({currPage, renderPageContent, currentSubSection, content
             {
                 currPage === 'investor-project' ? (
                     <ul className={styles.wrapper}>
-                    <li className={`${styles['pagination-item']} ${activePage === 'Feed' ? styles.active : '' }`} onClick={()=>handleMenuItemClick('Feed')}>
+                    <li className={`${styles['pagination-item']} ${content === 'Feed' ? styles.active : '' }`} onClick={()=>handleMenuItemClick('Feed')}>
                         <p>Feed</p>
                     </li>
-                    <li className={`${styles['pagination-item']} ${activePage === 'Investround' ? styles.active : '' }`} onClick={()=>handleMenuItemClick('Investround')}>
+                    <li className={`${styles['pagination-item']} ${content === 'Investround' ? styles.active : '' }`} onClick={()=>handleMenuItemClick('Investround')}>
                         <p>Investround</p>
                     </li>
-                    <li className={`${styles['pagination-item']} ${activePage === 'Airdrop' ? styles.active : '' }`} onClick={()=>handleMenuItemClick('Airdrop')}>
+                    <li className={`${styles['pagination-item']} ${content === 'Airdrop' ? styles.active : '' }`} onClick={()=>handleMenuItemClick('Airdrop')}>
                         <p>Airdrop</p>
                     </li>
-                    <li className={`${styles['pagination-item']} ${activePage === 'Details' ? styles.active : '' }`} onClick={()=>handleMenuItemClick('Details')}>
+                    <li className={`${styles['pagination-item']} ${content === 'Details' ? styles.active : '' }`} onClick={()=>handleMenuItemClick('Details')}>
                         <p>Details</p>
                     </li>
                 </ul>
                 ) :
                 currPage === 'Profile' ? (
                     <ul className={styles.wrapper}>
-                    <li className={`${styles['pagination-item']} ${activePage === 'Account' ? styles.active : '' }`} onClick={()=>handleMenuItemClick('Account')}>
+                    <li className={`${styles['pagination-item']} ${content === 'Account' ? styles.active : '' }`} onClick={()=>handleMenuItemClick('Account')}>
                         <p>Account</p>
                     </li>
-                    {/* <li className={`${styles['pagination-item']} ${activePage === 'Courses' ? styles.active : '' }`} onClick={()=>handleMenuItemClick('Courses')}>
+                    {/* <li className={`${styles['pagination-item']} ${content === 'Courses' ? styles.active : '' }`} onClick={()=>handleMenuItemClick('Courses')}>
                         <p>Courses</p>
                     </li> */}
-                    {/* <li className={`${styles['pagination-item']} ${activePage === 'Projects' ? styles.active : '' }`} onClick={()=>handleMenuItemClick('Projects')}>
+                    {/* <li className={`${styles['pagination-item']} ${content === 'Projects' ? styles.active : '' }`} onClick={()=>handleMenuItemClick('Projects')}>
                         <p>Projects</p>
                     </li>
-                    <li className={`${styles['pagination-item']} ${activePage === 'Myfeed' ? styles.active : '' }`} onClick={()=>handleMenuItemClick('Myfeed')}>
+                    <li className={`${styles['pagination-item']} ${content === 'Myfeed' ? styles.active : '' }`} onClick={()=>handleMenuItemClick('Myfeed')}>
                         <p>My feed</p>
                     </li>
-                    <li className={`${styles['pagination-item']} ${activePage === 'Wallets' ? styles.active : '' }`} onClick={()=>handleMenuItemClick('Wallets')}>
+                    <li className={`${styles['pagination-item']} ${content === 'Wallets' ? styles.active : '' }`} onClick={()=>handleMenuItemClick('Wallets')}>
                         <p>Wallets</p>
                     </li> */}
                 </ul>
                 ) : currPage === 'single-course' ? (
                     <ul className={styles.wrapper}>
-                        <li className={`${styles['pagination-item']} ${activePage === 'Lesson' ? styles.active : '' }`} onClick={()=>handleMenuItemClick('Lesson')}>
+                        <li className={`${styles['pagination-item']} ${content === 'Lesson' ? styles.active : '' }`} onClick={()=>handleMenuItemClick('Lesson')}>
                             <img src='/assets/img/icons/file-video.png' alt='icon'/>
                             <p>Lesson & Materials</p>
                         </li>
                         {currentSubSection?.homeworks.length > 0 && (
                            <li
-                            className={`${styles['pagination-item']} ${activePage === 'Homework' ? styles.active : ''}`}
+                            className={`${styles['pagination-item']} ${content === 'Homework' ? styles.active : ''}`}
                             onClick={() => handleMenuItemClick('Homework')}
                             >
                             <img src="/assets/img/icons/book-b.png" alt="icon" />
@@ -153,16 +140,16 @@ const PagePagination = ({currPage, renderPageContent, currentSubSection, content
                     </ul>
                 ): currPage === 'Manage' && !context ? (
                     <ul className={styles.wrapper}>
-                        <li className={`${styles['pagination-item']} ${activePage === 'Details' ? styles.active : '' }`} onClick={()=>handleMenuItemClick('Details')}>
+                        <li className={`${styles['pagination-item']} ${content === 'Details' ? styles.active : '' }`} onClick={()=>handleMenuItemClick('Details')}>
                             <p>Details</p>
                         </li>
-                        <li className={`${styles['pagination-item']} ${activePage === 'Settings' ? styles.active : '' }`} onClick={()=>handleMenuItemClick('Settings')}>
+                        <li className={`${styles['pagination-item']} ${content === 'Settings' ? styles.active : '' }`} onClick={()=>handleMenuItemClick('Settings')}>
                             <p>Settings</p>
                         </li>
-                        <li className={`${styles['pagination-item']} ${activePage === 'Dashboards' ? styles.active : '' }`} onClick={()=>handleMenuItemClick('Dashboards')}>
+                        <li className={`${styles['pagination-item']} ${content === 'Dashboards' ? styles.active : '' }`} onClick={()=>handleMenuItemClick('Dashboards')}>
                             <p>Dashboards</p>
                         </li>
-                        <li className={`${styles['pagination-item']} ${activePage === 'Audience' ? styles.active : '' }`} onClick={()=>handleMenuItemClick('Audience')}>
+                        <li className={`${styles['pagination-item']} ${content === 'Audience' ? styles.active : '' }`} onClick={()=>handleMenuItemClick('Audience')}>
                             <p>Audience calculator</p>
                         </li>
                     </ul>

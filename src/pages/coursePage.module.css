@@ -85,7 +85,8 @@
 .overview-item-title{
     font-size: 14px;
 }
-.overview-item.inactive{
+.overview-item.inactive,
+.overview-item.resubmission{
     padding-top: 40px;
 }
 .overview-wrapper.single-course{
@@ -159,11 +160,19 @@
     top: 15px;
     right: 0;
 }
+.lecture-status p:nth-child(1){
+    font-size: 11px;
+}
 .lecture-status p{
     margin-right: 5px;
-    font-size: 10px;
+    font-size: 9px;
     color: #1d8b13;
     font-weight: bold;
+}
+.status-score{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
 }
 .course-player{
     position: relative;
@@ -183,6 +192,7 @@
   padding: 20px;
   text-align: center;
 }
+
 .video-ended-text{
     color: #fff;
     margin-bottom: 25px;
@@ -194,6 +204,7 @@
     align-items: center;
 }
 .rewatch-btn {
+    width: 100%;
     max-width: 150px;
     margin-top: 10px;
     padding: 10px 15px;
@@ -243,6 +254,27 @@
     border-radius: 5px;
     padding: 0 25px;
     cursor: not-allowed;
+}
+.disabled::before{
+    content: '🔒';
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    z-index: 11;
+}
+.has-homework{
+    position: relative;
+}
+.has-homework::before{
+    content: '📑';
+    position: absolute;
+    top: -2px;
+    left: -20px;
+    z-index: 11;
+}
+.lecture-status .resubmission{
+  color: #c57712;
+  font-weight: bold;
 }
 .wrapper{
     position: relative;
@@ -340,6 +372,27 @@
     border-top: 1px solid #DEDEDE;
     border-bottom: 1px solid #DEDEDE;
 }
+.homework-heading{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.homework-btn {
+    text-decoration: underline;
+    color: #1d8b13;
+    font-size: 12px;
+}
+
+
+.arrow {
+  font-size: 1.25rem;
+  transition: transform 0.2s ease;
+}
+
+.homework-btn:hover .arrow {
+  transform: translateX(4px);
+}
+
 .homework-materials h6{
     margin-bottom: 5px;
 }
@@ -365,6 +418,24 @@
     color: #c57712;
     margin-bottom: 10px;
 }
+.done-container .feedback-title{
+    font-size: inherit;
+    color: inherit;
+}
+.done-container .feedback{
+    color: #787878;
+    text-decoration: none;
+}
+.done-container .homework-feedback{
+   box-shadow: 0px 1px 11px 6px #07125712;
+}
+.done-text{
+    text-align: center;
+    margin-bottom: 25px;
+    font-size: 17px;
+    font-weight: 700;
+    color: #071257;
+}
 .feedback{
     padding: 0 25px;
     text-decoration: underline;
@@ -379,4 +450,77 @@
   font-weight: bold;
   text-align: center;
   border: 2px solid #bbf7d0;
+}
+
+@media screen and (max-width: 768px) {
+  .lesson-content-inner{
+    flex-direction: column;
+    margin: 15px !important;
+  }
+   .lesson-content-inner > div:first-child{
+    width: 100%;
+    margin-bottom: 25px;
+   }
+   .overview-wrapper.single-course{
+    padding: 20px;
+    position: relative;
+   }
+   .title{
+    font-size: 19px;
+   }
+   .overview-heading{
+    font-size: 15px;
+   }
+   .overview-item > p{
+    font-size: 12px;
+   }
+   .single-course .overview-inner:last-child{
+    margin-bottom: 0;
+   }
+     .collapsible-wrapper {
+    overflow: hidden;
+    transition: max-height 0.4s ease;
+  }
+
+  .collapsed {
+    max-height: 0;
+  }
+
+  .expanded {
+    max-height: 1000px; 
+  }
+
+  .collapse-toggle-button {
+    margin-bottom: 10px;
+    padding: 8px 12px;
+    background-color: #3d5afe;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    cursor: pointer;
+  }
+  .content-to-button{
+    position: absolute;
+    font-size: 12px;
+    right: 15px;
+    top: 25px;
+    color: #071257;
+    text-decoration: underline;
+  }
+  .back-to-button{
+    margin-bottom: 0;
+  }
+  .lesson-content-inner > div:last-child{
+    width: 100%;
+  }
+    .course-purchased .header-image{
+        position: relative;
+        padding: 50px 25px;
+    }
+}
+@media screen and (max-width: 480px) {
+  .wrapper{
+    padding: 15px;
+  }
 }

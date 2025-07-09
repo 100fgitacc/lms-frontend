@@ -18,14 +18,20 @@ const AllStudents = () => {
     useEffect(() => {
         const fetchAllStudents = async () => {
             setLoading(true)
+            try {
             const { allStudentsDetails, studentsCount } = await getAllStudentsData(token)
             setAllStudents(allStudentsDetails)
-            setStudentsCount(studentsCount);
-            setLoading(false)
+            setStudentsCount(studentsCount)
+            } catch (error) {
+            console.error("Failed to fetch students:", error)
+            } finally {
+            setLoading(false) 
+            }
         }
 
         fetchAllStudents()
     }, [token])
+
 
 
 
@@ -37,7 +43,7 @@ const AllStudents = () => {
                     Total students : {studentsCount}
                 </strong>
             </div>
-            <div>
+            <div className="table-wrapper">
                  {loading ? (
                         <Loader/>
                     ) : !allStudents ? (

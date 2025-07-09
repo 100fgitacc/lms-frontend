@@ -88,11 +88,13 @@
             if (hw.type === "text") setValue("homeworkText", hw.value)
             if (hw.type === "link") setValue("homeworkLink", hw.value)
             if (hw.type === "file") {
+              const filename = typeof hw.value === "object" ? hw.value.filename : hw.value;
               const fileUrl = modalData.fileBaseUrl
-                ? `${modalData.fileBaseUrl}/${hw.value}`
-                : hw.value
-              setValue("homeworkFile", hw.value)
-              setPreviewFileUrl(fileUrl)
+                ? `${modalData.fileBaseUrl}/${filename}`
+                : typeof hw.value === "object" ? hw.value.url : hw.value;
+
+              setValue("homeworkFile", hw.value); 
+              setPreviewFileUrl(fileUrl);
             }
           })
         }
@@ -157,83 +159,71 @@
     // handle the editing of subsection
     const handleEditSubsection = async () => {
       const currentValues = getValues();
-      console.log("changes after editing form values:", currentValues)
-      const formData = new FormData()
-      // console.log("Values After Editing form values:", currentValues)
-      formData.append("sectionId", modalData.sectionId)
-      formData.append("subSectionId", modalData._id)
-      
+      const formData = new FormData();
+
+      formData.append("sectionId", modalData.sectionId);
+      formData.append("subSectionId", modalData._id);
+
       if (currentValues.lectureTitle !== modalData.title) {
-        formData.append("title", currentValues.lectureTitle)
+        formData.append("title", currentValues.lectureTitle);
       }
       if (currentValues.lectureDesc !== modalData.description) {
-        formData.append("description", currentValues.lectureDesc)
+        formData.append("description", currentValues.lectureDesc);
       }
       if (currentValues.lectureVideo !== modalData.videoUrl) {
-        formData.append("video", currentValues.lectureVideo)
+        formData.append("video", currentValues.lectureVideo);
       }
-      formData.append("allowSkip", currentValues.allowSkip)
+      formData.append("allowSkip", currentValues.allowSkip);
+      formData.append("enableSeek", currentValues.enableSeek);
 
-      formData.append("enableSeek", currentValues.enableSeek)
-
-      const homeworks = []
+      const homeworks = [];
       if (currentValues.homework) {
         if (currentValues.homeworkText?.trim()) {
-          homeworks.push({ type: "text", value: currentValues.homeworkText.trim() })
+          homeworks.push({ type: "text", value: currentValues.homeworkText.trim() });
         }
         if (currentValues.homeworkLink?.trim()) {
-          homeworks.push({ type: "link", value: currentValues.homeworkLink.trim() })
+          homeworks.push({ type: "link", value: currentValues.homeworkLink.trim() });
         }
         if (currentValues.homeworkFile) {
-          formData.append("homeworkFile", currentValues.homeworkFile) 
-          homeworks.push({ type: "file", value: currentValues.homeworkFile.name })
+          if (currentValues.homeworkFile instanceof File) {
+            formData.append("homeworkFile", currentValues.homeworkFile);
+            homeworks.push({ type: "file", value: "__NEW_FILE__" });
+          } else if (typeof currentValues.homeworkFile === "object" && currentValues.homeworkFile.filename) {
+      
+            homeworks.push({ type: "file", value: currentValues.homeworkFile });
+          }
         }
       }
-      formData.append("homeworks", JSON.stringify(homeworks))
-      formData.append("requiresHomeworkCheck", currentValues.requiresHomeworkCheck)
-      
-      
+      formData.append("homeworks", JSON.stringify(homeworks));
+      formData.append("requiresHomeworkCheck", currentValues.requiresHomeworkCheck);
 
       if (currentValues.requiresHomeworkCheck) {
         const minScore = Number(currentValues.minScore);
         const maxScore = Number(currentValues.maxScore);
-
-        if (!Number.isNaN(minScore)) {
-          formData.append("minScore", minScore);
-        }
-
-        if (!Number.isNaN(maxScore)) {
-          formData.append("maxScore", maxScore);
-        }
+        if (!Number.isNaN(minScore)) formData.append("minScore", minScore);
+        if (!Number.isNaN(maxScore)) formData.append("maxScore", maxScore);
       }
 
-      formData.append(
-        "delayedHomeworkCheck",
-        !!currentValues.delayedHomeworkCheck
-      );
-
+      formData.append("delayedHomeworkCheck", !!currentValues.delayedHomeworkCheck);
       if (currentValues.delayedHomeworkCheck && currentValues.homeworkDelaySeconds) {
         formData.append("homeworkDelaySeconds", Number(currentValues.homeworkDelaySeconds));
       }
-            
 
-      setLoading(true)
-      const result = await updateSubSection(formData, token)
+      setLoading(true);
+      const result = await updateSubSection(formData, token);
       if (result) {
-        // console.log("result", result)
-        // update the structure of course
         const updatedCourseContent = course.courseContent.map((section) =>
           section._id === modalData.sectionId ? result : section
-        )
-        const updatedCourse = { ...course, courseContent: updatedCourseContent }
-        dispatch(setCourse(updatedCourse))
+        );
+        const updatedCourse = { ...course, courseContent: updatedCourseContent };
+        dispatch(setCourse(updatedCourse));
       }
-      setModalData(null)
-      setLoading(false)
-    }
+      setModalData(null);
+      setLoading(false);
+    };
+
 
   const onSubmit = async (data) => {
-    console.log(data);
     
     if (view) return;
 
@@ -263,10 +253,19 @@
         homeworks.push({ type: "link", value: data.homeworkLink.trim() });
       }
       if (data.homeworkFile) {
-        formData.append("homeworkFile", data.homeworkFile);
-        homeworks.push({ type: "file", value: data.homeworkFile.name });
+        if (typeof data.homeworkFile === "object") {
+          if (data.homeworkFile instanceof File) {
+            formData.append("homeworkFile", data.homeworkFile);
+            homeworks.push({ type: "file", value: data.homeworkFile.name });
+          } else if (data.homeworkFile.filename) {
+            homeworks.push({ type: "file", value: data.homeworkFile.filename });
+          }
+        } else if (typeof data.homeworkFile === "string") {
+          homeworks.push({ type: "file", value: data.homeworkFile });
+        }
       }
     }
+
     formData.append("homeworks", JSON.stringify(homeworks));
 
     formData.append("requiresHomeworkCheck", data.requiresHomeworkCheck);

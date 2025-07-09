@@ -17,16 +17,16 @@ const LoginPage = () => {
     };
 
     return (
-        <div className='auth-template'>
-            <div className={`${styles['left-side']} left-side`}>
+        <div className={styles['auth-template']}>
+            <div className={`${styles['left-side']} `}>
                 <div className={styles.inner}>
-                    <div className='auth-logo'>
+                    <div className={styles['auth-logo']}>
                         <img src='../assets/img/logo-new-2.png' alt='logo'/>
                     </div>
                     <h1 className={`${styles.title} main-title`}>LOG IN<br/><span> TO START</span></h1>
                 </div>
             </div>
-            <div className={`${styles['right-side']} right-side`}>
+            <div className={`${styles['right-side']}`}>
                 <div className={styles.inner}>
                     {/* <LangSelector/> */}
                     <div className={styles.content}>
@@ -39,13 +39,13 @@ const LoginPage = () => {
                                 <img src='../assets/img/project-management.png' alt='franklin image'/>
                             </div>
                         </div> */}
-                        <div className={`${styles.card} auth-card`}>
+                        <div className={`${styles.card} ${styles['auth-card']}`}>
                             <div className={styles.desc}>
                                 <p>Become a member</p>
-                                <button className='auth-btn' onClick={() => handleLogin()}>Log In</button>
+                                <button className={styles['auth-btn']} onClick={() => handleLogin()}>Log In</button>
                             </div>
                             <div className={styles.image}>
-                                <img src='../assets/img/investor.png' alt='franklin image'/>
+                                <img src='../assets/img/investor.png' alt='image'/>
                             </div>
                         </div>
                     </div>

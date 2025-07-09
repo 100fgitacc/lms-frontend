@@ -44,7 +44,7 @@ function AllInstructors() {
       </strong>
     </div>
 
-    <div>
+    <div className="table-wrapper">
       {loading ? (
         <Loader/>
       ) : !allInstructorDetails || !allInstructorDetails.length ? (
@@ -113,6 +113,7 @@ function AllInstructors() {
         </table>
       )}
     </div>
+    
   </div>
 );
 

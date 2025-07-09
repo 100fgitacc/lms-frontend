@@ -16,12 +16,17 @@ const AllStudentsByInstructor = () => {
 
     useEffect(() => {
         const fetchAllStudents = async () => {
-        setLoading(true)
-        const { allStudentsDetails} = await getAllStudentsByInstructorData(token);
-        setAllStudentsDetails(allStudentsDetails);
+          setLoading(true)
+          try {
+            const { allStudentsDetails } = await getAllStudentsByInstructorData(token);
+            setAllStudentsDetails(allStudentsDetails);
+          } catch (error) {
+            console.error("Failed to fetch students:", error);
+          }finally {
+            setLoading(false) 
+            }
         };
         fetchAllStudents();
-        setLoading(false)
     }, [token]);
 
 
@@ -72,6 +77,8 @@ const AllStudentsByInstructor = () => {
   })
   .filter(Boolean);
 
+  console.log(loading);
+  
   
     return (
         <div className={styles['wrapper']}>

@@ -33,10 +33,13 @@ const Sidebar = () => {
     }
    
   };
-const [confirmationModal, setConfirmationModal] = useState(null)
+  const [confirmationModal, setConfirmationModal] = useState(null)
 
-
-
+    useEffect(() => {
+    if (window.innerWidth < 1024 && !isHidden) {
+      dispatch(resetSidebar());
+    }
+  }, [dispatch]);
     return (
     <div className={`${styles.sidebar} ${isHidden ? styles.hide : ''} `}>
         <div className={styles['logo-container']}>

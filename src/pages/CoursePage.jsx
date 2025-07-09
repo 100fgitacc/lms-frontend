@@ -16,6 +16,7 @@ import {
   setCourseSectionData,
   setEntireCourseData,
   setTotalNoOfLectures,
+  setCurrentContentPage
 } from "../slices/viewCourseSlice"
 
 export default function CoursePage() {
@@ -43,11 +44,13 @@ export default function CoursePage() {
 
 
   const isHidden = useSelector((state) => state.sidebar.isSidebarHidden);
-  const [content, setContent] = useState('Lesson');
+
   
-  const handleSetContent = (e) => {
-      setContent(e);
-  }
+  const content = useSelector((state) => state.viewCourse.currentContentPage);
+
+  const handleSetContent = (page) => {
+    dispatch(setCurrentContentPage(page));
+  };
 
   const { sectionId, subSectionId } = useParams();
 
@@ -68,17 +71,22 @@ export default function CoursePage() {
                 </div>
                 <div>
                     <ContentHeader page={'course-purchased'}/>
-                    <PagePagination currPage={'single-course'} renderPageContent={handleSetContent} currentSubSection={currentSubSection}/>
+                    <PagePagination
+                      currPage={'single-course'}
+                      renderPageContent={handleSetContent}
+                      currentSubSection={currentSubSection}
+                      content={content}
+                    />
                     {currentSubSection?.requiresHomeworkCheck && (
                       <div className={`${styles['lesson-homework-mark']}`}>
                         <p>
-                          Attention: Homework evaluation is required for this lesson!
+                          Please note: This lesson includes an evaluated homework assignment!
                         </p>
                         <img src='/assets/img/icons/medal.png' alt='icon'/>
                       </div>
                     )}
                     <h3 className={styles['course-content-title']}>{currentSubSection?.title}</h3>
-                    <CourseContent content={content}/>
+                    <CourseContent content={content} />
                 </div>
             </div>
         </div>

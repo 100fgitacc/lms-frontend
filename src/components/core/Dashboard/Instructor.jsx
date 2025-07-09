@@ -127,7 +127,7 @@ export default function Instructor() {
               </Link>
             </div>
 
-           <div>
+           <div className="table-wrapper">
               {allStudentsDetails.slice(0, 3).map((student) => (
                 <div key={student._id} className={styles.wrapper}>
                   <div className={styles['students-table-item']}>

@@ -105,10 +105,10 @@ useEffect(() => {
   }
 
   let totalSubmitted = 0;
-let reviewed = 0;
-let notReviewed = 0;
-let resubmission = 0;
-let notStarted = 0;
+  let reviewed = 0;
+  let notReviewed = 0;
+  let resubmission = 0;
+  let notStarted = 0;
 
 coursesData.forEach((student) => {
   student.courses.forEach((course) => {
@@ -145,7 +145,6 @@ coursesData.forEach((student) => {
     });
   });
 });
-
   return (
     <>
       <h2 className={`secondary-title ${styles.heading}`}>Course Assignments</h2>
@@ -239,7 +238,23 @@ coursesData.forEach((student) => {
           </div>
         </div>
 
-        {coursesData.map((student) => (
+        {coursesData
+        .filter(student =>
+          student.courses.some(course =>
+            course.courseContent.some(section =>
+              section.subSection.some(lesson => {
+                const hwArr = course.homeworksBySubSection?.[lesson._id] || [];
+                const homework = hwArr.length > 0 ? hwArr[0] : null;
+                return (
+                  (!filterTitle || lesson.title.toLowerCase().includes(filterTitle.toLowerCase())) &&
+                  homeworkFilter(homework) &&
+                  statusFilter(homework?.status || "not_started")
+                );
+              })
+            )
+          )
+        )
+        .map((student) => (
           <div key={student._id} className={` ${styles.wrapper}`}>
             <div 
               className={`${styles['student-data']}`}
@@ -273,6 +288,7 @@ coursesData.forEach((student) => {
                   })
                 );
 
+                
 
                 return (
                   <div key={course._id}>
@@ -280,8 +296,11 @@ coursesData.forEach((student) => {
                       <thead>
                         <tr>
                           <th>Lesson Title</th>
-                          <th>Homework</th>
                           <th>Status</th>
+                          <th>Student Sent homework </th>
+                          <th>Delayed Check</th>
+                          <th>Requires Homework Check</th>
+                          <th>Score</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -298,26 +317,54 @@ coursesData.forEach((student) => {
                             >
                               <td>{lesson.title}</td>
                               <td>
-                                  <span className={`${styles.badge} ${homework?.answerText?.trim() ? styles.sent : styles.missing}`}>
-                                    {homework?.answerText?.trim() ? "Homework Sent" : "Without Homework"}
+                                <span
+                                  className={`${styles.badge} ${
+                                    homework?.status === "reviewed"
+                                      ? styles.reviewed
+                                      : homework?.status === "not_reviewed"
+                                      ? styles.notReviewed
+                                      : homework?.status === "resubmission"
+                                      ? styles.resubmission
+                                      : styles.notStarted
+                                  }`}
+                                >
+                                  {homework?.status ? formatStatus(homework.status) : "Not Started"}
+                                </span>
+                              </td>
+                              <td>
+                                {lesson.homeworks && lesson.homeworks.length > 0 ? (
+                                  homework?.answerText?.trim() ? (
+                                    <span className={`${styles.badge} ${styles.sent}`}>Already Sent</span>
+                                  ) : (
+                                    <span>Not Sent</span>
+                                  )
+                                ) : (
+                                  "Lesson w/o homework"
+                                )}
+                              </td>
+                              <td>
+                                {lesson.delayedHomeworkCheck ? (
+                                  <span>Delayed Check</span>
+                                ) : (
+                                  "-"
+                                )}
+                              </td>
+                              <td>
+                                {lesson.requiresHomeworkCheck ? (
+                                  <span>Yes</span>
+                                ) : (
+                                  "-"
+                                )}
+                              </td>
+                              <td>
+                                {lesson.requiresHomeworkCheck ? (
+                                  <span>
+                                    {homework?.score ?? 0} / {lesson.maxScore ?? "-"}
                                   </span>
-                                </td>
-                                <td>
-                                  <span
-                                    className={`${styles.badge} ${
-                                      homework?.status === "reviewed"
-                                        ? styles.reviewed
-                                        : homework?.status === "not_reviewed"
-                                        ? styles.notReviewed
-                                        : homework?.status === "resubmission"
-                                        ? styles.resubmission
-                                        : styles.notStarted
-                                    }`}
-                                  >
-                                    {homework?.status ? formatStatus(homework.status) : "Not Started"}
-                                  </span>
-                                </td>
-
+                                ) : (
+                                  "-"
+                                )}
+                              </td>
                             </tr>
                           )
                         }

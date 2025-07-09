@@ -30,6 +30,8 @@ export default function StudentLesson() {
       const studentHw = course?.homeworksBySubSection?.[lessonId]?.find(
         (hw) => hw.user === studentId
       );
+      console.log(studentHw);
+      
 
       const foundLesson = course?.courseContent
         .flatMap((sec) => sec.subSection)
@@ -112,6 +114,8 @@ export default function StudentLesson() {
   if (loading) return <Loader type="fullscreen" />;
   if (!lesson) return <p>Lesson not found</p>;
 
+  console.log(studentHomework);
+  
 
   return (
     <div className={styles.wrapper}>
@@ -156,6 +160,15 @@ export default function StudentLesson() {
                     }
                   })}
                 </div>
+                {studentHomework?.feedback ? (
+                  <>
+                  <h4 className={styles['section-heading']}>Feedback from teacher:</h4>
+                  <p>{studentHomework.feedback}</p>
+                  </>
+                  ): (
+                    <p  className={styles['section-heading']}>Teacher are not commented this homework</p>
+                  )}
+                
               </>
             ):(
               <p>This lesson is not contain homework</p>
@@ -208,7 +221,7 @@ export default function StudentLesson() {
             ) : (
               <p>No file attached by student.</p>
             )}
-
+              
             {studentHomework.status === "not_reviewed" && (
               <div className={styles['homework-check-container']}>
                 <h4 className={styles['lesson-data-heading']}>Homework Check:</h4>

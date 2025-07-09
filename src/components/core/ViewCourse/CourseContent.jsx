@@ -4,8 +4,8 @@ import { useForm } from "react-hook-form";
 import { useLocation, useNavigate, useParams } from "react-router-dom"
 
 import { markLectureAsComplete } from "../../../services/operations/courseDetailsAPI"
-import { homeworkSend,getHomeworkBySubSection } from "../../../services/operations/studentFeaturesAPI"
-import { updateCompletedLectures } from "../../../slices/viewCourseSlice"
+import { homeworkSend, getHomeworkBySubSection } from "../../../services/operations/studentFeaturesAPI"
+import { updateCompletedLectures,setCurrentContentPage  } from "../../../slices/viewCourseSlice"
 
 import IconBtn from "../../common/IconBtn"
 import styles from '../../../pages/coursePage.module.css'
@@ -16,7 +16,7 @@ import UploadDocs from "../Dashboard/AddCourse/UploadDocs"
 
 import toast from "react-hot-toast";
 
-const CourseContent = ({ content }) => {
+const CourseContent = ({ content  }) => {
   const { courseId, sectionId, subSectionId } = useParams()
   const navigate = useNavigate()
   const location = useLocation()
@@ -243,20 +243,74 @@ const CourseContent = ({ content }) => {
     setIsPaused(true)
   }, [subSectionId])
 
-  
+    
+  const downloadFile = async (url, filename) => {
+    try {
+      const response = await fetch(url);
+      if (!response.ok) throw new Error("Network response was not ok");
+      const blob = await response.blob();
+
+      const blobUrl = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = blobUrl;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(blobUrl);
+    } catch (error) {
+      console.error("Download failed:", error);
+    }
+  };
+
+  const [showVideoEndControls, setShowVideoEndControls] = useState(false)
+
+  const goToHomework = () => dispatch(setCurrentContentPage("Homework"));
+  const videoContainerRef = useRef(null);
+
+  const handleToggleFullscreen = () => {
+    const container = videoContainerRef.current;
+    if (!container) return;
+
+    if (document.fullscreenElement) {
+      document.exitFullscreen();
+    } else {
+      container.requestFullscreen().catch((err) => {
+        console.error("Failed to enter fullscreen:", err);
+      });
+    }
+  };
+  useEffect(() => {
+    const video = playerRef.current;
+    if (!video) return;
+
+    const handleFullscreenChange = () => {
+      if (!document.fullscreenElement) {
+        video.controls = false;
+      }
+    };
+
+    document.addEventListener("fullscreenchange", handleFullscreenChange);
+    return () => {
+      document.removeEventListener("fullscreenchange", handleFullscreenChange);
+    };
+  }, []);
   return (
     <>
       {content === 'Lesson' ? (
         <div className={styles['content-container']}>
           {videoData ? (
-            <div className={styles['video-wrapper']}>
+            <div ref={videoContainerRef} className={styles['video-container']}>
               <video
                 key={subSectionId}
                 ref={playerRef}
                 width="100%"
                 controls={false}
                 onLoadedMetadata={handleLoadedMetadata}
-                onEnded={() => setVideoEnded(true)}
+                onEnded={() => {
+                  setVideoEnded(true)
+                  setShowVideoEndControls(true)
+                }}
                 src={videoData.videoUrl}
                 className={styles['video-element']}
               />
@@ -292,55 +346,68 @@ const CourseContent = ({ content }) => {
                     <button className={styles['play-btn']} onClick={() => playerRef.current.pause()}>
                       ❚❚ Pause
                     </button>
-)}
+                  )}
+                  <button className={styles['fullscreen-btn']} onClick={handleToggleFullscreen}>
+                    ⛶ Fullscreen
+                  </button>
                 </div>
               </div>
-              {videoEnded && (
+              {videoEnded && showVideoEndControls && (
                 <div className={styles['video-ended-controls']}>
-                  {/* {!isFirstVideo() && <button disabled={loading} onClick={goToPrevVideo} className={`button ${styles['button-step']}`}>Prev</button>} */}
-                {!completedLectures.includes(subSectionId) ?
-                  videoData?.homeworks.length === 0 ? (
-                   <div className={styles['video-ended-container']}>
-                    <h2 className={styles['video-ended-text']}>Lesson is done!</h2>
-                    <>
-                      <IconBtn
-                        disabled={loading}
-                        onclick={handleLectureCompletion}
-                        text={loading ? "Loading..." : "Mark as Completed"}
-                      />
-                      <button className={styles['rewatch-btn']} onClick={handleRewatch}>
-                      Rewatch
-                      </button>
-                    </>
-                   </div>
-                  ):(
-                  <div className={styles['video-ended-container']}>
-                    <h3 className={styles['video-ended-text']}>Now you need to complete the homework to get access the next lesson</h3>
-                    <button className={styles['rewatch-btn']} onClick={handleRewatch}>
-                    Rewatch
-                    </button>
-                  </div>
-                  ): (
+                  
+                  { !completedLectures.some(item => item.subSectionId === subSectionId) ? (
+                    <div className={styles['video-ended-container']}>
+                      {videoData?.requiresHomeworkCheck ? (
+                        <>
+                          <h3 className={styles['video-ended-text']}>
+                            Now you need to complete the homework to get access the next lesson
+                          </h3>
+                          <button className={styles['rewatch-btn']} onClick={handleRewatch}>
+                            Rewatch
+                          </button>
+                          <button className={styles['rewatch-btn']}  onClick={() => setShowVideoEndControls(false)}>
+                          Close 
+                          </button>
+                        </>
+                      ) : (
+                        <>
+                          <h3 className={styles['video-ended-text']}>Go to next lesson!</h3>
+                          <IconBtn
+                            disabled={loading}
+                            onclick={handleLectureCompletion}
+                            text={loading ? "Loading..." : "Mark as Completed"}
+                          />
+                          <button className={styles['rewatch-btn']} onClick={handleRewatch}>
+                            Rewatch
+                          </button>
+                          <button className={styles['rewatch-btn']}  onClick={() => setShowVideoEndControls(false)}>
+                          Close
+                          </button>
+                        </>
+                      )}
+                    </div>
+                  ) : (
                     <div className={styles['video-ended-container']}>
                       <h3 className={styles['video-ended-text']}>You are already done this lesson!</h3>
                       <button className={styles['rewatch-btn']} onClick={handleRewatch}>
-                      Rewatch
-                    </button>
-                  </div>
+                        Rewatch
+                      </button>
+                      <button className={styles['rewatch-btn']}  onClick={() => setShowVideoEndControls(false)}>
+                      Close
+                      </button>
+                    </div>
                   )}
-
-
-
-                  {/* {!isLastVideo() && <button disabled={loading} onClick={goToNextVideo} className={`button ${styles['button-step']}`}>Next</button>} */}
                 </div>
               )}
-             
               <div className={`${styles.wrapper} ${styles['homework-wrapper']}`}>
                 <h4 className={styles.title}>Lesson description:</h4>
                 <p className={styles['lesson-desc']}>{videoData.description}</p>
 
                 {!homework?.score && (
-                  <h4 className={styles.title}>Homework:</h4>
+                  <div className={styles['homework-heading']}>
+                    <h4 >Homework:</h4>
+                    <button className={styles['homework-btn']}  onClick={goToHomework}> Go to homework zone <span className={styles.arrow}>&rarr;</span></button>
+                  </div>
                 )}
 
                 {videoData?.homeworks && (homework?.status !== 'reviewed' || homework?.status === 'not_reviewed') ? (
@@ -365,9 +432,13 @@ const CourseContent = ({ content }) => {
                           {item.type === 'file' && (
                             <>
                               <h6>Lesson materials:</h6>
-                              <a href={item.value.url} download={item.value.filename}>
+                              <button
+                                type="button"
+                                onClick={() => downloadFile(item.value.url, item.value.filename)}
+                                className={styles.downloadBtn}
+                              >
                                 {item.value.filename}
-                              </a>
+                              </button>
                             </>
                           )}
                         </div>
@@ -375,6 +446,7 @@ const CourseContent = ({ content }) => {
                     ) : (
                       <small>This lesson does not include homework!</small>
                     )}
+                  
                   </div>
                 ) : homework.status === 'reviewed' ? (
                   <div className={`${styles['homework-wrapper']} ${styles.wrapper}`}>
@@ -434,14 +506,18 @@ const CourseContent = ({ content }) => {
                       </>
                     )}
 
-                    {item.type === 'file' && (
-                      <>
-                        <h6>Lesson materials:</h6>
-                        <a href={item.value.url} download={item.value.filename}>
-                          {item.value.filename}
-                        </a>
-                      </>
-                    )}
+                      {item.type === 'file' && (
+                        <>
+                          <h6>Lesson materials:</h6>
+                          <button
+                            type="button"
+                            onClick={() => downloadFile(item.value.url, item.value.filename)}
+                            className={styles.downloadBtn}
+                          >
+                            {item.value.filename}
+                          </button>
+                        </>
+                      )}
                   </div>
                 ))}
               </div>
@@ -484,9 +560,26 @@ const CourseContent = ({ content }) => {
         )  : homework?.status === 'reviewed' ? (
           <div className={`${styles['homework-wrapper']} ${styles.wrapper}`}>
             {homework?.score && homework?.score > 0 ? (
-              <p>Lesson is done! Your score: {homework?.score} points </p>
+              <div className={styles['done-container']}>
+                <p className={styles['done-text']}>🎉 Lesson is done! Your score: {homework?.score} points 🎉</p>
+                {homework?.feedback && (
+                  <div className={styles['homework-feedback']}>
+                    <p className={`${styles['feedback-title']}`}>Latest feedback from your teacher:</p>
+                    <p className={styles.feedback}>{homework.feedback}</p>
+                  </div>
+                )}
+              </div>
             ) : (
-              <p>Lesson is done!</p>
+              <div className={styles['done-container']}>
+              
+                <p className={styles['done-text']}>🎉 Lesson is done! 🎉</p>
+                {homework?.feedback && (
+                  <div className={styles['homework-feedback']}>
+                    <p className={`${styles['feedback-title']}`}>Latest feedback from your teacher:</p>
+                    <p className={styles.feedback}>{homework.feedback}</p>
+                  </div>
+                )}
+              </div>
             )}
           </div>
         ) : homework?.status === 'not_reviewed' ? (

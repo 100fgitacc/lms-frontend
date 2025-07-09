@@ -37,15 +37,14 @@ export default function EnrolledCourses() {
       </p>)
   }
 
+  console.log(enrolledCourses);
+  
 
 
   return (
     <>
        <div className={styles.heading}>
             <h2 className={`${styles.title} secondary-title`}>Enrolled Courses</h2>
-            <strong>
-              {/* Total instructors: {instructorsCount} */}
-            </strong>
           </div>
       {
         <>
