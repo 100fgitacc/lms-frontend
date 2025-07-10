@@ -1,103 +1,117 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai"
 import { useDispatch } from "react-redux"
-import { Link, useNavigate, matchPath } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import { login } from "../../../services/operations/authAPI"
-import styles from './index.module.css';
+import styles from './index.module.css'
 
-const matchRoute = (route) => {
-    return matchPath({ path: route }, location.pathname);
-}
-
-const LoginForm = () =>{
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-  });
-
+const LoginForm = () => {
+  const navigate = useNavigate()
+  const dispatch = useDispatch()
+  const [formData, setFormData] = useState({ email: "", password: "" })
   const [showPassword, setShowPassword] = useState(false)
 
-  const { email, password } = formData;
+  const { email, password } = formData
+
+  useEffect(() => {
+    const script = document.createElement("script")
+  script.src = `https://www.google.com/recaptcha/api.js?render=${import.meta.env.VITE_APP_RECAPTCHA_SITE_KEY}`
+    script.async = true
+    document.body.appendChild(script)
+
+    return () => {
+      document.body.removeChild(script)
+    }
+  }, [])
 
   const handleOnChange = (e) => {
-    setFormData((prevData) => ({
-      ...prevData,
+    setFormData((prev) => ({
+      ...prev,
       [e.target.name]: e.target.value,
     }))
   }
 
-  const handleOnSubmit = (e) => {
-    e.preventDefault();
-    dispatch(login(email, password, navigate))
+  const handleOnSubmit = async (e) => {
+    e.preventDefault()
+
+    if (!window.grecaptcha) {
+      alert("reCAPTCHA not loaded")
+      return
+    }
+
+    const recaptcha = await window.grecaptcha.execute(
+      import.meta.env.VITE_APP_RECAPTCHA_SITE_KEY,
+      { action: "login" }
+    )
+    console.log("reCAPTCHA token:", recaptcha)
+
+    dispatch(login(email, password, navigate, recaptcha))
   }
 
- return (
-   <div className={styles.container}>
-    <form onSubmit={handleOnSubmit} className={styles.form}>
+  return (
+    <div className={styles.container}>
+      <form onSubmit={handleOnSubmit} className={styles.form}>
         <h2 className={styles['form-heading']}>Login</h2>
 
         <div className={styles.inner}>
-            <label className={styles.label}>
+          <label className={styles.label}>
             <p className={styles['label-text']}>
-                Email Address <sup className={styles.required}>*</sup>
+              Email Address <sup className={styles.required}>*</sup>
             </p>
             <input
-                required
-                type="email"
-                name="email"
-                value={email}
-                onChange={handleOnChange}
-                placeholder="Enter email address"
-                className={styles.input}
+              required
+              type="email"
+              name="email"
+              value={email}
+              onChange={handleOnChange}
+              placeholder="Enter email address"
+              className={styles.input}
             />
-            </label>
+          </label>
 
-            <label className={styles.label}>
+          <label className={styles.label}>
             <p className={styles['label-text']}>
-                Password <sup className={styles.required}>*</sup>
+              Password <sup className={styles.required}>*</sup>
             </p>
             <div className={styles.passwordWrapper}>
-                    <input
-                        required
-                        type={showPassword ? "text" : "password"}
-                        name="password"
-                        value={password}
-                        onChange={handleOnChange}
-                        placeholder="Enter Password"
-                        className={styles.input}
-                    />
-                    <span
-                        onClick={() => setShowPassword((prev) => !prev)}
-                        className={styles.eyeIcon}
-                    >
-                        {showPassword ? (
-                        <AiOutlineEyeInvisible fontSize={24} fill="#4d4d4d" />
-                        ) : (
-                        <AiOutlineEye fontSize={24} fill="#4d4d4d" />
-                        )}
-                    </span>
-                </div>
+              <input
+                required
+                type={showPassword ? "text" : "password"}
+                name="password"
+                value={password}
+                onChange={handleOnChange}
+                placeholder="Enter Password"
+                className={styles.input}
+              />
+              <span
+                onClick={() => setShowPassword((prev) => !prev)}
+                className={styles.eyeIcon}
+              >
+                {showPassword ? (
+                  <AiOutlineEyeInvisible fontSize={24} fill="#4d4d4d" />
+                ) : (
+                  <AiOutlineEye fontSize={24} fill="#4d4d4d" />
+                )}
+              </span>
+            </div>
             <Link to="/forgot-password" className={styles['forgot-link']}>
-                <p>Forgot Password</p>
+              <p>Forgot Password</p>
             </Link>
-            </label>
+          </label>
 
-            <button type="submit" className={styles.button}>
+          <button type="submit" className={styles.button}>
             Sign In
-            </button>
+          </button>
 
-            <Link to="/signup">
+          <Link to="/signup">
             <button type="button" className={styles['button-secondary']}>
-                Create Account
+              Create Account
             </button>
-            </Link>
+          </Link>
         </div>
-    </form>
-  </div>
-);
-
+      </form>
+    </div>
+  )
 }
 
 export default LoginForm

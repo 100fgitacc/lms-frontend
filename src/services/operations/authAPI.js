@@ -84,7 +84,7 @@ export function signUp(accountType, firstName, lastName, email, password, confir
 
 
 // ================ Login ================
-export function login(email, password, navigate) {
+export function login(email, password, navigate, recaptcha) {
   return async (dispatch) => {
 
     const toastId = toast.loading("Loading...");
@@ -94,6 +94,7 @@ export function login(email, password, navigate) {
       const response = await apiConnector("POST", LOGIN_API, {
         email,
         password,
+        recaptcha
       })
 
 
