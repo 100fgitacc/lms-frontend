@@ -256,21 +256,31 @@
     cursor: not-allowed;
 }
 .disabled::before{
-    content: '🔒';
+    content: '';
     position: absolute;
-    top: 5px;
-    left: 5px;
+    top: 12px;
+    left: 10px;
     z-index: 11;
+    background-image: url('/assets/img/icons/lock.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    width: 15px;
+    height: 14px;
 }
 .has-homework{
     position: relative;
 }
 .has-homework::before{
-    content: '📑';
+    content: '';
     position: absolute;
-    top: -2px;
-    left: -20px;
+    top: 1px;
+    left: -17px;
     z-index: 11;
+    background-image: url('/assets/img/icons/homework.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    width: 15px;
+    height: 14px;
 }
 .lecture-status .resubmission{
   color: #c57712;

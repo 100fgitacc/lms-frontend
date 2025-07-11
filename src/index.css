@@ -420,6 +420,37 @@ label{
 .custom-checkbox + label:hover::before {
   border-color: #007bff;
 }
+
+.resubmission-checkbox + label::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 14px;
+  height: 14px;
+  border-radius: 2px;
+  background: #fff;
+  pointer-events: none;
+  box-sizing: border-box;
+}
+
+.resubmission-checkbox + label::after {
+  content: "X";
+  position: absolute;
+  left: 3px;
+  top: -6px;
+  width: 8px;
+  height: 8px;
+  pointer-events: none;
+  background: none;
+  color: orange;
+  font-weight: 600;
+  font-size: 11px;
+}
+
+
+
 ::-webkit-scrollbar-button {
   display: none;
 }

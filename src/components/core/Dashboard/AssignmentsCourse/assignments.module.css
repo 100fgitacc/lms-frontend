@@ -351,17 +351,12 @@ tr{
   min-width: 80px;
 }
 
-.resetWrapper {
-  position: absolute;
-  top: 4px;
-  right: 4px;
-}
 
 .resetBtn {
   background-color: #e74c3c;
   color: white;
-  padding: 4px 8px;
-  font-size: 11px;
+  padding: 8px 12px;
+  font-size: 12px;
   border-radius: 4px;
   border: none;
   cursor: pointer;

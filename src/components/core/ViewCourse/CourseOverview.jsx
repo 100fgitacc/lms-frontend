@@ -22,7 +22,6 @@ const CourseOverview  = ({content}) => {
     const { courseSectionData, courseEntireData, completedLectures } = useSelector((state) => state.viewCourse)
 
 
-
     
     const [visibleItems, setVisibleItems] = useState({});
 
@@ -268,7 +267,7 @@ const CourseOverview  = ({content}) => {
                             }
                           }}
                         >
-                          <p className={[styles['overview-item-title'], hasHomework && styles['has-homework']]
+                          <p className={[styles['overview-item-title'], (hasHomework && isAccessible) && styles['has-homework']]
                             .filter(Boolean)
                             .join(' ')}
                           >{content.title}</p>
@@ -276,27 +275,39 @@ const CourseOverview  = ({content}) => {
                         {(isCompleted || homeworkStatus === 'resubmission') && (
                             <div className={`checkbox-container ${styles['lecture-status']}`}>
                               {homeworkStatus === 'resubmission' ? (
-                                <p className={styles.resubmission}>You have feedback from teacher</p>
-                              ) : (
-                                <>
-                                  <div className={styles['status-score']}>
-                                    
-                                    <p>Lesson Completed</p>
-                                    {content.requiresHomeworkCheck && homeworks?.[content._id]?.status === "reviewed" && (
-                                      <p>
-                                        (Your score: {homeworks[content._id]?.score ?? 0} / {content.maxScore ?? "-"})
-                                      </p>
-                                    )}  
-                                  </div>
-                                  <input
-                                    type="checkbox"
-                                    className="custom-checkbox"
-                                    checked={true}
-                                    readOnly
-                                  />
-                                  <label htmlFor="customCheckbox"></label>
-                                </>
-                              )}
+                                  <>
+                                    <p className={styles.resubmission}>Feedback</p>
+                                    <input
+                                      type="checkbox"
+                                      className="custom-checkbox resubmission-checkbox"
+                                      checked={false}
+                                      readOnly
+                                      id={`resub-${content._id}`}
+                                    />
+                                    <label htmlFor={`resub-${content._id}`}></label>
+                                  </>
+                                ) : (
+                                  <>
+                                    <div className={styles['status-score']}>
+                                      <p>Completed</p>
+                                      {content.requiresHomeworkCheck && homeworks?.[content._id]?.status === "reviewed" && (
+                                        <p>
+                                          (Your score: {homeworks[content._id]?.score ?? 0} / {content.maxScore ?? "-"})
+                                        </p>
+                                      )}
+                                    </div>
+                                    <input
+                                      type="checkbox"
+                                      className="custom-checkbox"
+                                      checked={true}
+                                      readOnly
+                                      id={`done-${content._id}`}
+                                    />
+                                    <label htmlFor={`done-${content._id}`}></label>
+                                  </>
+                                )}
+
+
                             </div>
                           )}
 
