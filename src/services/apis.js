@@ -57,6 +57,7 @@ export const courseEndpoints = {
   CREATE_RATING_API: BASE_URL + "/course/createRating",
   CREATE_NEW_CATEGORY: BASE_URL + "/course/createCategory",
   DELETE_CATEGORY: BASE_URL + "/course/deleteCategory",
+  RESET_LESSON_PROGRESS:BASE_URL + "/course/reset-lesson",
 }
 
 // RATINGS AND REVIEWS

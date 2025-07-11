@@ -23,7 +23,8 @@ const {
   CREATE_RATING_API,
   LECTURE_COMPLETION_API,
   CREATE_NEW_CATEGORY,
-  DELETE_CATEGORY
+  DELETE_CATEGORY,
+  RESET_LESSON_PROGRESS
 } = courseEndpoints
 
 
@@ -467,3 +468,29 @@ export const createRating = async (data, token) => {
   toast.dismiss(toastId)
   return success
 }
+
+export const resetLessonProgress = async (data, token) => {
+  const toastId = toast.loading("Resetting progress...")
+
+  let success = false
+  
+  try {
+    const response = await apiConnector("POST", RESET_LESSON_PROGRESS, data, {
+      Authorization: `Bearer ${token}`,
+    })
+
+    if (!response?.data?.message) {
+      throw new Error("Could not reset lesson progress");
+    }
+
+    toast.success("Lesson progress reset")
+    success = true
+  } catch (error) {
+    console.error("RESET_LESSON_PROGRESS_API ERROR:", error)
+    toast.error(error.message)
+  }
+
+  toast.dismiss(toastId)
+  return success
+}
+

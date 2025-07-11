@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom"
 import { getUserEnrolledCourses } from "../../../services/operations/profileAPI"
 import styles from './profile.module.css'
 import Loader from '../../common/Loader';
-
+import { MdOutlineStarHalf   , MdOutlineStarPurple500      } from "react-icons/md";
 export default function EnrolledCourses() {
   const { token } = useSelector((state) => state.auth)
   const navigate = useNavigate()
@@ -59,6 +59,11 @@ export default function EnrolledCourses() {
                 <>
                   <div className={styles['courses-item']} onClick={() => { navigate(`/view-course/${course?._id}/section/${course.courseContent?.[0]?._id}/sub-section/${course.courseContent?.[0]?.subSection?.[0]?._id}`)}} key={i}>
                     <div className={styles['courses-image']}>
+                        <div className={styles['course-stats']}> 
+                          <span><MdOutlineStarHalf    size={12} color="black" />  {course.totalScore} </span>
+                          <span> | </span>
+                          <span> {course.maxPossibleScore}  <MdOutlineStarPurple500    size={12} color="black" /></span>
+                        </div>
                       <img
                         src={course.thumbnail}
                         alt={course.courseName}

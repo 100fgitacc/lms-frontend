@@ -6,6 +6,7 @@ import Loader from "../../../common/Loader"
 import styles from "./assignments.module.css"
 import { getAllStudentsByInstructorData } from "../../../../services/operations/adminApi"
 import Select from "react-select"
+import { resetLessonProgress } from "../../../../services/operations/courseDetailsAPI"
 
 const homeworkOptions = [
   { value: "all", label: "All Homework" },
@@ -135,7 +136,6 @@ export default function PersonalAssignments() {
   })
 
   if (loading) return <Loader type="fullscreen" />
-
   return (
     <>
       <h2 className={`secondary-title ${styles.heading}`}>Personal Assignments</h2>
@@ -205,6 +205,8 @@ export default function PersonalAssignments() {
             <p>Homework Not Started: <span>{notStarted}</span></p>
           </div>
         </div>
+ 
+        
 
         {coursesData
           .filter((student) =>
@@ -310,6 +312,44 @@ export default function PersonalAssignments() {
                                     "-"
                                   )}
                                 </td>
+                               <td className={styles.resetCell}>
+                                <div className={styles.resetWrapper}>
+                                  <button
+                                    className={styles.resetBtn}
+                                   onClick={async (e) => {
+                                    e.stopPropagation()
+                                    const confirmed = window.confirm("Reset progress and homework for this lesson?")
+                                    if (!confirmed) return
+
+                                    const success = await resetLessonProgress({
+                                      courseId: course._id,
+                                      subSectionId: lesson._id,
+                                      studentId: student._id, 
+                                    }, token)
+
+                                    if (success) {
+                                      const allStudents = await getAllStudentsByInstructorData(token)
+                                      if (allStudents?.allStudentsDetails) {
+                                        const filteredStudents = allStudents.allStudentsDetails
+                                          .filter((s) => s._id === student._id)
+                                          .map((s) => ({
+                                            ...s,
+                                            courses: s.courses.filter((c) => c._id === course._id),
+                                          }))
+                                          .filter((s) => s.courses.length > 0)
+
+                                        setCoursesData(filteredStudents)
+                                      }
+                                    }
+                                  }}
+
+                                  >
+                                    Reset
+                                  </button>
+                                </div>
+                              </td>
+
+
                               </tr>
                             )
                           })}

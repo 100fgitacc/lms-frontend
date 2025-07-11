@@ -90,12 +90,12 @@ function CourseDetailsCard({ course, setConfirmationModal, handleBuyCourse }) {
               <button
               className="yellowButton outline-none"
               onClick={
-                user && course?.studentsEnrolled.includes(user?._id)
+                user && course?.studentsEnrolled?.some(enroll => enroll?.user === user?._id)
                   ? () => navigate("/dashboard/enrolled-courses")
                   : handleBuyCourse
               }
             >
-             {user && course?.studentsEnrolled.includes(user?._id)
+             {user && course?.studentsEnrolled?.some(enroll => enroll?.user === user?._id)
               ? "Go To Course"
               : user && CurrentPrice === 0
                 ? "Join For Free"
@@ -105,7 +105,7 @@ function CourseDetailsCard({ course, setConfirmationModal, handleBuyCourse }) {
             }
             
             <div id="paypal-button-container"></div>
-            {(!user || !course?.studentsEnrolled.includes(user?._id) && user?.accountType === ACCOUNT_TYPE.STUDENT) && (
+            {(!user || !course?.studentsEnrolled?.some(enroll => enroll?.user === user?._id) && user?.accountType === ACCOUNT_TYPE.STUDENT) && (
               <button onClick={handleAddToCart} className="bg-blue-700 p-3 rounded-md outline-none">
                 Add to Cart
               </button>

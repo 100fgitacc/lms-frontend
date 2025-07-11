@@ -12,7 +12,9 @@ import { formattedDate } from '../../../../utils/dateFormatter';
 const ContentHeader = ({ page, content }) => {
 
     
-    const [coursesState, setCoursesState] = useState(content && content.isStarted ? content.isStarted : {});
+    const [coursesState, setCoursesState] = useState({
+    isStarted: Boolean(content?.isStarted)
+    });
 
     const handleCourseSubmit = (index) =>{
         setCoursesState(prevCourses => ({
@@ -33,6 +35,7 @@ const ContentHeader = ({ page, content }) => {
 
 
     const { user } = useSelector((state) => state.profile)
+
     
     return (
         <>

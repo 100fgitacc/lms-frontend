@@ -13,16 +13,16 @@ const LoginForm = () => {
 
   const { email, password } = formData
 
-  useEffect(() => {
-    const script = document.createElement("script")
-  script.src = `https://www.google.com/recaptcha/api.js?render=${import.meta.env.VITE_APP_RECAPTCHA_SITE_KEY}`
-    script.async = true
-    document.body.appendChild(script)
+  // useEffect(() => {
+  //   const script = document.createElement("script")
+  // script.src = `https://www.google.com/recaptcha/api.js?render=${import.meta.env.VITE_APP_RECAPTCHA_SITE_KEY}`
+  //   script.async = true
+  //   document.body.appendChild(script)
 
-    return () => {
-      document.body.removeChild(script)
-    }
-  }, [])
+  //   return () => {
+  //     document.body.removeChild(script)
+  //   }
+  // }, [])
 
   const handleOnChange = (e) => {
     setFormData((prev) => ({
@@ -34,18 +34,18 @@ const LoginForm = () => {
   const handleOnSubmit = async (e) => {
     e.preventDefault()
 
-    if (!window.grecaptcha) {
-      alert("reCAPTCHA not loaded")
-      return
-    }
+    // if (!window.grecaptcha) {
+    //   alert("reCAPTCHA not loaded")
+    //   return
+    // }
 
-    const recaptcha = await window.grecaptcha.execute(
-      import.meta.env.VITE_APP_RECAPTCHA_SITE_KEY,
-      { action: "login" }
-    )
-    console.log("reCAPTCHA token:", recaptcha)
+    // const recaptcha = await window.grecaptcha.execute(
+    //   import.meta.env.VITE_APP_RECAPTCHA_SITE_KEY,
+    //   { action: "login" }
+    // )
 
-    dispatch(login(email, password, navigate, recaptcha))
+    // dispatch(login(email, password, navigate, recaptcha))
+    dispatch(login(email, password, navigate))
   }
 
   return (

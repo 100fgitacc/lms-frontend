@@ -1,11 +1,10 @@
-// NotFoundPage.js
+
 import React, { useState, useEffect  } from 'react';
 import { FaShareSquare } from "react-icons/fa"
 // import ProgressBar from 'components/progress-bar';
 // import { showToast } from '../toast-сonfig';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate, useParams } from "react-router-dom"
-// import { setExplore } from '../../store';
 
 
 import styles from './index.module.css';
@@ -13,6 +12,7 @@ import RatingStars from '../../common/RatingStars';
 import { fetchCourseDetails } from "../../../services/operations/courseDetailsAPI"
 import { ACCOUNT_TYPE } from './../../../utils/constants';
 import { buyCourse } from "../../../services/operations/studentFeaturesAPI"
+import GetAvgRating from '../../../utils/avgRating';
 
 
 const ContentHeader = ({ page, content }) => {
@@ -97,9 +97,13 @@ const ContentHeader = ({ page, content }) => {
 
 
   const [payPalOn, setPayPalOn] = useState(false);
-
-  
-
+  const avgReviewCount = GetAvgRating(courseEntireData?.ratingAndReviews);
+  const handleScrollToReviews = () => {
+  const element = document.getElementById("reviews-section");
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth" });
+    }
+  };
     return (
         <>
           {
@@ -132,9 +136,8 @@ const ContentHeader = ({ page, content }) => {
                 <div className={styles['header-info']}>
                   <div className={styles.desc}>
                      <div className={styles['course-rating']}>
-                      {/* <RatingStars Review_Count={avgReviewCount} Star_Size={24}/> */}
-                      <RatingStars Star_Size={24}/>
-                      <span>{`(${courseEntireData?.ratingAndReviews?.length || 0} reviews)`}</span>
+                     <RatingStars Review_Count={avgReviewCount} Star_Size={24}/>
+                     <span onClick={handleScrollToReviews} style={{ cursor: "pointer"}}>{`(${courseEntireData?.ratingAndReviews?.length || 0} reviews)`}</span>
                       </div>
                   </div>
                   <div className={styles.activity}>
@@ -168,12 +171,14 @@ const ContentHeader = ({ page, content }) => {
                               <button
                               className={`${styles['start-course']} button-primary`}
                               onClick={
-                                user && courseEntireData?.studentsEnrolled?.includes(user?._id)
+                                user && courseEntireData?.studentsEnrolled?.some(enrollment => enrollment?.user === user?._id)
+
                                   ? () => navigate("/dashboard/enrolled-courses")
                                   : handleBuyCourse
                               }
                             >
-                              {user && courseEntireData?.studentsEnrolled?.includes(user?._id)
+                              {user && courseEntireData?.studentsEnrolled?.some(enrollment => enrollment?.user === user?._id)
+
                                 ? "Go To Course"
                                 : "Buy Now"}
                               </button>
@@ -181,7 +186,8 @@ const ContentHeader = ({ page, content }) => {
                             </>
                             )
                           }
-                          {(!user || courseEntireData?.studentsEnrolled?.includes(user?._id) && user?.accountType === ACCOUNT_TYPE.STUDENT) && (
+                          {(!user || courseEntireData?.studentsEnrolled?.some(enrollment => enrollment?.user === user?._id)
+ && user?.accountType === ACCOUNT_TYPE.STUDENT) && (
                             <button onClick={handleAddToCart} >
                               Add to Cart
                             </button>

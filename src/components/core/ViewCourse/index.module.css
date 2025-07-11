@@ -308,7 +308,33 @@
     font-size: 12px;
     color: #5e5e5e;
 }
-
+.avatar img{
+    width: 58px;
+    height: 58px;
+    border-radius: 50%;
+    max-height: unset;
+    max-width: unset;
+}
+.review-header{
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+.review-header > div:first-child{
+    display: flex;
+}
+.truncate-name {
+  max-width: 200px; 
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.btns-container{
+    display: flex;
+    margin-top: 15px;
+    align-items: flex-end;
+    justify-content: flex-end;
+}
 @media screen and (max-width: 480px) {
   .wrapper{
     padding: 15px;

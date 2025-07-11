@@ -2,13 +2,16 @@ import  { useState, useEffect } from 'react';
 import { useNavigate, useParams } from "react-router-dom"
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSelector, useDispatch } from 'react-redux';
-// import ProgressBar from 'components/progress-bar';
+import RatingStars from '../../common/RatingStars';
 import styles from '../../../pages/coursePage.module.css'
 import {
   setCourseSectionData
 } from "../../../slices/viewCourseSlice"
 import { getFullDetailsOfCourse } from "../../../services/operations/courseDetailsAPI"
 import { getHomeworkBySubSection } from '../../../services/operations/studentFeaturesAPI';
+import CourseReviewModal from './CourseReviewModal';
+import { getAllStudentsData } from '../../../services/operations/adminApi';
+import Loader from '../../common/Loader';
 
 const CourseOverview  = ({content}) => {
 
@@ -147,152 +150,240 @@ const CourseOverview  = ({content}) => {
         window.addEventListener("resize", handleResize);
         return () => window.removeEventListener("resize", handleResize);
     }, []);
-    
-    
+
+    const [reviewModal, setReviewModal] = useState(false)
+
+    const hasUserReviewed = courseEntireData?.ratingAndReviews?.some(
+      (review) => review?.user === userId
+    );
+
+
+      const [allStudents, setAllStudents] = useState([])
+      const [studentsCount, setStudentsCount] = useState();
+      const [loading, setLoading] = useState(false)
+  
+      useEffect(() => {
+          const fetchAllStudents = async () => {
+              setLoading(true)
+              try {
+              const { allStudentsDetails, studentsCount } = await getAllStudentsData(token)
+              setAllStudents(allStudentsDetails)
+              setStudentsCount(studentsCount)
+              } catch (error) {
+              console.error("Failed to fetch students:", error)
+              } finally {
+              setLoading(false) 
+              }
+          }
+  
+          fetchAllStudents()
+      }, [token])
+      function getStudentById(userId, allStudents) {
+        return allStudents?.find(student => student._id === userId) || null;
+      }
     return (
-  <>
-    {content !== 'course-overview' ? (
-      <div className={`${styles['overview-wrapper']} ${styles['single-course']}`}>
-        <button
-          className={styles['back-to-button']}
-          onClick={() => navigate(`/dashboard/enrolled-courses`)}
-        >
-          Back to courses
-        </button>
+      <>
+        {content !== 'course-overview' ? (
+          <div className={`${styles['overview-wrapper']} ${styles['single-course']}`}>
+            <button
+              className={styles['back-to-button']}
+              onClick={() => navigate(`/dashboard/enrolled-courses`)}
+            >
+              Back to courses
+            </button>
 
-        {isMobile && (
-          <button
-            onClick={() => setIsAccordionCollapsed(prev => !prev)}
-            className={styles['content-to-button']}
-          >
-            {isAccordionCollapsed ? 'Show course modules' : 'Hide course modules'}
-          </button>
-        )}
+            {isMobile && (
+              <button
+                onClick={() => setIsAccordionCollapsed(prev => !prev)}
+                className={styles['content-to-button']}
+              >
+                {isAccordionCollapsed ? 'Show course modules' : 'Hide course modules'}
+              </button>
+            )}
 
-        <div
-          className={`
-            ${isMobile ? styles['collapsible-wrapper'] : ''}
-            ${isAccordionCollapsed ? styles['collapsed'] : styles['expanded']}
-          `}
-        >
-          <div className={styles['header-image']}>
-            <h1 className={`${styles.title} main-title`}>{courseEntireData?.courseName}</h1>
-          </div>
-
-          {allLessonsCompleted && (
-            <div className={styles['course-finished-banner']}>
-              🎉 Congratulations! 🎉 You've completed this course! Great job!
-            </div>
-          )}
-
-          {courseSectionData &&
-            courseSectionData.map((item, elemIndex) => (
-              <div className={styles['overview-inner']} key={elemIndex}>
-                <p className={styles['overview-heading']}>{item.sectionName}</p>
-
-                {item.subSection.map((content, index) => {
-                  const isCompleted = isLectureCompleted(completedLectures, content._id, homeworks);
-                  const isAccessible = isLectureAccessible(item, index, courseSectionData);
-                  const hasHomework = content.homeworks && content.homeworks.length > 0;
-                  const homeworkStatus = homeworks?.[content._id]?.status;
-                  
-                  return (
-                    <div
-                      className={[
-                        styles['overview-item'],
-                        isCompleted && styles['inactive'],
-                        content._id === subSectionId && styles['current-lesson'],
-                        !isAccessible && styles['disabled'],
-                        homeworkStatus === 'resubmission' && styles['resubmission'],
-                      ]
-                        .filter(Boolean)
-                        .join(' ')}
-                      key={content._id}
-                      onClick={() => {
-                        if (isAccessible) {
-                          navigate(
-                            `/view-course/${courseEntireData?._id}/section/${item?._id}/sub-section/${content?._id}`
-                          );
-                        }
-                      }}
-                    >
-                      <p className={[styles['overview-item-title'], hasHomework && styles['has-homework']]
-                        .filter(Boolean)
-                        .join(' ')}
-                      >{content.title}</p>
-
-                     {(isCompleted || homeworkStatus === 'resubmission') && (
-                        <div className={`checkbox-container ${styles['lecture-status']}`}>
-                          {homeworkStatus === 'resubmission' ? (
-                            <p className={styles.resubmission}>You have feedback from teacher</p>
-                          ) : (
-                            <>
-                              <div className={styles['status-score']}>
-                                
-                                <p>Lesson Completed</p>
-                                {content.requiresHomeworkCheck && homeworks?.[content._id]?.status === "reviewed" && (
-                                  <p>
-                                    (Your score: {homeworks[content._id]?.score ?? 0} / {content.maxScore ?? "-"})
-                                  </p>
-                                )}  
-                              </div>
-                              <input
-                                type="checkbox"
-                                className="custom-checkbox"
-                                checked={true}
-                                readOnly
-                              />
-                              <label htmlFor="customCheckbox"></label>
-                            </>
-                          )}
-                        </div>
-                      )}
-
-                    </div>
-                  );
-                })}
+            <div
+              className={`
+                ${isMobile ? styles['collapsible-wrapper'] : ''}
+                ${isAccordionCollapsed ? styles['collapsed'] : styles['expanded']}
+              `}
+            >
+              <div className={styles['header-image']}>
+                <h1 className={`${styles.title} main-title`}>{courseEntireData?.courseName}</h1>
               </div>
-            ))}
-        </div>
-      </div>
-    ) : (
-      <div className={styles['overview-wrapper']}>
-        {courseSectionData &&
-          courseSectionData.map((item, elemIndex) => (
-            <div className={styles['overview-inner']} key={elemIndex}>
-              <p className={styles['overview-heading']}>{item.sectionName}</p>
 
-              {item.subSection.map((content, index) => {
-                const key = `${elemIndex}-${index}`;
-                return (
-                  <div
-                    className={styles['overview-item']}
-                    key={index}
-                    onClick={() => handleTextOpened(elemIndex, index)}
-                  >
-                    <p className={styles['overview-item-title']}>{content.title}</p>
-                    <AnimatePresence>
-                      {visibleItems[key] && (
-                        <motion.p
-                          className={styles['overview-item-text']}
-                          initial={{ opacity: 0, height: 0, marginTop: 0 }}
-                          animate={{ opacity: 1, height: 'auto', marginTop: 10 }}
-                          exit={{ opacity: 0, height: 0, marginTop: 0 }}
-                          transition={{ duration: 0.3 }}
-                        >
-                          {content.description}
-                        </motion.p>
-                      )}
-                    </AnimatePresence>
+              {allLessonsCompleted && (
+                <>
+                  <div className={styles['course-finished-banner']}>
+                    🎉 Congratulations! 🎉 You've completed this course! Great job!
                   </div>
-                );
-              })}
+                  {hasUserReviewed ? (
+                    <div className={styles['course-finished-review']}>
+                      <p className={styles['already-reviewed-text']}>
+                        You’ve already submitted a review for this course. Thank you!
+                      </p>
+                    </div>
+                  ) : (
+                    <div className={styles['course-finished-review']}>
+                      <p>Share your thoughts about the course</p>
+                      <button
+                        className={styles['leave-review-btn']}
+                        onClick={() => setReviewModal(true)}
+                      >
+                        Send Feedback
+                      </button>
+                    </div>
+                  )}
+                  {reviewModal && <CourseReviewModal setReviewModal={setReviewModal} />}
+                </>
+              )}
+
+              {courseSectionData &&
+                courseSectionData.map((item, elemIndex) => (
+                  <div className={styles['overview-inner']} key={elemIndex}>
+                    <p className={styles['overview-heading']}>{item.sectionName}</p>
+
+                    {item.subSection.map((content, index) => {
+                      const isCompleted = isLectureCompleted(completedLectures, content._id, homeworks);
+                      const isAccessible = isLectureAccessible(item, index, courseSectionData);
+                      const hasHomework = content.homeworks && content.homeworks.length > 0;
+                      const homeworkStatus = homeworks?.[content._id]?.status;
+                      
+                      return (
+                        <div
+                          className={[
+                            styles['overview-item'],
+                            isCompleted && styles['inactive'],
+                            content._id === subSectionId && styles['current-lesson'],
+                            !isAccessible && styles['disabled'],
+                            homeworkStatus === 'resubmission' && styles['resubmission'],
+                          ]
+                            .filter(Boolean)
+                            .join(' ')}
+                          key={content._id}
+                          onClick={() => {
+                            if (isAccessible) {
+                              navigate(
+                                `/view-course/${courseEntireData?._id}/section/${item?._id}/sub-section/${content?._id}`
+                              );
+                            }
+                          }}
+                        >
+                          <p className={[styles['overview-item-title'], hasHomework && styles['has-homework']]
+                            .filter(Boolean)
+                            .join(' ')}
+                          >{content.title}</p>
+
+                        {(isCompleted || homeworkStatus === 'resubmission') && (
+                            <div className={`checkbox-container ${styles['lecture-status']}`}>
+                              {homeworkStatus === 'resubmission' ? (
+                                <p className={styles.resubmission}>You have feedback from teacher</p>
+                              ) : (
+                                <>
+                                  <div className={styles['status-score']}>
+                                    
+                                    <p>Lesson Completed</p>
+                                    {content.requiresHomeworkCheck && homeworks?.[content._id]?.status === "reviewed" && (
+                                      <p>
+                                        (Your score: {homeworks[content._id]?.score ?? 0} / {content.maxScore ?? "-"})
+                                      </p>
+                                    )}  
+                                  </div>
+                                  <input
+                                    type="checkbox"
+                                    className="custom-checkbox"
+                                    checked={true}
+                                    readOnly
+                                  />
+                                  <label htmlFor="customCheckbox"></label>
+                                </>
+                              )}
+                            </div>
+                          )}
+
+                        </div>
+                      );
+                    })}
+                  </div>
+                ))}
             </div>
-          ))}
-      </div>
-    )}
-  </>
-);
+          </div>
+        ) : (
+          <>
+            <div className={styles['overview-wrapper']}>
+              {courseSectionData &&
+              courseSectionData.map((item, elemIndex) => (
+                <div className={styles['overview-inner']} key={elemIndex}>
+                  <p className={styles['overview-heading']}>{item.sectionName}</p>
+                  {item.subSection.map((content, index) => {
+                    const key = `${elemIndex}-${index}`;
+                    return (
+                      <div
+                        className={styles['overview-item']}
+                        key={index}
+                        onClick={() => handleTextOpened(elemIndex, index)}
+                      >
+                        <p className={styles['overview-item-title']}>{content.title}</p>
+                        <AnimatePresence>
+                          {visibleItems[key] && (
+                            <motion.p
+                              className={styles['overview-item-text']}
+                              initial={{ opacity: 0, height: 0, marginTop: 0 }}
+                              animate={{ opacity: 1, height: 'auto', marginTop: 10 }}
+                              exit={{ opacity: 0, height: 0, marginTop: 0 }}
+                              transition={{ duration: 0.3 }}
+                            >
+                              {content.description}
+                            </motion.p>
+                          )}
+                        </AnimatePresence>
+                      </div>
+                    );
+                  })}
+                </div>
+              ))}
+            </div>
+            {loading ? (
+                <Loader/>
+              ) : allStudents?.length === 0 ? (
+                <p>
+                    No Data Available
+                </p>
+              ) : (
+                <div id="reviews-section">
+                  <h2 className={styles[`reviews-title`]}>Reviews about this course</h2>
+                  <div className={styles.reviewsWrapper}>
+                    {(courseEntireData?.ratingAndReviews ?? []).map((review) => {
+                      const student = getStudentById(review.user, allStudents);
+                      
+                      return (
+                        <div key={review._id} className={styles.reviewCard}>
+                          {student ? (
+                            <div className={styles['rewiever-info']}>
+                              <div>
+                                {student.image && <img className={styles.avatar} src={student.image} alt={`${student.firstName} avatar`} />}
+                                <small>User: {student.firstName} {student.lastName}</small>   
+                              </div>
+                              <div className={styles.rating}>
+                                <RatingStars Review_Count={Number(review.rating)} Star_Size={18} />
+                                <span className={styles.ratingNumber}>{review.rating}/5</span>
+                              </div>
+                            </div>
+                          ) : (
+                            <p>User: Unknown User</p>
+                          )}
+                          
+                          <p className={styles.reviewText}>" {review.review} "</p>
+                        </div>
+                      );
+                    })}
+
+                  </div>
+                </div>
+              )
+              }
+          </>)}
+      </>
+    );
 
 }
 

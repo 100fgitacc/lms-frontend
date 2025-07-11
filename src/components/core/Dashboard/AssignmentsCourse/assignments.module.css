@@ -346,6 +346,33 @@ tr{
   width: 15%;
 }
 
+.resetCell {
+  position: relative;
+  min-width: 80px;
+}
+
+.resetWrapper {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+}
+
+.resetBtn {
+  background-color: #e74c3c;
+  color: white;
+  padding: 4px 8px;
+  font-size: 11px;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  z-index: 2;
+}
+
+.resetBtn:hover {
+  background-color: #c0392b;
+}
+
+
 @media screen and (max-width: 480px) {
   .wrapper{
     padding: 15px;
