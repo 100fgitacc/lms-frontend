@@ -28,11 +28,12 @@ export default function CoursePage() {
   // get Full Details Of Course
   useEffect(() => {
     ; (async () => {
-      const courseData = await getFullDetailsOfCourse(courseId, token)
+      
+      const courseData = await getFullDetailsOfCourse(courseId, token, null)
       dispatch(setCourseSectionData(courseData.courseDetails.courseContent))
       dispatch(setEntireCourseData(courseData.courseDetails))
       dispatch(setCompletedLectures(courseData.completedVideos))
-    
+      
       let lectures = 0
       courseData?.courseDetails?.courseContent?.forEach((sec) => {
         lectures += sec.subSection.length

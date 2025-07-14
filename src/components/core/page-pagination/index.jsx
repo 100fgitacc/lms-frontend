@@ -131,7 +131,7 @@ const PagePagination = ({ currPage, renderPageContent, currentSubSection, conten
                             <img src="/assets/img/icons/book-b.png" alt="icon" />
                             <p>Homework zone</p>
 
-                            {homework?.status === "resubmission" && homework.feedback.trim() !== "" && (
+                            {homework?.status === "resubmission"   && (
                                 <span className={styles['notification-indicator']}>!</span>
                             )}
                             </li>

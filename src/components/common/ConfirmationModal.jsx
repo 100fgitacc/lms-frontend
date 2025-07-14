@@ -5,7 +5,8 @@ export default function ConfirmationModal({ modalData }) {
         <div className="modal-wrapper">
             <div className="modal-box">
                 <p className="modal-title">{modalData?.text1}</p>
-                <p className="modal-subtitle">{modalData?.text2}</p>
+                {modalData.text2 && <p className="modal-subtitle">{modalData?.text2}</p>}
+                <p className="modal-text">{modalData?.text3}</p>
                 <div className="modal-actions">
                     <IconBtn
                         onclick={modalData?.btn1Handler}

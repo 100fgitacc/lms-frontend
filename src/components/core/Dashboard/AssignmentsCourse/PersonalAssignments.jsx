@@ -6,8 +6,9 @@ import Loader from "../../../common/Loader"
 import styles from "./assignments.module.css"
 import { getAllStudentsByInstructorData } from "../../../../services/operations/adminApi"
 import Select from "react-select"
-import { resetLessonProgress } from "../../../../services/operations/courseDetailsAPI"
+import { getFullDetailsOfCourse, resetLessonProgress } from "../../../../services/operations/courseDetailsAPI"
 import ConfirmationModal from "../../../common/ConfirmationModal"
+import { setCourse } from "../../../../slices/courseSlice"
 
 const homeworkOptions = [
   { value: "all", label: "All Homework" },
@@ -33,9 +34,15 @@ export default function PersonalAssignments() {
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const { token } = useSelector((state) => state.auth)
-  const { completedLectures } = useSelector(state => state.viewCourse);
-  const isCompleted = (id) =>
-  completedLectures.some(lec => (typeof lec === "string" ? lec : lec.subSectionId) === id);
+  
+  const isCompleted = (lessonId, courseProgress) => {
+    if (!courseProgress?.completedVideos) return false;
+
+    return courseProgress.completedVideos.some(
+      (item) => item.subSectionId?.toString() === lessonId
+    );
+  };
+
 
   const [loading, setLoading] = useState(false)
   const [coursesData, setCoursesData] = useState([])
@@ -46,34 +53,40 @@ export default function PersonalAssignments() {
 
   const [openStudents, setOpenStudents] = useState({})
 
-  useEffect(() => {
-    const fetchFullCourseDetails = async () => {
-      setLoading(true)
+ useEffect(() => {
+  const fetchFullCourseDetails = async () => {
+    setLoading(true)
 
-      const allStudents = await getAllStudentsByInstructorData(token)
-      if (allStudents?.allStudentsDetails) {
-        const filteredStudents = allStudents.allStudentsDetails
-          .filter((student) => student._id === studentId)
-          .map((student) => ({
-            ...student,
-            courses: student.courses.filter((course) => course._id === courseId),
-          }))
-          .filter((student) => student.courses.length > 0)
+    const data = await getFullDetailsOfCourse(courseId, token, studentId);
+    
+    if (data?.courseDetails) {
+      const course = data.courseDetails;
+      course.courseProgress = {
+        completedVideos: data.completedVideos,
+        allowedToSkip: data.allowedToSkip,
+      };
+      const filteredStudents = [
+        {
+          _id: studentId,
+          courses: [course],
+        },
+      ];
 
-        setCoursesData(filteredStudents)
+      setCoursesData(filteredStudents);
 
-        const openState = {}
-        filteredStudents.forEach((student) => {
-          openState[student._id] = true
-        })
-        setOpenStudents(openState)
-      }
-
-      setLoading(false)
+      const openState = {};
+      filteredStudents.forEach((student) => {
+        openState[student._id] = true;
+      });
+      setOpenStudents(openState);
     }
 
-    fetchFullCourseDetails()
-  }, [courseId, token])
+    setLoading(false);
+  };
+
+  fetchFullCourseDetails();
+}, [courseId, token, studentId]);
+
 
   const homeworkFilter = (homework) => {
     if (filterHomework === "all") return true
@@ -148,6 +161,22 @@ export default function PersonalAssignments() {
 
   
   const [confirmationModal, setConfirmationModal] = useState(null)
+
+  const [studentInfo, setStudentInfo] = useState(null);
+
+  useEffect(() => {
+    const fetchStudentInfo = async () => {
+      const allStudents = await getAllStudentsByInstructorData(token);
+      
+      if (allStudents?.allStudentsDetails) {
+        const student = allStudents.allStudentsDetails.find(s => s._id === studentId);
+        
+        setStudentInfo(student || null);
+      }
+    };
+
+    fetchStudentInfo();
+  }, [studentId, token]);
 
   if (loading) return <Loader type="fullscreen" />
 
@@ -236,48 +265,54 @@ export default function PersonalAssignments() {
         
 
         {coursesData
-          .filter((student) =>
-            student.courses.some((course) =>
-              course.courseContent.some((section) =>
-                section.subSection.some((lesson) => {
-                  const hwArr = course.homeworksBySubSection?.[lesson._id] || []
-                  const homework = hwArr[0] || null
-                  return (
-                    (!filterTitle || lesson.title.toLowerCase().includes(filterTitle.toLowerCase())) &&
-                    homeworkFilter(homework) &&
-                    statusFilter(homework?.status || "not_started")
-                  )
-                })
-              )
+        .filter((student) =>
+          student.courses.some((course) =>
+            course.courseContent.some((section) =>
+              section.subSection.some((lesson) => {
+                const hwArr = course.homeworksBySubSection?.[lesson._id] || []
+                const homework = hwArr[0] || null
+                return (
+                  (!filterTitle || lesson.title.toLowerCase().includes(filterTitle.toLowerCase())) &&
+                  homeworkFilter(homework) &&
+                  statusFilter(homework?.status || "not_started")
+                )
+              })
             )
           )
-          .map((student) => (
+        )
+        .map((student) => {
+          const isOpen = openStudents[student._id] || false;
+          return (
             <div key={student._id} className={styles.wrapper}>
-              <div className={styles["student-data"]}>
-                <div className={styles["student-heading"]}>
-                  <img src={student.image} alt="student" />
+              <div
+                className={styles["student-data"]}
+                onClick={() => setOpenStudents(prev => ({ ...prev, [student._id]: !prev[student._id] }))}
+                style={{ cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "space-between" }}
+              >
+                <div className={styles["student-heading"]} style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+                  <img src={studentInfo?.image} alt="student" style={{ width: 40, height: 40, borderRadius: "50%", objectFit: "cover" }} />
                   <div>
-                    <h5>Student: {student.firstName + " " + student.lastName}</h5>
-                    <p>Email: {student.email}</p>
+                    <h5>Student: {studentInfo?.firstName + " " + studentInfo?.lastName}</h5>
+                    <p>Email: {studentInfo?.email}</p>
                   </div>
                 </div>
+                <div>
+                  {isOpen ? <HiChevronUp size={20} /> : <HiChevronDown size={20} />}
+                </div>
               </div>
-              <div className={`${styles["accordion-content"]} ${styles.open}`}>
-                {student.courses.map((course) => {
+
+              <div className={`${styles["accordion-content"]} ${isOpen ? styles.open : styles.closed}`}>
+                {isOpen && student.courses.map((course) => {
                   const filteredLessons = course.courseContent.flatMap((section) =>
                     section.subSection.filter((lesson) => {
                       const hwArr = course.homeworksBySubSection?.[lesson._id] || []
                       const homework = hwArr[0] || null
 
                       if (filterTitle && !lesson.title.toLowerCase().includes(filterTitle.toLowerCase())) return false
-
                       if (!homeworkFilter(homework)) return false
-
-                      const statusToCheck = homework?.status || "not_started"
-                      if (!statusFilter(statusToCheck)) return false
-
-                      if (filterCompletion === "completed" && !isCompleted(lesson._id)) return false
-                      if (filterCompletion === "not_completed" && isCompleted(lesson._id)) return false
+                      if (!statusFilter(homework?.status || "not_started")) return false
+                      if (filterCompletion === "completed" && !isCompleted(lesson._id, course.courseProgress)) return false
+                      if (filterCompletion === "not_completed" && isCompleted(lesson._id, course.courseProgress)) return false
 
                       return true
                     })
@@ -303,8 +338,6 @@ export default function PersonalAssignments() {
                           {filteredLessons.map((lesson) => {
                             const hwArr = course.homeworksBySubSection?.[lesson._id] || []
                             const homework = hwArr[0] || null
-                            console.log(hwArr);
-                            
                             return (
                               <tr
                                 key={lesson._id}
@@ -313,11 +346,7 @@ export default function PersonalAssignments() {
                                 }
                               >
                                 <td>{lesson.title}</td>
-                                <td>{lesson.homeworks?.length > 0 ? (
-                                   "Lesson w/o homework"
-                                ) : (
-                                   "Yes"
-                                )}</td>
+                                <td>{lesson.homeworks && lesson.homeworks.length > 0 ? "Yes" : "Lesson w/o homework"}</td>
                                 <td>
                                   <span
                                     className={`${styles.badge} ${
@@ -334,10 +363,10 @@ export default function PersonalAssignments() {
                                   </span>
                                 </td>
                                 <td>
-                                 {homework?.answerText?.trim() ? (
+                                  {homework?.answerText?.trim() ? (
                                     <span className={`${styles.badge} ${styles.reviewed}`}>Already Sent</span>
                                   ) : (
-                                    <span className={`${styles.badge}  ${styles.notStarted}`}>Not Sent</span>
+                                    <span className={`${styles.badge} ${styles.notStarted}`}>Not Sent</span>
                                   )}
                                 </td>
                                 <td>{lesson.delayedHomeworkCheck ? "Delayed Check" : "-"}</td>
@@ -350,15 +379,16 @@ export default function PersonalAssignments() {
                                   )}
                                 </td>
                                 <td>
-                                  {isCompleted(lesson._id) ? (
+                                  {isCompleted(lesson._id, course.courseProgress) ? (
                                     <span className={`${styles.badge} ${styles.reviewed}`}>Completed</span>
                                   ) : (
                                     <span className={`${styles.badge} ${styles.notStarted}`}>Not Completed</span>
                                   )}
                                 </td>
-                               <td className={styles.resetCell}>
+                                 <td className={styles.resetCell}>
                                 <button
                                     className={styles.resetBtn}
+                                    disabled={!isCompleted(lesson._id, course.courseProgress) && !homework?.answerText?.trim()}
                                     onClick={(e) => {
                                       e.stopPropagation()
                                       setConfirmationModal({
@@ -376,22 +406,28 @@ export default function PersonalAssignments() {
                                           )
 
                                           if (success) {
-                                            const allStudents = await getAllStudentsByInstructorData(token)
-                                            if (allStudents?.allStudentsDetails) {
-                                              const filteredStudents = allStudents.allStudentsDetails
-                                                .filter((s) => s._id === student._id)
-                                                .map((s) => ({
-                                                  ...s,
-                                                  courses: s.courses.filter((c) => c._id === course._id),
-                                                }))
-                                                .filter((s) => s.courses.length > 0)
+                                            const data = await getFullDetailsOfCourse(courseId, token, studentId);
 
-                                              setCoursesData(filteredStudents)
+                                            if (data?.courseDetails) {
+                                              const course = data.courseDetails;
+                                              course.courseProgress = {
+                                                completedVideos: data.completedVideos,
+                                                allowedToSkip: data.allowedToSkip,
+                                              };
+                                              const filteredStudents = [
+                                                {
+                                                  _id: studentId,
+                                                  courses: [course],
+                                                },
+                                              ];
+
+                                              setCoursesData(filteredStudents);
                                             }
                                           }
 
-                                          setConfirmationModal(null)
-                                        },
+                                          setConfirmationModal(null);
+                                        }
+                                        ,
                                         btn2Handler: () => setConfirmationModal(null),
                                       })
                                     }}
@@ -399,8 +435,6 @@ export default function PersonalAssignments() {
                                     Reset progress
                                   </button>
                               </td>
-
-
                               </tr>
                             )
                           })}
@@ -411,7 +445,9 @@ export default function PersonalAssignments() {
                 })}
               </div>
             </div>
-          ))}
+          )
+        })}
+
       </div>
       {confirmationModal && <ConfirmationModal modalData={confirmationModal} />}
     </>

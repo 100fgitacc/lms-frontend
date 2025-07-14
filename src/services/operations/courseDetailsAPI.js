@@ -388,7 +388,7 @@ export const deleteCourse = async (data, token) => {
 
 
 // ================ get Full Details Of Course ================
-export const getFullDetailsOfCourse = async (courseId, token) => {
+export const getFullDetailsOfCourse = async (courseId, token, studentId) => {
   // const toastId = toast.loading("Loading...")
   //   dispatch(setLoading(true));
   let result = null
@@ -398,6 +398,7 @@ export const getFullDetailsOfCourse = async (courseId, token) => {
       GET_FULL_COURSE_DETAILS_AUTHENTICATED,
       {
         courseId,
+        studentId
       },
       {
         Authorization: `Bearer ${token}`,

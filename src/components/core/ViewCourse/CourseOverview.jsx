@@ -41,7 +41,7 @@ const CourseOverview  = ({content}) => {
     if (!courseEntireData?._id || !token) return;
 
     (async () => {
-        const courseData = await getFullDetailsOfCourse(courseEntireData._id, token);
+        const courseData = await getFullDetailsOfCourse(courseEntireData._id, token, null);
         if (courseData?.courseDetails?.courseContent) {
         dispatch(setCourseSectionData(courseData.courseDetails.courseContent));
         }
@@ -123,7 +123,7 @@ const CourseOverview  = ({content}) => {
     const allLessonsCompleted = totalLessons > 0 && completedCount === totalLessons;
 
 
-    
+
     
     
     const isLectureCompleted = (completedLectures, subSectionId, homeworks) => {
@@ -134,9 +134,12 @@ const CourseOverview  = ({content}) => {
             : lec.subSectionId?.toString() === id
         );
 
-    const isReviewed = homeworks?.[id]?.status === 'reviewed';
+      const isReviewed = homeworks?.[id]?.status === 'reviewed';
+      const score = homeworks?.[id]?.score || 0;
 
-    return isWatched || isReviewed;
+      const passedHomework = isReviewed && score >= content.minScore;
+
+      return isWatched || passedHomework;
     };
 
     const [isAccordionCollapsed, setIsAccordionCollapsed] = useState(false);
@@ -246,6 +249,11 @@ const CourseOverview  = ({content}) => {
                       const isAccessible = isLectureAccessible(item, index, courseSectionData);
                       const hasHomework = content.homeworks && content.homeworks.length > 0;
                       const homeworkStatus = homeworks?.[content._id]?.status;
+                      const score = homeworks?.[content._id]?.score || 0;
+                      const needsResubmission = content.requiresHomeworkCheck && homeworkStatus === 'resubmission' && score < content.minScore;
+              
+                      
+                      
                       
                       return (
                         <div
@@ -255,6 +263,7 @@ const CourseOverview  = ({content}) => {
                             content._id === subSectionId && styles['current-lesson'],
                             !isAccessible && styles['disabled'],
                             homeworkStatus === 'resubmission' && styles['resubmission'],
+                            needsResubmission && styles['resubmission'],
                           ]
                             .filter(Boolean)
                             .join(' ')}
@@ -272,44 +281,50 @@ const CourseOverview  = ({content}) => {
                             .join(' ')}
                           >{content.title}</p>
 
-                        {(isCompleted || homeworkStatus === 'resubmission') && (
+                          {(isCompleted || homeworkStatus === 'resubmission') && (
                             <div className={`checkbox-container ${styles['lecture-status']}`}>
                               {homeworkStatus === 'resubmission' ? (
-                                  <>
-                                    <p className={styles.resubmission}>Feedback</p>
-                                    <input
-                                      type="checkbox"
-                                      className="custom-checkbox resubmission-checkbox"
-                                      checked={false}
-                                      readOnly
-                                      id={`resub-${content._id}`}
-                                    />
-                                    <label htmlFor={`resub-${content._id}`}></label>
-                                  </>
-                                ) : (
-                                  <>
-                                    <div className={styles['status-score']}>
-                                      <p>Completed</p>
-                                      {content.requiresHomeworkCheck && homeworks?.[content._id]?.status === "reviewed" && (
-                                        <p>
-                                          (Your score: {homeworks[content._id]?.score ?? 0} / {content.maxScore ?? "-"})
-                                        </p>
-                                      )}
+                                <>
+                                <div className={styles['status-score']}>
+                                    <p className={styles.resubmission}>Resubmission needed</p>
+                                    {needsResubmission && (
+                                      <p className={styles.resubmission}>
+                                        (Your score: {score} / Min score:{content.minScore ?? "-"})
+                                      </p>
+                                    )}
                                     </div>
-                                    <input
-                                      type="checkbox"
-                                      className="custom-checkbox"
-                                      checked={true}
-                                      readOnly
-                                      id={`done-${content._id}`}
-                                    />
-                                    <label htmlFor={`done-${content._id}`}></label>
-                                  </>
-                                )}
-
-
+                                  <input
+                                    type="checkbox"
+                                    className="custom-checkbox resubmission-checkbox"
+                                    checked={false}
+                                    readOnly
+                                    id={`resub-${content._id}`}
+                                  />
+                                  <label htmlFor={`resub-${content._id}`}></label>
+                                </>
+                              ) : (
+                                <>
+                                  <div className={styles['status-score']}>
+                                    <p>Completed</p>
+                                    {content.requiresHomeworkCheck && (
+                                      <p>
+                                        (Your score: {score} / {content.maxScore ?? "-"})
+                                      </p>
+                                    )}
+                                  </div>
+                                  <input
+                                    type="checkbox"
+                                    className="custom-checkbox"
+                                    checked={true}
+                                    readOnly
+                                    id={`done-${content._id}`}
+                                  />
+                                  <label htmlFor={`done-${content._id}`}></label>
+                                </>
+                              )}
                             </div>
                           )}
+
 
                         </div>
                       );

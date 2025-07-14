@@ -39,7 +39,8 @@ function CourseDetails() {
   const isHidden = useSelector((state) => state.sidebar.isSidebarHidden);
  useEffect(() => {
       ; (async () => {
-        const courseData = await getFullDetailsOfCourse(courseId, token)
+        const courseData = await getFullDetailsOfCourse(courseId, token, null)
+        
         dispatch(setCourseSectionData(courseData.courseDetails.courseContent))
         dispatch(setEntireCourseData(courseData.courseDetails))
         dispatch(setCompletedLectures(courseData.completedVideos))

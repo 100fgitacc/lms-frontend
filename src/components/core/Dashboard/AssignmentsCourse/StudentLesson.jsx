@@ -6,6 +6,7 @@ import styles from "./assignments.module.css";
 import { getAllStudentsByInstructorData } from "../../../../services/operations/adminApi";
 import { updateHomeworkStatus  } from "../../../../services/operations/homeworkApi";
 import toast from "react-hot-toast";
+import ConfirmationModal from "../../../common/ConfirmationModal";
 
 
 export default function StudentLesson() {
@@ -50,33 +51,38 @@ export default function StudentLesson() {
 
   const handleAccept = async () => {
     try {
+      const isPassed = score >= lesson.minScore;
+
       const payload = {
-        homeworkId: studentHomework._id, 
-        status: "reviewed",
+        homeworkId: studentHomework._id,
+        status: isPassed ? "reviewed" : "resubmission",
         score,
         feedback: reviewText,
-        reviewed: true,
+        reviewed: isPassed,
       };
+
       const result = await updateHomeworkStatus(token, payload);
 
       if (result?.success) {
-        toast.success("Homework accepted!");
+        toast.success(isPassed ? "Homework accepted!" : "Score too low, sent for revision.");
+
         setAcceptHomework(false);
         setStudentHomework((prev) => ({
           ...prev,
-          status: "reviewed",
+          status: isPassed ? "reviewed" : "resubmission",
           score,
           feedback: reviewText,
-          reviewed: true,
+          reviewed: isPassed,
         }));
       } else {
-        toast.error("Failed to accept homework: " + (result?.message || "Unknown error"));
+        toast.error("Failed to update homework: " + (result?.message || "Unknown error"));
       }
     } catch (error) {
       toast.error("Failed to update homework status");
       console.error(error);
     }
   };
+
 
   const handleRequestChanges = async () => {
     if (!reviewText.trim()) {
@@ -111,11 +117,11 @@ export default function StudentLesson() {
   };
 
 
+  const [confirmationModal, setConfirmationModal] = useState(false);
+
   if (loading) return <Loader type="fullscreen" />;
   if (!lesson) return <p>Lesson not found</p>;
 
-  console.log(studentHomework);
-  
 
   return (
     <div className={styles.wrapper}>
@@ -234,15 +240,22 @@ export default function StudentLesson() {
 
                 {(lesson.requiresHomeworkCheck && acceptHomework) && (
                   <>
-                    <p className={styles['section-heading']}>
-                      Set your score for user between {lesson.minScore} and {lesson.maxScore} point:
+                   <p className={styles['section-heading']}>
+                      Set the student’s score (Passing score: {lesson.minScore}, Max: {lesson.maxScore})
                     </p>
+                    {lesson.requiresHomeworkCheck && (
+                      <p className={styles.warning}>
+                        {score < lesson.minScore 
+                          ? `⚠️ The score is below the minimum passing score (${lesson.minScore}). This will send homework for revision.`
+                          : "✅ The score is enough to mark homework as completed."}
+                      </p>
+                    )}
                     <div className={styles['score-wrapper']}>
                       <label className={styles['score-label']}>
                         <span className={styles['score-text']}>Score: {score}</span>
                         <input
                           type="range"
-                          min={lesson.minScore}
+                          min={0}  
                           max={lesson.maxScore}
                           step="1"
                           value={score}
@@ -279,9 +292,30 @@ export default function StudentLesson() {
                       }>
                         Accept homework
                       </button>
-                      <button className={`button ${styles['request-btn']}`} onClick={handleRequestChanges}>
+                     <button
+                        className={`button ${styles['request-btn']}`}
+                        onClick={() => {
+                          if (!reviewText.trim()) {
+                            toast.error("Please enter feedback before requesting changes.");
+                            return;
+                          }
+
+                          setConfirmationModal({
+                            text1: "Send homework back for revision?",
+                            text3: `Your feedback:\n${reviewText}`,
+                            btn1Text: "Yes, Send",
+                            btn2Text: "Cancel",
+                            btn1Handler: async () => {
+                              await handleRequestChanges();
+                              setConfirmationModal(null);
+                            },
+                            btn2Handler: () => setConfirmationModal(null),
+                          });
+                        }}
+                      >
                         Request Changes
                       </button>
+
                     </>
                   )}
                 </div>
@@ -292,7 +326,7 @@ export default function StudentLesson() {
           <p className={styles.noHw}>Student has not submitted homework yet.</p>
         )
       )}
-
+      {confirmationModal && <ConfirmationModal modalData={confirmationModal} />}
     </div>
   );
 }

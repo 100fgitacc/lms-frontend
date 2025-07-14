@@ -23,7 +23,7 @@ export default function EditCourse() {
   useEffect(() => {
     const fetchFullCourseDetails = async () => {
       setLoading(true)
-      const result = await getFullDetailsOfCourse(courseId, token);
+      const result = await getFullDetailsOfCourse(courseId, token, null);
       // console.log('Data from edit course file = ', result)
       if (result?.courseDetails) {
         dispatch(setEditCourse(true))
