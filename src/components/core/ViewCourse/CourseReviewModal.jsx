@@ -10,7 +10,7 @@ import IconBtn from "../../common/IconBtn"
 import styles from './index.module.css'
 import toast from "react-hot-toast"
 
-export default function CourseReviewModal({ setReviewModal }) {
+export default function CourseReviewModal({ setReviewModal, onReviewSent }) {
   const { user } = useSelector((state) => state.profile)
   const { token } = useSelector((state) => state.auth)
   const { courseEntireData } = useSelector((state) => state.viewCourse)
@@ -40,6 +40,7 @@ export default function CourseReviewModal({ setReviewModal }) {
       toast.error("Please select a rating before submitting.");
       return;
     }
+
     await createRating(
       {
         courseId: courseEntireData._id,
@@ -48,8 +49,13 @@ export default function CourseReviewModal({ setReviewModal }) {
       },
       token
     )
+    if (onReviewSent) {
+      await onReviewSent();
+    }
+
     setReviewModal(false)
   }
+
 
   return (
     <div className="modal-overlay">

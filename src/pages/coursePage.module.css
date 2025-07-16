@@ -339,7 +339,9 @@
   position: relative;
   max-width: 100%;
 }
-
+.video-container{
+    position: relative;
+}
 .video-container video {
   width: 100%;
   height: auto;

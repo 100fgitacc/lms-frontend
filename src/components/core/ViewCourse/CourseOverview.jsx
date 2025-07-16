@@ -5,7 +5,8 @@ import { useSelector, useDispatch } from 'react-redux';
 import RatingStars from '../../common/RatingStars';
 import styles from '../../../pages/coursePage.module.css'
 import {
-  setCourseSectionData
+  setCourseSectionData,
+  setEntireCourseData
 } from "../../../slices/viewCourseSlice"
 import { getFullDetailsOfCourse } from "../../../services/operations/courseDetailsAPI"
 import { getHomeworkBySubSection } from '../../../services/operations/studentFeaturesAPI';
@@ -116,11 +117,7 @@ const CourseOverview  = ({content}) => {
       courseSectionData?.flatMap(section => section.subSection.map(sub => sub._id))
     );
 
-    const completedCount = completedLectures.filter(lecture =>
-      currentLessonIds.has(lecture.subSectionId)
-    ).length;
 
-    const allLessonsCompleted = totalLessons > 0 && completedCount === totalLessons;
 
 
 
@@ -141,7 +138,13 @@ const CourseOverview  = ({content}) => {
 
       return isWatched || passedHomework;
     };
+    const completedCount = courseSectionData.reduce((sum, section) => {
+      return sum + section.subSection.filter(sub => 
+        isLectureCompleted(completedLectures, sub._id, homeworks)
+      ).length;
+    }, 0);
 
+    const allLessonsCompleted = totalLessons > 0 && completedCount === totalLessons;
     const [isAccordionCollapsed, setIsAccordionCollapsed] = useState(false);
     const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
     useEffect(() => {
@@ -235,7 +238,17 @@ const CourseOverview  = ({content}) => {
                       </button>
                     </div>
                   )}
-                  {reviewModal && <CourseReviewModal setReviewModal={setReviewModal} />}
+                  {reviewModal && (
+                    <CourseReviewModal 
+                      setReviewModal={setReviewModal} 
+                      onReviewSent={async () => {
+                        const courseData = await getFullDetailsOfCourse(courseEntireData._id, token, null);
+                        dispatch(setCourseSectionData(courseData.courseDetails.courseContent));
+                        dispatch(setEntireCourseData(courseData.courseDetails));
+                      }}
+                    />
+                  )}
+
                 </>
               )}
 
