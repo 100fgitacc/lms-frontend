@@ -187,7 +187,7 @@ export default function PersonalAssignments() {
       <h2 className={`secondary-title ${styles.heading}`}>Personal Assignments</h2>
       <div className={styles.wrapper}>
         <div className={styles["assignments-management"]}>
-          <div>
+          <div className='table-wrapper filter-wrapper'>
             <div className={styles["filter-head"]}>
               <p className={styles["filter-title"]}>Filtered by:</p>
               <button
@@ -251,7 +251,6 @@ export default function PersonalAssignments() {
               </tbody>
             </table>
           </div>
-
           <div className={styles.stats}>
             <h3>Course stats:</h3>
             <p>Homework Submitted: <span>{totalSubmitted}</span></p>
@@ -319,7 +318,7 @@ export default function PersonalAssignments() {
                   )
 
                   return (
-                    <div key={course._id}>
+                    <div key={course._id} className='table-wrapper'>
                       <table className={styles["lesson-table"]}>
                         <thead>
                           <tr>

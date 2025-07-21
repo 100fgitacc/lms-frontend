@@ -460,6 +460,7 @@ label{
 
 ::-webkit-scrollbar {
   width: 3px; 
+  height: 3px;
 }
 
 /* Стили для "ползунка" (thumb) */
@@ -860,11 +861,15 @@ label{
     overflow-x: auto;
     width: 100%;
   }
-  table{ display: block;
+  .filter-wrapper{
+    margin-bottom: 25px;
+  }
+  table{
     overflow-x: auto;
     width: 100%;
     min-width: 1000px; 
     border-collapse: collapse;
+    margin-bottom: 25px;
   }
   tbody td{
     padding: 7px 12px;
@@ -874,7 +879,9 @@ label{
   }
 }
 @media screen and (max-width: 768px) {
-    
+  table{
+    font-size: 13px;
+  }
 }
 
 @media screen and (max-width: 480px) {

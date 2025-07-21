@@ -104,6 +104,10 @@ const ContentHeader = ({ page, content }) => {
       element.scrollIntoView({ behavior: "smooth" });
     }
   };
+  
+
+
+
     return (
         <>
           {
@@ -186,15 +190,9 @@ const ContentHeader = ({ page, content }) => {
                             </>
                             )
                           }
-                          {(!user || courseEntireData?.studentsEnrolled?.some(enrollment => enrollment?.user === user?._id)
- && user?.accountType === ACCOUNT_TYPE.STUDENT) && (
-                            <button onClick={handleAddToCart} >
-                              Add to Cart
-                            </button>
-                          )}
                           <button onClick={handleShare} className={styles['share-btn']}>
-                              <FaShareSquare size={15} /> <span>Share</span>
-                            </button>
+                            <FaShareSquare size={15} /> <span>Share</span>
+                          </button>
                         </div>
                         <h4 className={styles['instructions-title']}>Course instructions:</h4>
                         <div>

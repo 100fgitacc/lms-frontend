@@ -291,7 +291,7 @@ coursesData.forEach((student) => {
                 
 
                 return (
-                  <div key={course._id}>
+                  <div className='table-wrapper' key={course._id}>
                     <table className={styles['lesson-table']}>
                       <thead>
                         <tr>

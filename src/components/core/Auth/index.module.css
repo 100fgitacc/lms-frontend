@@ -123,7 +123,11 @@
 
 @media screen and (max-width: 480px) {
   .button{
-      padding: 7px 12px;
-      font-size: 12px;
+    padding: 7px 12px;
+    font-size: 12px;
+  }
+  .form .button{
+    padding: 12px 24px;
+    font-size: 16px;
   }
 }

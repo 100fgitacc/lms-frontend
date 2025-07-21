@@ -368,6 +368,32 @@ tr{
 }
 
 
+@media screen and (max-width: 1280px) {
+  .assignments-management{
+    flex-direction: column-reverse;
+  }
+  .stats{
+    margin-bottom: 25px;
+  }
+  
+}
+
+@media screen and (max-width: 768px) {
+  
+  .student-data{
+    max-width: 200px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .lesson-container{
+    flex-direction: column-reverse;
+  }
+  .lesson-container > div{
+    width: 100%;
+  }
+}
+
 @media screen and (max-width: 480px) {
   .wrapper{
     padding: 15px;

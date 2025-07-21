@@ -126,8 +126,6 @@ export default function Instructor() {
                 </p>
               </Link>
             </div>
-
-           <div className="table-wrapper">
               {allStudentsDetails.slice(0, 3).map((student) => (
                 <div key={student._id} className={styles.wrapper}>
                   <div className={styles['students-table-item']}>
@@ -143,44 +141,43 @@ export default function Instructor() {
                       Total enrolled courses ({student.courses.length})
                     </strong>
                   </div>
-
-                  <table>
-                    <thead>
-                      <tr>
-                        <th>#</th>
-                        <th>Course Name</th>
-                        <th>Start Date</th>
-                        <th>Complete Date</th>
-                        <th>Progress</th>
-                        <th>Current Lesson</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {student.courses.map((course, index) => (
-                        <tr key={index}>
-                          <td>{index + 1}</td>
-                          <td>{course.courseName}</td>
-                          <td>
-                            {new Date(course.startedAt).toLocaleDateString()}
-                          </td>
-                          <td>
-                            {course.completedAt
-                              ? new Date(course.completedAt).toLocaleDateString()
-                              : 'in process...'}
-                          </td>
-                          <td>{course.progressPercentage}%</td>
-                          <td>
-                            {course.currentSubSection?.title || "—"}
-                          </td>
+                  <div className="table-wrapper">
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>#</th>
+                          <th>Course Name</th>
+                          <th>Start Date</th>
+                          <th>Complete Date</th>
+                          <th>Progress</th>
+                          <th>Current Lesson</th>
                         </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                      </thead>
+                      <tbody>
+                        {student.courses.map((course, index) => (
+                          <tr key={index}>
+                            <td>{index + 1}</td>
+                            <td>{course.courseName}</td>
+                            <td>
+                              {new Date(course.startedAt).toLocaleDateString()}
+                            </td>
+                            <td>
+                              {course.completedAt
+                                ? new Date(course.completedAt).toLocaleDateString()
+                                : 'in process...'}
+                            </td>
+                            <td>{course.progressPercentage}%</td>
+                            <td>
+                              {course.currentSubSection?.title || "—"}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                
                 </div>
               ))}
-            </div>
-
-
           </div>
         </>
 

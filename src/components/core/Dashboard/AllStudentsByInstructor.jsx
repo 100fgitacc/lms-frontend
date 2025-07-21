@@ -96,95 +96,96 @@ const AllStudentsByInstructor = () => {
               ) : (
                 <div>
                   <p className={styles['filter-title']}>Filtered by:</p>
-                  <table className={styles.filter}>
-                      <thead>
-                        <tr >
-                          <th >Student</th>
-                          <th >Course</th>
-                          <th >Progress (%)</th>
-                          <th >Status</th>
-                          <th >Start Date</th>
-                          <th >End Date</th>
-                          <th >Lastest lesson</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr >
-                          <td >
-                            <input
-                              type="text"
-                              name="name"
-                              placeholder="Student name"
-                              value={filters.name}
-                              onChange={handleFilterChange}
-                            />
-                          </td>
-                          <td >
-                            <input
-                              type="text"
-                              name="courseName"
-                              placeholder="Course name"
-                              value={filters.courseName}
-                              onChange={handleFilterChange}
-                              
-                            />
-                          </td>
-                          <td >
-                            <input
-                              type="number"
-                              name="maxProgress"
-                              placeholder="value %"
-                              value={filters.maxProgress}
-                              min={0}
-                              max={100}
-                              onChange={handleFilterChange}
-                              
-                            />
-                          </td>
-                          <td >
-                            <select
-                              name="courseStatus"
-                              value={filters.courseStatus}
-                              onChange={handleFilterChange}
-                              
-                            >
-                              <option value="">Select Status</option>
-                              <option value="completed">Completed</option>
-                              <option value="in process">In Process</option>
-                            </select>
-                          </td>
-                          <td >
-                            <input
-                              type="date"
-                              name="dateRangeStart"
-                              value={filters.dateRangeStart}
-                              onChange={handleFilterChange}
-                              
-                            />
-                          </td>
-                          <td >
-                            <input
-                              type="date"
-                              name="dateRangeEnd"
-                              value={filters.dateRangeEnd}
-                              onChange={handleFilterChange}
-                              
-                            />
-                          </td>
-                          <td >
-                            <input
-                              type="text"
-                              name="currentSubSection"
-                              placeholder="Lesson name"
-                              value={filters.currentSubSection}
-                              onChange={handleFilterChange}
-                              
-                            />
-                          </td>
-                        </tr>
-                      </tbody>
-                  </table>
-
+                  <div className='table-wrapper filter-wrapper'>
+                    <table className={styles.filter}>
+                        <thead>
+                          <tr >
+                            <th >Student</th>
+                            <th >Course</th>
+                            <th >Progress (%)</th>
+                            <th >Status</th>
+                            <th >Start Date</th>
+                            <th >End Date</th>
+                            <th >Lastest lesson</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr >
+                            <td >
+                              <input
+                                type="text"
+                                name="name"
+                                placeholder="Student name"
+                                value={filters.name}
+                                onChange={handleFilterChange}
+                              />
+                            </td>
+                            <td >
+                              <input
+                                type="text"
+                                name="courseName"
+                                placeholder="Course name"
+                                value={filters.courseName}
+                                onChange={handleFilterChange}
+                                
+                              />
+                            </td>
+                            <td >
+                              <input
+                                type="number"
+                                name="maxProgress"
+                                placeholder="value %"
+                                value={filters.maxProgress}
+                                min={0}
+                                max={100}
+                                onChange={handleFilterChange}
+                                
+                              />
+                            </td>
+                            <td >
+                              <select
+                                name="courseStatus"
+                                value={filters.courseStatus}
+                                onChange={handleFilterChange}
+                                
+                              >
+                                <option value="">Select Status</option>
+                                <option value="completed">Completed</option>
+                                <option value="in process">In Process</option>
+                              </select>
+                            </td>
+                            <td >
+                              <input
+                                type="date"
+                                name="dateRangeStart"
+                                value={filters.dateRangeStart}
+                                onChange={handleFilterChange}
+                                
+                              />
+                            </td>
+                            <td >
+                              <input
+                                type="date"
+                                name="dateRangeEnd"
+                                value={filters.dateRangeEnd}
+                                onChange={handleFilterChange}
+                                
+                              />
+                            </td>
+                            <td >
+                              <input
+                                type="text"
+                                name="currentSubSection"
+                                placeholder="Lesson name"
+                                value={filters.currentSubSection}
+                                onChange={handleFilterChange}
+                                
+                              />
+                            </td>
+                          </tr>
+                        </tbody>
+                    </table>
+                  </div>
                   {filteredStudents.map((student) => (
                     <div key={student._id} className={styles.wrapper}>
                       <div className={styles['students-table-item']}>
@@ -200,49 +201,50 @@ const AllStudentsByInstructor = () => {
                           Total enrolled courses ({student.courses.length})
                         </strong>
                       </div>
-
-                      <table >
-                        <thead >
-                          <tr>
-                            <th >#</th>
-                            <th >Course Name</th>
-                            <th >Start Date</th>
-                            <th >Complete Date</th>
-                            <th >Progress</th>
-                            <th>Last Completed Lesson</th>
-                            <th>Last Lesson Activity</th>
-                            <th>Next Pending Lesson</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {student.courses.map((course, index) => (
-                            <tr key={index} onClick={() => { navigate(`/dashboard/personal-assignments/${course._id}/${student._id}`)}}>
-                              <td >{index + 1}</td>
-                              <td >{course.courseName}</td>
-                              
-                              <td >
-                                {new Date(course.startedAt).toLocaleDateString()}
-                              </td>
-                              <td >
-                                {course.completedAt ? new Date(course.completedAt).toLocaleDateString() : 'in process...'}
-                              </td>
-                              <td >{course.progressPercentage}%</td>
-                              <td>
-                                {course.currentLesson?.lastCompleted
-                                  ? course.currentLesson.lastCompleted.title
-                                  : <em style={{ color: "gray" }}>No lessons completed</em>}
-                              </td>
-                              <td>{course?.lastActivity || '-'}</td>
-                              <td>
-                                {course.currentLesson?.nextPending
-                                  ? `${course.currentLesson.nextPending.title} (${course.currentLesson.nextPending.reason.replace(/_/g, ' ')})`
-                                  : <em style={{ color: "green" }}>Course completed</em>}
-                              </td>
-
+                      <div className="table-wrapper">
+                        <table >
+                          <thead >
+                            <tr>
+                              <th >#</th>
+                              <th >Course Name</th>
+                              <th >Start Date</th>
+                              <th >Complete Date</th>
+                              <th >Progress</th>
+                              <th>Last Completed Lesson</th>
+                              <th>Last Lesson Activity</th>
+                              <th>Next Pending Lesson</th>
                             </tr>
-                          ))}
-                        </tbody>
-                      </table>
+                          </thead>
+                          <tbody>
+                            {student.courses.map((course, index) => (
+                              <tr key={index} onClick={() => { navigate(`/dashboard/personal-assignments/${course._id}/${student._id}`)}}>
+                                <td >{index + 1}</td>
+                                <td >{course.courseName}</td>
+                                
+                                <td >
+                                  {new Date(course.startedAt).toLocaleDateString()}
+                                </td>
+                                <td >
+                                  {course.completedAt ? new Date(course.completedAt).toLocaleDateString() : 'in process...'}
+                                </td>
+                                <td >{course.progressPercentage}%</td>
+                                <td>
+                                  {course.currentLesson?.lastCompleted
+                                    ? course.currentLesson.lastCompleted.title
+                                    : <em style={{ color: "gray" }}>No lessons completed</em>}
+                                </td>
+                                <td>{course?.lastActivity || '-'}</td>
+                                <td>
+                                  {course.currentLesson?.nextPending
+                                    ? `${course.currentLesson.nextPending.title} (${course.currentLesson.nextPending.reason.replace(/_/g, ' ')})`
+                                    : <em style={{ color: "green" }}>Course completed</em>}
+                                </td>
+
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
                     </div>
                   ))}
                 </div>

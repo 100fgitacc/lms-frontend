@@ -389,7 +389,12 @@ const CourseOverview  = ({content}) => {
                 </p>
               ) : (
                 <div id="reviews-section">
-                  <h2 className={styles[`reviews-title`]}>Reviews about this course</h2>
+                  {courseEntireData?.ratingAndReviews.length > 0 ? (
+                      <h2 className={styles[`reviews-title`]}>Reviews about this course</h2>
+                  ): (
+                    <h3 className={styles[`reviews-title`]}>This course have any review yet.</h3>
+                  )}
+                  
                   <div className={styles.reviewsWrapper}>
                     {(courseEntireData?.ratingAndReviews ?? []).map((review) => {
                       const student = getStudentById(review.user, allStudents);
