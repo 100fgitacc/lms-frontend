@@ -1,0 +1,92 @@
+.wrapper{
+  position: relative;
+  margin-bottom: 25px;
+  padding: 25px;
+  border: 1px solid #DEDEDE;
+  border-radius: 15px;
+}
+.heading{
+    margin-bottom: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.edit-btn,.delete-btn{
+  padding: 10px 12px;
+  color: #fff;
+  cursor: pointer;
+  border-radius: 6px;
+  background-color: #1858F3;
+  display: flex;
+  align-items: center;
+}
+
+.primaryRow > td {
+  background-color: #a1f7b988 !important;
+}
+
+.statusPrimary {
+  color: #1ec572;
+}
+
+.statusSecondary {
+  color: #9ca3af;
+}
+.wallet-table td{
+  position: relative;
+}
+.wallet-table td:last-of-type{
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: flex-start;
+  
+}
+.wallet-table button {
+  padding: 6px 12px;
+  font-size: 12px;
+}
+.walletTableColName {
+  width: 25%;
+}
+.walletTableColAddress {
+  width: 10%;
+}
+.walletTableColNetwork {
+  width: 20%;
+}
+.walletTableColStatus {
+  width: 10%;
+}
+.walletTableColActions {
+  width: 35%;
+}
+
+.actionBtn {
+  background-color: #2563eb;
+  color: white;
+  border: none;
+  padding: 6px 10px;
+  margin-right: 6px;
+  border-radius: 4px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.actionBtn:hover {
+  background-color: #1d4ed8;
+}
+
+.deleteButton {
+  background-color: #dc2626;
+}
+
+.deleteButton:hover {
+  background-color: #b91c1c;
+}
+.copy-address{
+  position: absolute;
+  top: 5px;
+  right: 10px;
+}

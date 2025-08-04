@@ -1,5 +1,13 @@
 const BASE_URL = import.meta.env.VITE_APP_BASE_URL;
 
+// WALLETS ENDPOINTS
+export const walletEndpoints = {
+  ADD_WALLET_API: BASE_URL + "/wallets/addWallet",
+  GET_USER_WALLETS_API: BASE_URL + "/wallets/getUserWallets",
+  SET_PRIMARY_WALLET: BASE_URL + "/wallets/setPrimaryWallet",
+  DELETE_WALLET_API: BASE_URL + "/wallets/deleteWallet"
+}
+
 // AUTH ENDPOINTS
 export const endpoints = {
   SENDOTP_API: BASE_URL + "/auth/sendotp",

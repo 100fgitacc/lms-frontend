@@ -3,11 +3,13 @@ import { Link, useNavigate } from "react-router-dom"
 import { useSelector } from "react-redux"
 import { formattedDate } from '../../../../utils/dateFormatter';
 import { fetchInstructorCourses } from '../../../../services/operations/courseDetailsAPI';
+import { ACCOUNT_TYPE } from '../../../../utils/constants';
 
 
 import ProgressBar from '../progress-bar';
 import { MdOutlineEdit } from "react-icons/md";
 import styles from '../profile.module.css'
+import Wallet from './Wallet';
 
 const ProfileContent = ({content}) => {
 
@@ -55,6 +57,9 @@ const ProfileContent = ({content}) => {
         <div className={styles['content-container']}>
             {
             content === 'Account' ? (
+                
+            <>
+                <Wallet/>
                 <div className={styles['wrapper']}>
                     <div className={styles.heading}>
                         <h2 className={`${styles.title} secondary-title`}>About</h2>
@@ -104,7 +109,7 @@ const ProfileContent = ({content}) => {
                         </div>
                     </div>
                 </div>
-
+            </>
             ) : content === 'Courses' ? (
                 <div className={styles['courses-wrapper']}>
                     {courses && courses.length > 0 && (

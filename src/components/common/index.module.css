@@ -35,3 +35,18 @@
   margin-bottom: 25px;
   padding: 25px;
 }
+.input {
+  margin: 15px 0;
+  width: 100%;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 16px;
+  box-sizing: border-box;
+  padding: 8px 12px;
+}
+
+.input:focus {
+    padding: 10px 15px;
+  border-color: #1858F3;
+  box-shadow: 0 0 0 3px rgba(47, 95, 255, 0.2);
+}

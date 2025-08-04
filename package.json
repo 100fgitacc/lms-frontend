@@ -17,10 +17,14 @@
     "@stripe/stripe-js": "^6.0.0",
     "@u-wave/react-vimeo": "^0.9.12",
     "@vimeo/player": "^2.27.1",
+    "@wagmi/core": "^2.18.1",
+    "@web3modal/ethereum": "^2.7.1",
+    "@web3modal/wagmi": "^5.1.11",
     "axios": "^1.5.0",
     "chart.js": "^4.4.0",
     "concurrently": "^8.2.1",
     "copy-to-clipboard": "^3.3.3",
+    "ethers": "^6.15.0",
     "framer-motion": "^10.16.4",
     "jwt-decode": "^4.0.0",
     "node-cron": "^4.1.1",
@@ -49,8 +53,11 @@
     "sweetalert2-react-content": "^5.1.0",
     "swiper": "^11.0.4",
     "video-react": "^0.16.0",
+    "viem": "^2.33.2",
     "vimeo": "^2.3.1",
-    "vite-plugin-css-injected-by-js": "^3.5.2"
+    "vite-plugin-css-injected-by-js": "^3.5.2",
+    "wagmi": "^2.16.1",
+    "web3modal": "^1.9.12"
   },
   "devDependencies": {
     "@types/react": "^18.2.15",

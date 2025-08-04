@@ -5,6 +5,7 @@ import cartReducer from "../slices/cartSlice"
 import courseReducer from "../slices/courseSlice"
 import profileReducer from "../slices/profileSlice"
 import viewCourseReducer from "../slices/viewCourseSlice"
+import walletSlice from "../slices/walletSlice"
 
 import sidebarSlice from "../slices/sidebarSlice"
 
@@ -14,7 +15,8 @@ const rootReducer = combineReducers({
   course: courseReducer,
   cart: cartReducer,
   viewCourse: viewCourseReducer,
-  sidebar: sidebarSlice
+  sidebar: sidebarSlice,
+  wallet: walletSlice,
 })
 
 export default rootReducer

@@ -10,8 +10,7 @@ import { fetchCourseCategories } from '../../../services/operations/courseDetail
 import { logout } from "../../../services/operations/authAPI"
 
 
-import { MdShoppingCart } from 'react-icons/md';
-
+import { MdShoppingCart, MdEdit } from 'react-icons/md';
 const Header = () => {
 
    
@@ -64,8 +63,9 @@ const Header = () => {
     const dispatch = useDispatch()
     const navigate = useNavigate()
 
-      
+    const primaryWallet = useSelector((state) => state.wallet.primaryWallet)
 
+      
     return(
         <nav className={`${styles.wrapper} ${isHidden && styles['full-width']}`}>
             
@@ -135,12 +135,29 @@ const Header = () => {
             <div className={`${token === null && 'hidden' } `}>
               
                 {token !== null &&
-                   <div className={styles['profile-settings']} onClick={() => setOpenProfileMenu(true)}>
-                            <Img
-                            src={user?.image}
-                            alt={`profile-${user?.firstName}`}
-                            className={''}
-                            />
+                   <div className={styles['profile-settings']}>
+                            <div className={styles['user-data']}>
+                                <Img
+                                src={user?.image}
+                                alt={`profile-${user?.firstName}`}
+                                className={''}
+                                />
+                               <div>
+                                    <p>{user?.firstName}</p>
+                                    {primaryWallet?.address ?  (
+                                        <span>
+                                            {primaryWallet?.address?.slice(0, 6)}...{primaryWallet?.address?.slice(-4)}
+                                            <button className={styles['edit-wallet-btn']} onClick={() => navigate("/dashboard/my-profile")}>
+                                                <MdEdit  size={9} color="#333333" />
+                                            </button>
+                                        </span>
+                                    ) : (
+                                        <small>No wallet connected</small>
+                                    )}
+                               </div>
+                            </div>
+                            <span className={styles['menu-arrow']}  onClick={() => setOpenProfileMenu(true)}></span>
+                           
                              {openProfileMenu && (
                             <div onClick={(e) => e.stopPropagation()} className={`${styles['dropdown'] }`} ref={profileRref}>
                                 <Link to="/dashboard/my-profile" onClick={() => setOpen(false)} className={styles['dropdown-links']}>
