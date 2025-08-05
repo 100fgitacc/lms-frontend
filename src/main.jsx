@@ -1,4 +1,4 @@
-import React from 'react'
+
 import ReactDOM from 'react-dom/client'
 import App from './App.jsx'
 import './index.css'
@@ -8,25 +8,15 @@ import { configureStore } from '@reduxjs/toolkit'
 import rootReducer from './reducer/index';
 import { Toaster } from 'react-hot-toast'
 
-
-    
-
 const store = configureStore({
-  reducer: rootReducer
+  reducer: rootReducer,
 });
 
-ReactDOM.createRoot(document.getElementById('root')).render(
+ReactDOM.createRoot(document.getElementById("root")).render(
   <BrowserRouter>
     <Provider store={store}>
-      {/* <React.StrictMode> */}
-        <App />
-        <Toaster />
-      {/* </React.StrictMode> */}
+      <App />
+      <Toaster />
     </Provider>
   </BrowserRouter>
-)
-
-
-
-
-
+);

@@ -73,7 +73,6 @@ const walletSlice = createSlice({
         state.error = null
       })
       .addCase(fetchWallets.fulfilled, (state, action) => {
-         console.log("fetchWallets.fulfilled payload:", action.payload)
         state.primaryWallet = action.payload.primaryWallet
         state.wallets = action.payload.wallets
         state.loading = false

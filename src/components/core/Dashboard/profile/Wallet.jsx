@@ -10,6 +10,8 @@ import ConfirmationModal from "../../../common/ConfirmationModal"
 import { MdOutlineAddBox, MdDelete, MdStar, MdContentCopy } from "react-icons/md"
 import styles from "./wallet.module.css"
 import toast from "react-hot-toast"
+import Web3Modal from "web3modal";
+import { ethers } from "ethers";
 
 export default function Wallet() {
   const dispatch = useDispatch()
@@ -29,76 +31,89 @@ export default function Wallet() {
     return addr?.slice(0, 6) + "..." + addr?.slice(-4)
   }
 
-  const handleConnect = async () => {
-    setModalKey((prev) => prev + 1)
-    if (!window.ethereum || !window.ethereum.isMetaMask) {
-      setConfirmationModal({
-        text1: "MetaMask is not installed",
-        text2: "Would you like to install it?",
-        btn1Text: "Install",
-        btn2Text: "Cancel",
-        btn1Handler: () => window.open("https://metamask.io/download", "_blank"),
-        btn2Handler: () => setConfirmationModal(null),
-      })
-      return
-    }
+const handleConnect = async () => {
+  try {
+    console.log("Starting wallet connection...");
 
-    try {
-      const [address] = await window.ethereum.request({
-        method: "eth_requestAccounts",
-      })
+    const web3Modal = new Web3Modal({
+      cacheProvider: true,
+    });
 
-      const message = `Linking wallet to profile (${address})`
-      const signature = await window.ethereum.request({
-        method: "personal_sign",
-        params: [message, address],
-      })
+    console.log("Opening web3 modal...");
+    const connection = await web3Modal.connect();
+    console.log("Wallet connected", connection);
 
-      const chainId = await window.ethereum.request({ method: "eth_chainId" })
-      const networkMap = {
-        "0x1": "Ethereum",
-        "0x89": "Polygon",
-        "0x5": "Goerli",
-        "0x13881": "Mumbai",
-      }
-      const network = networkMap[chainId] || `Unknown (${chainId})`
+    const provider = new ethers.providers.Web3Provider(connection);
+    const signer = provider.getSigner();
 
-      setConfirmationModal({
-        text2: "Enter a name for your wallet",
-        showInput: true,
-        btn1Text: "Confirm",
-        btn2Text: "Cancel",
-        inputPlaceholder: "e.g. Main, Test, Trading",
-        btn1Handler: async (name) => {
-          if (!name || name.trim() === "") {
-            toast.error("Wallet name is required.")
-            return
-          }
-          setConfirmationModal(null)
-          try {
-            await dispatch(
-              linkWallet({
-                walletData: {
-                  address,
-                  signature,
-                  message,
-                  network,
-                  name,
-                },
-                token,
-              })
-            ).unwrap()
-            toast.success("Wallet successfully linked!")
-          } catch (err) {
-            toast.error(err || "Failed to link wallet.")
-          }
-        },
-        btn2Handler: () => setConfirmationModal(null),
-      })
-    } catch (err) {
-      toast.error("Wallet connection failed. Please try again.")
-    }
+    const address = await signer.getAddress();
+    console.log("Wallet address:", address);
+
+    const message = `Linking wallet to profile (${address})`;
+    console.log("Signing message:", message);
+
+    const signature = await signer.signMessage(message);
+    console.log("Signature:", signature);
+
+    const network = await provider.getNetwork();
+    console.log("Network info:", network);
+
+    const networkMap = {
+      1: "Ethereum",
+      137: "Polygon",
+      5: "Goerli",
+      80001: "Mumbai",
+    };
+    const networkName = networkMap[network.chainId] || `Unknown (${network.chainId})`;
+    console.log("Network name:", networkName);
+
+    setConfirmationModal({
+      text2: "Enter a name for your wallet",
+      showInput: true,
+      btn1Text: "Confirm",
+      btn2Text: "Cancel",
+      inputPlaceholder: "e.g. Main, Test, Trading",
+      btn1Handler: async (name) => {
+        if (!name || name.trim() === "") {
+          toast.error("Wallet name is required.");
+          return;
+        }
+        setConfirmationModal(null);
+        try {
+          console.log("Dispatching linkWallet with:", {
+            address,
+            signature,
+            message,
+            network: networkName,
+            name,
+          });
+          await dispatch(
+            linkWallet({
+              walletData: {
+                address,
+                signature,
+                message,
+                network: networkName,
+                name,
+              },
+              token,
+            })
+          ).unwrap();
+          toast.success("Wallet successfully linked!");
+        } catch (err) {
+          console.error("Error linking wallet:", err);
+          toast.error(err?.message || "Failed to link wallet.");
+        }
+      },
+      btn2Handler: () => setConfirmationModal(null),
+    });
+  } catch (err) {
+    console.error("Wallet connection failed:", err);
+    toast.error("Wallet connection failed. Please try again.");
   }
+};
+
+
 
   const handleSetPrimary = (address) => {
     setConfirmationModal({
