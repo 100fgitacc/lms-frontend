@@ -17,6 +17,22 @@ const supportedChains = [mainnet, polygon, goerli, polygonMumbai]
 import { InjectedConnector } from 'wagmi/connectors/injected'
 import { WalletConnectConnector } from 'wagmi/connectors/walletConnect'
 
+  const injectedConnector = new InjectedConnector({ chains: supportedChains })
+  const walletConnectConnector = new WalletConnectConnector({
+    options: {
+      projectId: '513f3c82afd39ff840ce3f9fd24ab649',
+      showQrModal: true,
+      chains: supportedChains,
+    },
+  })
+
+  const networkMap = {
+    1: "Ethereum",
+    137: "Polygon",
+    5: "Goerli",
+    80001: "Mumbai",
+  }
+
 export default function Wallet() {
   const dispatch = useDispatch()
   const { wallets, primaryWallet, loading } = useSelector(state => state.wallet)
@@ -41,60 +57,47 @@ export default function Wallet() {
   }
 
   const handleConnect = async () => {
-    try {
-     const connector = window.ethereum
-      ? new InjectedConnector({ chains: supportedChains })
-      : new WalletConnectConnector({
-        options: {
-          projectId: '513f3c82afd39ff840ce3f9fd24ab649',
-          showQrModal: true,
-          chains: supportedChains,
+  try {
+    const connector = window.ethereum ? injectedConnector : walletConnectConnector
+
+    const { account } = await connectAsync({ connector })
+
+    const message = `Linking wallet to profile (${account})`
+    const signature = await signMessageAsync({ message })
+
+    const networkName = networkMap[chain?.id] || `Unknown (${chain?.id})`
+
+    setConfirmationModal({
+      text2: "Enter a name for your wallet",
+      showInput: true,
+      btn1Text: "Confirm",
+      btn2Text: "Cancel",
+      inputPlaceholder: "e.g. Main, Test, Trading",
+      btn1Handler: async name => {
+        if (!name?.trim()) {
+          toast.error("Wallet name is required.")
+          return
         }
-      })
-
-      const { account } = await connectAsync({ connector })
-      const message = `Linking wallet to profile (${account})`
-      const signature = await signMessageAsync({ message })
-
-      const networkMap = {
-        1: "Ethereum",
-        137: "Polygon",
-        5: "Goerli",
-        80001: "Mumbai",
-      }
-      const networkName = networkMap[chain?.id] || `Unknown (${chain?.id})`
-
-      setConfirmationModal({
-        text2: "Enter a name for your wallet",
-        showInput: true,
-        btn1Text: "Confirm",
-        btn2Text: "Cancel",
-        inputPlaceholder: "e.g. Main, Test, Trading",
-        btn1Handler: async name => {
-          if (!name?.trim()) {
-            toast.error("Wallet name is required.")
-            return
-          }
-          setConfirmationModal(null)
-          try {
-            await dispatch(
-              linkWallet({
-                walletData: { address: account, signature, message, network: networkName, name },
-                token,
-              })
-            ).unwrap()
-            toast.success("Wallet successfully linked!")
-          } catch (err) {
-            toast.error(err?.message || "Failed to link wallet.")
-          }
-        },
-        btn2Handler: () => setConfirmationModal(null),
-      })
-    } catch (err) {
-      console.error(err)
-      toast.error("Wallet connection failed. Please try again.")
-    }
+        setConfirmationModal(null)
+        try {
+          await dispatch(
+            linkWallet({
+              walletData: { address: account, signature, message, network: networkName, name },
+              token,
+            })
+          ).unwrap()
+          toast.success("Wallet successfully linked!")
+        } catch (err) {
+          toast.error(err?.message || "Failed to link wallet.")
+        }
+      },
+      btn2Handler: () => setConfirmationModal(null),
+    })
+  } catch (err) {
+    console.error("handleConnect error:", err)
+    toast.error("Wallet connection failed. Please try again.")
   }
+}
 
   const handleSetPrimary = address => {
     setConfirmationModal({
