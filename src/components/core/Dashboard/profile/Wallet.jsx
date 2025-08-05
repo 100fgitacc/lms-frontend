@@ -44,8 +44,13 @@ export default function Wallet() {
     try {
      const connector = window.ethereum
       ? new InjectedConnector({ chains: supportedChains })
-      : new WalletConnectConnector({ projectId: '513f3c82afd39ff840ce3f9fd24ab649', chains: supportedChains })
-
+      : new WalletConnectConnector({
+        options: {
+          projectId: '513f3c82afd39ff840ce3f9fd24ab649',
+          showQrModal: true,
+          chains: supportedChains,
+        }
+      })
 
       const { account } = await connectAsync({ connector })
       const message = `Linking wallet to profile (${account})`
