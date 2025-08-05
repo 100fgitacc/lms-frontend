@@ -12,6 +12,8 @@ import styles from "./wallet.module.css"
 import toast from "react-hot-toast"
 
 import { useAccount, useConnect, useSignMessage, useNetwork } from 'wagmi'
+import { mainnet, polygon, goerli, polygonMumbai } from 'wagmi/chains'
+const supportedChains = [mainnet, polygon, goerli, polygonMumbai]
 import { InjectedConnector } from 'wagmi/connectors/injected'
 import { WalletConnectConnector } from 'wagmi/connectors/walletConnect'
 
@@ -40,9 +42,10 @@ export default function Wallet() {
 
   const handleConnect = async () => {
     try {
-      const connector = window.ethereum
-        ? new InjectedConnector()
-        : new WalletConnectConnector({ projectId: '513f3c82afd39ff840ce3f9fd24ab649', chains: [] })
+     const connector = window.ethereum
+      ? new InjectedConnector({ chains: supportedChains })
+      : new WalletConnectConnector({ projectId: '513f3c82afd39ff840ce3f9fd24ab649', chains: supportedChains })
+
 
       const { account } = await connectAsync({ connector })
       const message = `Linking wallet to profile (${account})`
