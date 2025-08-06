@@ -25,6 +25,7 @@ import { WalletConnectConnector } from 'wagmi/connectors/walletConnect'
       showQrModal: true,
       chains: supportedChains,
     },
+    isNewChainsStale: false
   })
 
   const networkMap = {
