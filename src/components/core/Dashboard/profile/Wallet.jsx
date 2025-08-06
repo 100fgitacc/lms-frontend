@@ -58,8 +58,8 @@ export default function Wallet() {
     return addr?.slice(0, 6) + "..." + addr?.slice(-4)
   }
 
-  
 
+  
   const handleConnect = async () => {
   try {
     await disconnect()

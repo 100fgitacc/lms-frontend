@@ -154,6 +154,7 @@
   }
   .user-data span{
     margin: 0;
+    margin-left: 10px;
   }
   .user-data img{
     width: 35px;
@@ -169,4 +170,14 @@
   .menu-item:nth-child(1){
     margin-right: 0;
   }
+  .menu-arrow, .profile-settings::before{
+    top: 53px;
+    left: 30px;
+    right: unset;
+  }
+  .dropdown{
+    right: unset;
+    left: 0;
+  }
+  
 }

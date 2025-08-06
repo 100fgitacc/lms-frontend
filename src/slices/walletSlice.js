@@ -5,7 +5,7 @@ import {
   deleteWallet,
   setPrimaryWallet,
 } from "../services/operations/walletApi"
-
+import toast from "react-hot-toast"
 export const fetchWallets = createAsyncThunk(
   "wallet/fetchWallets",
   async (token, { rejectWithValue }) => {
@@ -77,10 +77,16 @@ const walletSlice = createSlice({
         state.wallets = action.payload.wallets
         state.loading = false
       })
-      .addCase(fetchWallets.rejected, (state, action) => {
+      .addCase(linkWallet.rejected, (state, action) => {
         state.loading = false
         state.error = action.payload
+        if (action.payload) {
+          toast.error(action.payload)
+        } else {
+          toast.error("Failed to link wallet.")
+        }
       })
+
   },
 })
 
