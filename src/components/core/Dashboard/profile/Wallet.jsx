@@ -61,6 +61,20 @@ export default function Wallet() {
 
   
   const handleConnect = async () => {
+    const isDesktop = !/Mobi|Android|iPhone|iPad/i.test(navigator.userAgent);
+    const isMetaMaskInstalled = window.ethereum?.isMetaMask;
+
+    if (isDesktop && !isMetaMaskInstalled) {
+      setConfirmationModal({
+        text1: "MetaMask is not installed",
+        text2: "Would you like to install it?",
+        btn1Text: "Install",
+        btn2Text: "Cancel",
+        btn1Handler: () => window.open("https://metamask.io/download", "_blank"),
+        btn2Handler: () => setConfirmationModal(null),
+      });
+      return;
+    }
   try {
     await disconnect()
     const connector = window.ethereum ? injectedConnector : walletConnectConnector
