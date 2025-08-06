@@ -147,7 +147,7 @@
 @media screen and (max-width: 480px) {
  
   .profile-settings{
-    padding: 10px;
+    padding-bottom: 20px;
   }
   .user-data{
     align-items: flex-start;
@@ -171,8 +171,8 @@
     margin-right: 0;
   }
   .menu-arrow, .profile-settings::before{
-    top: 53px;
-    left: 30px;
+    top: 55px;
+    left: 33px;
     right: unset;
   }
   .dropdown{
