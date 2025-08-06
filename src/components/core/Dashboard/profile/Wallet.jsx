@@ -24,6 +24,7 @@ import { WalletConnectConnector } from 'wagmi/connectors/walletConnect'
       projectId: '513f3c82afd39ff840ce3f9fd24ab649',
       showQrModal: true,
       chains: supportedChains,
+      mobileLinks: ['metamask'],
     },
     isNewChainsStale: false
   })
@@ -64,6 +65,11 @@ export default function Wallet() {
     const connector = window.ethereum ? injectedConnector : walletConnectConnector
 
     const { account } = await connectAsync({ connector })
+    if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+      setTimeout(() => {
+        window.location.replace(window.location.pathname)
+      }, 1500)
+    }
 
     const message = `Linking wallet to profile (${account})`
     const signature = await signMessageAsync({ message })
