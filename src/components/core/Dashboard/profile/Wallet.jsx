@@ -59,11 +59,7 @@ export default function Wallet() {
   }
 
   
-  useEffect(() => {
-    if (isConnected) {
-      router.replace("/dashboard")
-    }
-  }, [isConnected])
+
   const handleConnect = async () => {
   try {
     await disconnect()

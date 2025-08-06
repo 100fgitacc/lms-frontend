@@ -889,6 +889,10 @@ label{
   table{
     font-size: 13px;
   }
+  .content-inner{
+    margin-right: 15px ;
+    margin-left: 15px ;
+  }
 }
 
 @media screen and (max-width: 480px) {
@@ -902,4 +906,5 @@ label{
       padding: 10px 5px;
       font-size: 12px;
   }
+  
 }

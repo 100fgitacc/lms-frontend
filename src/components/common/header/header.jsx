@@ -152,7 +152,7 @@ const Header = () => {
                                             </button>
                                         </span>
                                     ) : (
-                                        <small>No wallet connected</small>
+                                        <small>No wallets connected</small>
                                     )}
                                </div>
                             </div>

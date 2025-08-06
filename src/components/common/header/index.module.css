@@ -10,10 +10,10 @@
     left: 228px;
     right: 0;
     top: 0;
-    z-index: 97;
+    z-index: 27;
 }
 .wrapper.full-width{
-    left: 65px;
+    left: 55px;
 }
 .menu{
     display: flex;
@@ -147,6 +147,26 @@
 @media screen and (max-width: 480px) {
  
   .profile-settings{
-    padding: 10px 20px;
+    padding: 10px;
+  }
+  .user-data{
+    align-items: flex-start;
+  }
+  .user-data span{
+    margin: 0;
+  }
+  .user-data img{
+    width: 35px;
+    height: 35px;
+    max-width: unset;
+  }
+  .user-data p{
+    font-size: 12px;
+  }
+  .profile-settings{
+    min-width: 165px;
+  }
+  .menu-item:nth-child(1){
+    margin-right: 0;
   }
 }
