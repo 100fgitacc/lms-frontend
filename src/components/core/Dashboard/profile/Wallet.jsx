@@ -13,6 +13,7 @@ import toast from "react-hot-toast"
 
 import { useAccount, useConnect, useSignMessage, useNetwork } from 'wagmi'
 import { mainnet, polygon, goerli, polygonMumbai } from 'wagmi/chains'
+import { disconnect } from 'wagmi/actions'
 const supportedChains = [mainnet, polygon, goerli, polygonMumbai]
 import { InjectedConnector } from 'wagmi/connectors/injected'
 import { WalletConnectConnector } from 'wagmi/connectors/walletConnect'
@@ -58,6 +59,7 @@ export default function Wallet() {
 
   const handleConnect = async () => {
   try {
+    await disconnect()
     const connector = window.ethereum ? injectedConnector : walletConnectConnector
 
     const { account } = await connectAsync({ connector })
