@@ -13,7 +13,8 @@ import toast from "react-hot-toast"
 
 import { useAccount, useConnect, useSignMessage, useNetwork } from 'wagmi'
 import { mainnet, polygon, goerli, polygonMumbai } from 'wagmi/chains'
-import { disconnect } from 'wagmi/actions'
+
+import { disconnect, getNetwork } from 'wagmi/actions'
 const supportedChains = [mainnet, polygon, goerli, polygonMumbai]
 import { InjectedConnector } from 'wagmi/connectors/injected'
 import { WalletConnectConnector } from 'wagmi/connectors/walletConnect'
@@ -80,7 +81,7 @@ export default function Wallet() {
     const connector = window.ethereum ? injectedConnector : walletConnectConnector
 
     const { account } = await connectAsync({ connector })
-
+    const { chain } = await getNetwork()
     const message = `Linking wallet to profile (${account})`
     const signature = await signMessageAsync({ message })
 
@@ -170,69 +171,112 @@ export default function Wallet() {
           {loading ? "Connecting..." : "Connect Wallet"} <MdOutlineAddBox className="btn-icon" />
         </button>
       </div>
-
       {loading ? (
         <p>Loading wallets... Please complete connection.</p>
       ) : wallets.length === 0 ? (
         <p>No wallets linked yet.</p>
       ) : (
         <>
-          <h4>Connected Wallets:</h4>
           <div className="table-wrapper">
-            <table className={styles["wallet-table"]}>
-              <thead>
-                <tr>
-                  <th>Name</th>
-                  <th>Address</th>
-                  <th>Network</th>
-                  <th>Status</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {primaryWallet && (
-                  <tr className={styles.primaryRow}>
-                    <td>{primaryWallet.name}</td>
-                    <td>
-                      {shorten(primaryWallet.address)}
-                      <button onClick={() => handleCopy(primaryWallet.address)} className={styles['copy-address']}>
-                        <MdContentCopy size={12} />
-                      </button>
-                    </td>
-                    <td>{primaryWallet.network}</td>
-                    <td className={styles.statusPrimary}>Primary</td>
-                    <td>
-                      <button className={`${styles.actionBtn} ${styles.deleteButton}`} onClick={() => handleDelete(primaryWallet.address)}>
-                        <MdDelete size={16} /> Delete
-                      </button>
-                    </td>
-                  </tr>
-                )}
-                {wallets.filter(w => w.address.toLowerCase() !== primaryWallet?.address?.toLowerCase()).map(wallet => (
-                  <tr key={wallet.address}>
-                    <td>{wallet.name}</td>
-                    <td>
-                      {shorten(wallet.address)}
-                      <button onClick={() => handleCopy(wallet.address)} className={styles['copy-address']}>
-                        <MdContentCopy size={12} />
-                      </button>
-                    </td>
-                    <td>{wallet.network}</td>
-                    <td className={styles.statusSecondary}>Additional</td>
-                    <td>
-                      <button className={`${styles.actionBtn} ${styles.deleteButton}`} onClick={() => handleDelete(wallet.address)}>
-                        <MdDelete size={13} /> Delete
-                      </button>
-                      <button className={styles.actionBtn} onClick={() => handleSetPrimary(wallet.address)}>
-                        <MdStar size={13} /> Set as Primary
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+
+            {primaryWallet && (
+              <>
+                <h4 className={styles['wallet-subtitle']}>Primary wallets</h4>
+                <table className={styles["wallet-table"]}>
+                  <thead>
+                    <tr>
+                      <th className={styles.walletTableColName}>Name</th>
+                      <th className={styles.walletTableColAddress}>Address</th>
+                      <th className={styles.walletTableColNetwork}>Network</th>
+                      <th className={styles.walletTableColStatus}>Status</th>
+                      <th className={styles.walletTableColActions}>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr className={styles.primaryRow}>
+                      <td className={styles.walletTableColName}>{primaryWallet.name}</td>
+                      <td className={styles.walletTableColAddress}>
+                        {shorten(primaryWallet.address)}
+                        <button
+                          onClick={() => handleCopy(primaryWallet.address)}
+                          className={styles['copy-address']}
+                        >
+                          <MdContentCopy size={12} />
+                        </button>
+                      </td>
+                      <td className={styles.walletTableColNetwork}>{primaryWallet.network}</td>
+                      <td className={styles.walletTableColStatus}>Primary</td>
+                      <td className={styles.walletTableColActions}>
+                        <div className={styles.actionsCell}>
+                          <button
+                            className={`${styles.actionBtn} ${styles.deleteButton}`}
+                            onClick={() => handleDelete(primaryWallet.address)}
+                          >
+                            <MdDelete size={16} /> Delete
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </>
+            )}
+
+            {wallets.filter(w => w.address.toLowerCase() !== primaryWallet?.address?.toLowerCase()).length > 0 && (
+              <>
+                <h4 className={styles['wallet-subtitle']}>Additional wallets</h4>
+                <table className={styles["wallet-table"]}>
+                  <thead>
+                    <tr>
+                      <th className={styles.walletTableColName}>Name</th>
+                      <th className={styles.walletTableColAddress}>Address</th>
+                      <th className={styles.walletTableColNetwork}>Network</th>
+                      <th className={styles.walletTableColStatus}>Status</th>
+                      <th className={styles.walletTableColActions}>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {wallets
+                      .filter(w => w.address.toLowerCase() !== primaryWallet?.address?.toLowerCase())
+                      .map(wallet => (
+                        <tr key={wallet.address}>
+                          <td className={styles.walletTableColName}>{wallet.name}</td>
+                          <td className={styles.walletTableColAddress}>
+                            {shorten(wallet.address)}
+                            <button
+                              onClick={() => handleCopy(wallet.address)}
+                              className={styles['copy-address']}
+                            >
+                              <MdContentCopy size={12} />
+                            </button>
+                          </td>
+                          <td className={styles.walletTableColNetwork}>{wallet.network}</td>
+                          <td className={styles.walletTableColStatus}>Additional</td>
+                          <td className={styles.walletTableColActions}>
+                            <div className={styles.actionsCell}>
+                              <button
+                                className={`${styles.actionBtn} ${styles.deleteButton}`}
+                                onClick={() => handleDelete(wallet.address)}
+                              >
+                                <MdDelete size={13} /> Delete
+                              </button>
+                              <button
+                                className={styles.actionBtn}
+                                onClick={() => handleSetPrimary(wallet.address)}
+                              >
+                                <MdStar size={13} /> Set as Primary
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                  </tbody>
+                </table>
+              </>
+            )}
           </div>
         </>
+
       )}
 
       {confirmationModal && <ConfirmationModal key={modalKey} modalData={confirmationModal} />}
