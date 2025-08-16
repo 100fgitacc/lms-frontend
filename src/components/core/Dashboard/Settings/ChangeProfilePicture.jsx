@@ -20,14 +20,35 @@ export default function ChangeProfilePicture() {
     fileInputRef.current.click()
   }
 
+
+const MAX_FILE_SIZE = 500 * 1024;
+  const MIN_WIDTH = 200;
+  const MIN_HEIGHT = 200;
+  const [error, setError] = useState("");
+
   const handleFileChange = (e) => {
-    const file = e.target.files[0]
-    // console.log(file)
+    const file = e.target.files[0];
     if (file) {
-      setProfileImage(file)
-      previewFile(file)
+      if (file.size > MAX_FILE_SIZE) {
+        setError("File is to large! Max size: 500 KB.");
+        e.target.value = "";
+        return;
+      }
+
+      const img = new Image();
+      img.src = URL.createObjectURL(file);
+      img.onload = () => {
+        if (img.width < MIN_WIDTH || img.height < MIN_HEIGHT) {
+          setError(`Image is to small! Min ${MIN_WIDTH}x${MIN_HEIGHT}px.`);
+          e.target.value = "";
+        } else {
+          setError("");
+          setProfileImage(file);
+          previewFile(file);
+        }
+      };
     }
-  }
+  };
 
   const previewFile = (file) => {
     const reader = new FileReader()
@@ -59,6 +80,7 @@ export default function ChangeProfilePicture() {
   }, [profileImage])
 
 
+
   return (
     <>
       <div className={`${styles.wrapper} ${styles['profile-picture']}`}>
@@ -84,6 +106,13 @@ export default function ChangeProfilePicture() {
             <p>
               Select custom photo from your device, then click on Update:
             </p>
+            <small className={styles.hint}>
+              Allowed formats: JPG, PNG, GIF<br/>
+              Max file size: 1MB<br/>
+              Min resolution: 200×200 px
+            </small>
+
+            {error && <p className={styles.error}>{error}</p>}  
             <div  className={styles['btns-container']}>
             <button
               onClick={handleClick}
@@ -102,6 +131,7 @@ export default function ChangeProfilePicture() {
            
           </div>
         </div>
+        
       </div>
     </>
   )

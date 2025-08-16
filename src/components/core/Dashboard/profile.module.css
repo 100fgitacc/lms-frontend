@@ -821,6 +821,11 @@
     font-size: 12px;
 }
 
+.hint {
+  font-size: 11px;
+  color: #6b7280;
+  margin-top: 5px;
+}
 
 
 @media screen and (max-width: 1024px) {
