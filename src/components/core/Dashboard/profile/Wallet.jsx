@@ -143,16 +143,29 @@ export default function Wallet() {
       text2: "Are you sure you want to remove this wallet?",
       btn1Text: "Delete",
       btn2Text: "Cancel",
-      btn1Handler: async () => {
-        try {
-          await dispatch(removeWallet({ address, token })).unwrap()
-          toast.success("Wallet deleted successfully.")
-        } catch {
-          toast.error("Failed to delete wallet.")
-        } finally {
-          setConfirmationModal(null)
+      btn1Handler: async name => {
+      if (!name?.trim()) {
+        toast.error("Wallet name is required.")
+        return
+      }
+      setConfirmationModal(null)
+      try {
+        const result = await dispatch(
+          linkWallet({
+            walletData: { address: account, signature, message, network: networkName, name },
+            token,
+          })
+        ).unwrap()
+
+        if (wallets.length === 0) {
+          toast.success("🎉 This is your first wallet. It has been set as your primary wallet!")
+        } else {
+          toast.success("Wallet successfully linked!")
         }
-      },
+      } catch (err) {
+        toast.error(err?.message || "Failed to link wallet.")
+      }
+    },
       btn2Handler: () => setConfirmationModal(null),
     })
   }
