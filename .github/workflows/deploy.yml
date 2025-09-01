@@ -1,6 +1,13 @@
 name: Deploy LMS Frontend
-on: { push: { branches: [ main ] }, workflow_dispatch: {} }
-concurrency: { group: deploy-lms-frontend, cancel-in-progress: true }
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-lms-frontend
+  cancel-in-progress: true
 
 jobs:
   deploy:
@@ -11,24 +18,34 @@ jobs:
       SSH_PORT: ${{ secrets.SSH_PORT || '22' }}
 
     steps:
-      - uses: actions/checkout@v4
-      - run: echo "${{ secrets.SSH_KEY }}" > key.pem && chmod 600 key.pem
-      - run: |
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Prepare SSH key
+        run: |
+          echo "${{ secrets.SSH_KEY }}" > key.pem
+          chmod 600 key.pem
+
+      - name: Ensure target dirs on server
+        run: |
           ssh -i key.pem -p "$SSH_PORT" -o StrictHostKeyChecking=no \
-            "$SSH_USER@$SSH_HOST" "mkdir -p /var/www/lms-frontend /var/www/lms-frontend/build"
+            "$SSH_USER@$SSH_HOST" 'mkdir -p /var/www/lms-frontend /var/www/lms-frontend/dist'
+
       - name: Upload sources (no src/)
         run: |
           rsync -az --delete \
-            --exclude '.git' --exclude '.github' --exclude 'node_modules' \
-            --exclude '.env' \
+            --exclude ".git" --exclude ".github" --exclude "node_modules" \
+            --exclude ".env" \
             -e "ssh -i key.pem -p $SSH_PORT -o StrictHostKeyChecking=no" \
             ./ "$SSH_USER@$SSH_HOST:/var/www/lms-frontend/"
-      - name: Build & publish to /build
+
+      - name: Build on server & publish to /dist
         run: |
-          ssh -i key.pem -p "$SSH_PORT" -o StrictHostKeyChecking=no "$SSH_USER@$SSH_HOST" '
-            set -e
-            cd /var/www/lms-frontend
-            npm ci
-            npm run build
-            rsync -az --delete build/ /var/www/lms-frontend/build/
-          '
+          ssh -i key.pem -p "$SSH_PORT" -o StrictHostKeyChecking=no \
+            "$SSH_USER@$SSH_HOST" '
+              set -e
+              cd /var/www/lms-frontend
+              npm ci
+              npm run build
+              rsync -az --delete dist/ /var/www/lms-frontend/dist/
+            '
