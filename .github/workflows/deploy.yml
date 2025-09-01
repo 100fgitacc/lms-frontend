@@ -1,0 +1,46 @@
+name: Deploy LMS Frontend
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-lms-frontend
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Prepare SSH key
+        run: |
+          echo "${{ secrets.SSH_KEY }}" > key.pem
+          chmod 600 key.pem
+
+      - name: Ensure target dirs
+        run: |
+          ssh -i key.pem -p ${{ secrets.SSH_PORT }} -o StrictHostKeyChecking=no \
+            ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "mkdir -p /var/www/lms-frontend/src /var/www/lms-frontend/build"
+
+      - name: Upload sources (rsync)
+        run: |
+          rsync -az --delete \
+            --exclude '.git' --exclude '.github' --exclude 'node_modules' \
+            -e "ssh -i key.pem -p ${{ secrets.SSH_PORT }} -o StrictHostKeyChecking=no" \
+            ./ ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/var/www/lms-frontend/src/
+
+      - name: Build on server & publish to /build
+        run: |
+          ssh -i key.pem -p ${{ secrets.SSH_PORT }} -o StrictHostKeyChecking=no \
+            ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} '
+              set -e
+              cd /var/www/lms-frontend/src
+              npm ci
+              # если используешь .env.production, положи его в /var/www/lms-frontend/src заранее
+              npm run build
+              rsync -az --delete build/ /var/www/lms-frontend/build/
+            '
+
